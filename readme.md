@@ -3,7 +3,7 @@
 [Advent of Code](https://adventofcode.com)
 
 Scores:
-![](https://img.shields.io/badge/2021%20📅-blue) ![](https://img.shields.io/badge/stars%20⭐-16-yellow)
+![](https://img.shields.io/badge/2021%20📅-blue) ![](https://img.shields.io/badge/stars%20⭐-18-yellow)
 
 
 ## About
@@ -12,5 +12,8 @@ Advent of Code is a series of challenges for the Christmas season that require w
 
 Take for Example:
 
-[Task 6](2021/06/tasks.mjs) - Algorithm for tracking Lanternfish Populations over time.
 [Task 5](2021/05/tasks.mjs) - Algorithm for mapping lines onto a 2D grid.
+
+[Task 6](2021/06/tasks.mjs) - Algorithm for tracking Lanternfish Populations over time.
+
+[Task 9](2021/09/tasks.mjs) - Flood-fill algorithm for identifying large basins in the sea floor.
