@@ -18,7 +18,7 @@ function mapConnections(input) {
   return connections;
 }
 
-function task1(input) {
+function findPaths(input, allowMultiple) {
   const connections = mapConnections(input);
   const queue = [['start']];
   const completed = [];
@@ -26,24 +26,7 @@ function task1(input) {
     const currentPath = queue.pop();
     const currentNode = currentPath.at(-1);
     connections[currentNode].forEach((nextNode) => {
-      if (isLowerCase(nextNode) && currentPath.includes(nextNode)) return;
-      if (nextNode === 'end') return completed.push([...currentPath, nextNode]);
-      queue.push([...currentPath, nextNode]);
-    });
-  }
-  return completed.length;
-}
-
-function task2(input) {
-  const connections = mapConnections(input);
-  console.log(connections);
-  const queue = [['start']];
-  const completed = [];
-  while (queue.length) {
-    const currentPath = queue.pop();
-    const currentNode = currentPath.at(-1);
-    connections[currentNode].forEach((nextNode) => {
-      if (isLowerCase(nextNode) && currentPath.includes(nextNode) && hasTwoVisits(currentPath)) return;
+      if (isLowerCase(nextNode) && currentPath.includes(nextNode) && (!allowMultiple || hasTwoVisits(currentPath))) return;
       if (nextNode === 'end') return completed.push([...currentPath, nextNode]);
       queue.push([...currentPath, nextNode]);
     });
@@ -60,6 +43,5 @@ function isLowerCase(letter) {
   return letter.toLowerCase() === letter;
 }
 
-console.log(task1(input));
-console.log(task2(input));
-
+console.log(findPaths(input));
+console.log(findPaths(input, true));
