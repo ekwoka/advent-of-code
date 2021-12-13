@@ -17,3 +17,5 @@ Take for Example:
 [Task 6](2021/06/tasks.mjs) - Algorithm for tracking Lanternfish Populations over time.
 
 [Task 9](2021/09/tasks.mjs) - Flood-fill algorithm for identifying large basins in the sea floor.
+
+[Task 12](2021/12/tasks.mjs) - Algorithm for finding all the possible paths through a omni-directional graph.
