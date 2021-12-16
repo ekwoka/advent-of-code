@@ -3,7 +3,7 @@
 [Advent of Code](https://adventofcode.com)
 
 Scores:
-![](https://img.shields.io/badge/2021%20📅-blue) ![](https://img.shields.io/badge/stars%20⭐-28-yellow)
+![](https://img.shields.io/badge/2021%20📅-blue) ![](https://img.shields.io/badge/stars%20⭐-30-yellow)
 
 
 ## About
@@ -19,3 +19,5 @@ Take for Example:
 [Task 9](2021/09/tasks.mjs) - Flood-fill algorithm for identifying large basins in the sea floor.
 
 [Task 12](2021/12/tasks.mjs) - Algorithm for finding all the possible paths through a omni-directional graph.
+
+[Task 15](2021/15/protitytasks.mjs) - Pathfinding algorithm using a priority queue.
