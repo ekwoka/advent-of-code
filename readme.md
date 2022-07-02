@@ -3,7 +3,9 @@
 [Advent of Code](https://adventofcode.com)
 
 Scores:
+
 ![](https://img.shields.io/badge/2021%20📅-blue) ![](https://img.shields.io/badge/stars%20⭐-36-yellow)
+
 ![](https://img.shields.io/badge/2020%20📅-blue) ![](https://img.shields.io/badge/stars%20⭐-10-yellow)
 
 ## About
