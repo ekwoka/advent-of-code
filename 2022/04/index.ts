@@ -25,10 +25,10 @@ console.log(
 console.log(
   'Part 2:',
   assignments.filter((groups) => {
-    const output = groups[0].some(
-      (room) =>
-        pointInRange(room, groups[1] as [number, number]) ||
-        rangeInRange(...(groups as [[number, number], [number, number]]))
+    const output = groups.some((group, i) =>
+      group.some((room) =>
+        pointInRange(room, groups[(i + 1) % 2] as [number, number])
+      )
     );
     return output;
   }).length
