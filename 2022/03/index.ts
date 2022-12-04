@@ -10,7 +10,8 @@ const splitInHalf = (input: string) => {
 const sacks = input.split('\n').filter(Boolean).map(splitInHalf);
 
 const getDuplicateItem = (compone: string, ...comps: string[]) => {
-  for (const item of compone) if (comps.every((comp) => comp.includes(item))) return item;
+  for (const item of compone)
+    if (comps.every((comp) => comp.includes(item))) return item;
   return '';
 };
 
@@ -29,7 +30,8 @@ const getBadges = (sacks: string[][]) => {
   return groups.map(([first, ...rest]) => getDuplicateItem(first, ...rest));
 };
 
-const getDuplicates = (sacks: string[][]) => sacks.map((sack) => getDuplicateItem(sack[0], sack[1]));
+const getDuplicates = (sacks: string[][]) =>
+  sacks.map((sack) => getDuplicateItem(sack[0], sack[1]));
 
 const priorities = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 

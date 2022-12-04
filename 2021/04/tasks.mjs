@@ -41,8 +41,14 @@ function findWinningBoard(boards, numbers) {
 
   while (!winningBoard && numbers.length) {
     selectedNumbers.push(numbers.splice(0, 1)[0]);
-    winningBoard = Object.values(boards).find((board) => checkWinningRows(board, selectedNumbers));
-    winningBoard = winningBoard || Object.values(boards).find((board) => checkWinningColumns(board, selectedNumbers));
+    winningBoard = Object.values(boards).find((board) =>
+      checkWinningRows(board, selectedNumbers)
+    );
+    winningBoard =
+      winningBoard ||
+      Object.values(boards).find((board) =>
+        checkWinningColumns(board, selectedNumbers)
+      );
   }
   return { winningBoard, selectedNumbers };
 }
@@ -63,7 +69,9 @@ function checkWinningColumns(board, numbers) {
 
 function task1(boards, numbers) {
   let { winningBoard, selectedNumbers } = findWinningBoard(boards, numbers);
-  let remaining = winningBoard.flat().filter((n) => !selectedNumbers.includes(n));
+  let remaining = winningBoard
+    .flat()
+    .filter((n) => !selectedNumbers.includes(n));
   let finalNumber = selectedNumbers.at(-1);
   return finalNumber * remaining.reduce((acc, n) => acc + n);
 }
@@ -74,11 +82,18 @@ function findLastBoard(boards, numbers) {
 
   while (remainingBoards.length > 1 && numbers.length) {
     selectedNumbers.push(numbers.splice(0, 1)[0]);
-    remainingBoards = remainingBoards.filter((board) => !checkWinningRows(board, selectedNumbers));
-    remainingBoards = remainingBoards.filter((board) => !checkWinningColumns(board, selectedNumbers));
+    remainingBoards = remainingBoards.filter(
+      (board) => !checkWinningRows(board, selectedNumbers)
+    );
+    remainingBoards = remainingBoards.filter(
+      (board) => !checkWinningColumns(board, selectedNumbers)
+    );
   }
 
-  while (!checkWinningRows(remainingBoards[0], selectedNumbers) && !checkWinningColumns(remainingBoards[0], selectedNumbers)) {
+  while (
+    !checkWinningRows(remainingBoards[0], selectedNumbers) &&
+    !checkWinningColumns(remainingBoards[0], selectedNumbers)
+  ) {
     selectedNumbers.push(numbers.splice(0, 1)[0]);
   }
 
@@ -98,4 +113,4 @@ console.time('loop');
 console.log(task1(boards, [...originalNumbers]));
 console.timeEnd('loop');
 
-// console.log(task2(boards, [...originalNumbers]));
+console.log(task2(boards, [...originalNumbers]));

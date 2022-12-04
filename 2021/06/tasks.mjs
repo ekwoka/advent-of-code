@@ -1,7 +1,7 @@
 // Lanternfish: Map growth of lanternfish population
 
 // REAL DATA
- import input from './input.mjs'
+import input from './input.mjs';
 
 // TEST DATA
 // const input = [3, 4, 3, 1, 2];
@@ -29,17 +29,20 @@ function simulateLife2(input) {
   let days = 80;
 
   while (days > 0) {
-    population = Object.entries(population).reduce((acc, [daysTilSpawn, Number]) => {
-      if (daysTilSpawn > 0) {
+    population = Object.entries(population).reduce(
+      (acc, [daysTilSpawn, Number]) => {
+        if (daysTilSpawn > 0) {
           if (!acc[daysTilSpawn - 1]) acc[daysTilSpawn - 1] = 0;
-        acc[daysTilSpawn - 1] += Number;
-      } else {
-        if(!acc['6']) acc['6'] = 0;
-        acc['6'] += Number;
-        acc['8'] = Number;
-      }
-      return acc;
-    }, {});
+          acc[daysTilSpawn - 1] += Number;
+        } else {
+          if (!acc['6']) acc['6'] = 0;
+          acc['6'] += Number;
+          acc['8'] = Number;
+        }
+        return acc;
+      },
+      {}
+    );
     days--;
   }
 

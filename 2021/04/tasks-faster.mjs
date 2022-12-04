@@ -10,7 +10,9 @@ import { boardsArray, numbers } from './input.mjs';
 const boards = Object.fromEntries(boardsArray.map((board, i) => [i, board]));
 const originalNumbers = [...numbers];
 
-const numberMap = Object.fromEntries(originalNumbers.map((number, i) => [number, i]));
+const numberMap = Object.fromEntries(
+  originalNumbers.map((number, i) => [number, i])
+);
 
 function findWinningBoardReducer(boards, numberMap) {
   let [winningBoard, lastIndex] = Object.entries(boards).reduce(

@@ -37,7 +37,7 @@ function task2(input, up) {
     bit = bit || value > input.length / 2 ? 1 : 0;
 
     input = input.filter((item) => item.split('')[i] == bit);
-    i = (i+1)%input[0].length;
+    i = (i + 1) % input[0].length;
   }
   input;
   return parseInt(input[0], 2);

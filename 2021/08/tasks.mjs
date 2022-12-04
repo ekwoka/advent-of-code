@@ -1,4 +1,4 @@
-import input from './input.mjs'
+import input from './input.mjs';
 
 /* const input = `be cfbegad cbdgef fgaecd cgeb fdcge agebfd fecdb fabcd edb | fdgacbe cefdb cefbgd gcbe
 edbfga begcd cbg gc gcadebf fbgde acbgfd abcde gfcbed gfec | fcgedb cgb dgebacf gc
@@ -10,7 +10,6 @@ dbcfg fgd bdegcaf fgec aegbdf ecdfab fbedc dacgb gdcebf gf | cefg dcbef fcge gbc
 bdfegc cbegaf gecbf dfcage bdacg ed bedf ced adcbefg gebcd | ed bcgafe cdgba cbgef
 egadfb cdbfeg cegd fecab cgb gbdefca cg fgcdab egfdb bfceg | gbdfcae bgc cg cgb
 gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce`; */
-
 
 const inputLines = input.split('\n').map((line) => line.split(' | '));
 
@@ -31,12 +30,10 @@ function task1(inputLines) {
 
 function processSegments(data) {
   let key = {};
-  let unique = data
-    .split(' ')
-    .reduce((acc, word) => {
-      if (!acc.includes(word)) acc.push(word);
-      return acc;
-    }, [])
+  let unique = data.split(' ').reduce((acc, word) => {
+    if (!acc.includes(word)) acc.push(word);
+    return acc;
+  }, []);
   unique.forEach((word) => {
     if (word.length == 2) key[1] = word;
     if (word.length == 3) key[7] = word;
@@ -47,17 +44,21 @@ function processSegments(data) {
   unique.forEach((word) => {
     if (word.length == 5) {
       if (countMatching(word, key[1]) == 2) key[3] = word;
-      if (countMatching(word, key[7]) == 2 && countMatching(word, key[4]) == 2) key[2] = word;
-      if (countMatching(word, key[7]) == 2 && countMatching(word, key[4]) == 3) key[5] = word;
+      if (countMatching(word, key[7]) == 2 && countMatching(word, key[4]) == 2)
+        key[2] = word;
+      if (countMatching(word, key[7]) == 2 && countMatching(word, key[4]) == 3)
+        key[5] = word;
     }
     if (word.length == 6) {
       if (countMatching(word, key[4]) == 4) key[9] = word;
-      if (countMatching(word, key[4]) == 3 && countMatching(word, key[1]) == 2) key[0] = word;
-      if (countMatching(word, key[4]) == 3 && countMatching(word, key[1]) == 1) key[6] = word;
+      if (countMatching(word, key[4]) == 3 && countMatching(word, key[1]) == 2)
+        key[0] = word;
+      if (countMatching(word, key[4]) == 3 && countMatching(word, key[1]) == 1)
+        key[6] = word;
     }
   });
 
-  return key
+  return key;
 }
 
 function countMatching(a, b) {
@@ -69,17 +70,19 @@ function countMatching(a, b) {
 }
 
 function decode(line, key) {
-    let numbers = line.split(' ')
-    let decodedNumbers = numbers.map(string => {
-        let value = Object.entries(key).find(entry => {
-            let [a, b] = [entry[1].length == string.length, countMatching(string, entry[1])==string.length]
-            return a && b
-        })
-        return value[0]
-    })
-    
-    return parseInt(decodedNumbers.join(''));
+  let numbers = line.split(' ');
+  let decodedNumbers = numbers.map((string) => {
+    let value = Object.entries(key).find((entry) => {
+      let [a, b] = [
+        entry[1].length == string.length,
+        countMatching(string, entry[1]) == string.length,
+      ];
+      return a && b;
+    });
+    return value[0];
+  });
 
+  return parseInt(decodedNumbers.join(''));
 }
 
 function task2(inputLines) {

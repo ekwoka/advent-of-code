@@ -15,28 +15,38 @@ function react(start, steps) {
 
   console.time('Reaction Time');
   while (steps--) {
-    combinations = Object.entries(combinations).reduce((acc, [combo, count]) => {
-      let [oldPolymers, newPolymer] = [combo.split(''), REACTIONS[combo]];
-      let newCombinations = formCombinations([oldPolymers[0], newPolymer, oldPolymers[1]]);
+    combinations = Object.entries(combinations).reduce(
+      (acc, [combo, count]) => {
+        let [oldPolymers, newPolymer] = [combo.split(''), REACTIONS[combo]];
+        let newCombinations = formCombinations([
+          oldPolymers[0],
+          newPolymer,
+          oldPolymers[1],
+        ]);
 
-      Object.entries(newCombinations).forEach(([combo, _]) => {
-        acc[combo] = (acc[combo] || 0) + count;
-      });
+        Object.entries(newCombinations).forEach(([combo, _]) => {
+          acc[combo] = (acc[combo] || 0) + count;
+        });
 
-      return acc;
-    }, {});
+        return acc;
+      },
+      {}
+    );
   }
   console.timeEnd('Reaction Time');
 
   let polymerCount = countPolymers(combinations);
   polymerCount[start.at(-1)]++;
 
-  return Object.entries(polymerCount).reduce((acc, [polymer, count], i, chain) => {
-    if (!acc[0] || count > acc[0]) acc[0] = count;
-    if (!acc[1] || count < acc[1]) acc[1] = count;
-    if (!chain[i + 1]) return acc[0] - acc[1];
-    return acc;
-  }, []);
+  return Object.entries(polymerCount).reduce(
+    (acc, [_polymer, count], i, chain) => {
+      if (!acc[0] || count > acc[0]) acc[0] = count;
+      if (!acc[1] || count < acc[1]) acc[1] = count;
+      if (!chain[i + 1]) return acc[0] - acc[1];
+      return acc;
+    },
+    []
+  );
 }
 
 function formCombinations(polymer) {
@@ -55,12 +65,11 @@ function countPolymers(chain) {
   }, {});
 }
 
-console.log('Reacting 10 steps')
+console.log('Reacting 10 steps');
 console.log(react(start, 10));
 
-console.log('Reacting 40 steps')
+console.log('Reacting 40 steps');
 console.log(react(start, 40));
 
-console.log('Reacting 100 steps')
+console.log('Reacting 100 steps');
 console.log(react(start, 100));
-

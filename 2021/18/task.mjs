@@ -2,7 +2,6 @@
 
 import INPUT from './input.mjs';
 
-
 function add(a, b) {
   return `[${a},${b}]`;
 }
@@ -10,10 +9,11 @@ function add(a, b) {
 function explode(number, index, debug = false) {
   let pair = number
     .slice(index, index + 7)
-    .replace(/[\[\]]/g, '')
+    .replace(/[[\]]/g, '')
     .split(',')
     .map(Number);
-  let offset = index + pair.slice(0, 2).reduce((acc, val) => (val > 9 ? acc + 1 : acc), 5);
+  let offset =
+    index + pair.slice(0, 2).reduce((acc, val) => (val > 9 ? acc + 1 : acc), 5);
   number = number.slice(0, index) + '0' + number.slice(offset);
   number = explodeWalk(number, pair, index, debug);
   return number;
@@ -24,11 +24,13 @@ function explodeWalk(number, pair, index, debug = false) {
   let walkBack = index - 1;
   let walkForward = index + 2;
   while (walkBack) {
-    let [char0, char1] = [number[walkBack-1], number[walkBack]];
+    let [char0, char1] = [number[walkBack - 1], number[walkBack]];
     if (!isNaN(parseInt(char1))) {
-      let end = walkBack + 1, start = walkBack, value;
+      let end = walkBack + 1,
+        start = walkBack,
+        value;
       if (!isNaN(parseInt(char0))) {
-        value = parseInt(char0 + char1)
+        value = parseInt(char0 + char1);
         start--;
       } else {
         value = parseInt(char1);
@@ -63,10 +65,15 @@ function explodeWalk(number, pair, index, debug = false) {
   return number;
 }
 
-function splitNumber(number, index, debug = false) {
+function splitNumber(number, index) {
   let value = parseInt(number[index] + number[index + 1]);
   let pair = [Math.floor(value / 2), Math.ceil(value / 2)];
-  number = number.slice(0, index) + '[' + pair.join(',') + ']' + number.slice(index + 2);
+  number =
+    number.slice(0, index) +
+    '[' +
+    pair.join(',') +
+    ']' +
+    number.slice(index + 2);
   return number;
 }
 
@@ -107,8 +114,11 @@ function processNumbers(numbers, debug = false) {
 }
 
 function getMagnitude(number) {
-  let string = number.replaceAll('[', '3*(').replaceAll(']', ')*2').replaceAll(',', ')+(');
-  return eval(string)
+  let string = number
+    .replaceAll('[', '3*(')
+    .replaceAll(']', ')*2')
+    .replaceAll(',', ')+(');
+  return eval(string);
 }
 
 function part1(input) {

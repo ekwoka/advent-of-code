@@ -4,14 +4,19 @@ import { input, folds } from './input.mjs';
 
 // const folds = ['fold along y=7','fold along x=5']
 
-const points = input.map((string) => string.split(',').map((number) => parseInt(number)));
+const points = input.map((string) =>
+  string.split(',').map((number) => parseInt(number))
+);
 
-let [height, width] = [Math.max(...points.map(([x, y]) => parseInt(y))) + 1, Math.max(...points.map(([x, y]) => parseInt(x))) + 1];
+let [height, width] = [
+  Math.max(...points.map(([_x, y]) => parseInt(y))) + 1,
+  Math.max(...points.map(([x, _y]) => parseInt(x))) + 1,
+];
 
 height = height % 2 ? height : height + 1;
 width = width % 2 ? width : width + 1;
 
-let grid = Array.from(Array(height).values()).map((row) => Array(width).fill('.'));
+let grid = Array.from(Array(height).values()).map(() => Array(width).fill('.'));
 
 points.forEach(([x, y]) => (grid[y][x] = '#'));
 
@@ -31,7 +36,10 @@ function fold(grid, folds) {
             },
             [[], []]
           );
-    secondHalf = direction == 'y' ? secondHalf.reverse() : secondHalf.map((row) => row.reverse());
+    secondHalf =
+      direction == 'y'
+        ? secondHalf.reverse()
+        : secondHalf.map((row) => row.reverse());
     return (foldedArray = firstHalf.map((row, y) =>
       row.map((cell, x) => {
         return cell == '#' || secondHalf[y][x] == '#' ? '#' : '.';
@@ -55,17 +63,22 @@ function foldAndCount(grid, folds, foldCount) {
 }
 
 function translateFold(points, folds) {
-    console.log('Folds to Perform:', folds.length);
+  console.log('Folds to Perform:', folds.length);
   points = folds.reduce((points, instruction) => {
     let [direction, value] = instruction.split(' ').at(-1).split('=');
     return points.map(([x, y]) => {
-      if (direction == 'x') return [(x > value ? Math.abs(x - value * 2) : x), y];
-      return [x, (y > value ? Math.abs(y - value * 2) : y)];
+      if (direction == 'x') return [x > value ? Math.abs(x - value * 2) : x, y];
+      return [x, y > value ? Math.abs(y - value * 2) : y];
     });
   }, points);
 
-  let [height, width] = [Math.max(...points.map(([x, y]) => parseInt(y))) + 1, Math.max(...points.map(([x, y]) => parseInt(x))) + 1];
-  let grid = Array.from(Array(height).values()).map((row) => Array(width).fill('.'));
+  let [height, width] = [
+    Math.max(...points.map(([_x, y]) => parseInt(y))) + 1,
+    Math.max(...points.map(([x, _y]) => parseInt(x))) + 1,
+  ];
+  let grid = Array.from(Array(height).values()).map(() =>
+    Array(width).fill('.')
+  );
   points.forEach(([x, y]) => (grid[y][x] = '#'));
 
   return grid;
@@ -76,16 +89,16 @@ console.log('Task1:', foldAndCount(grid, folds, 1));
 
 // Task 2: Get Letters from output
 
-console.time('Array')
+console.time('Array');
 console.log(
   'Task2 (2d Array):',
   fold(grid, folds).map((row) => row.join(''))
 );
-console.timeEnd('Array')
+console.timeEnd('Array');
 
-console.time('Translate')
+console.time('Translate');
 console.log(
   'Task2 (Translate):',
   translateFold(points, folds).map((row) => row.join(''))
 );
-console.timeEnd('Translate')
+console.timeEnd('Translate');

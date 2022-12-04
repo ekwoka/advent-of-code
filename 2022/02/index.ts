@@ -8,19 +8,7 @@ const typeMap = {
   C: 3, // Scissors
   X: 1,
   Y: 2,
-  Z: 3
-};
-
-const resultMap = {
-  1: 'You Lose',
-  2: 'You Draw',
-  3: 'You Win'
-};
-
-const signMap = {
-  1: 'Rock',
-  2: 'Paper',
-  3: 'Scissors'
+  Z: 3,
 };
 
 const rounds: number[][] = input

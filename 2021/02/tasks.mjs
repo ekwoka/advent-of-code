@@ -18,26 +18,26 @@ function task2(commands) {
         return {
           horizontal: horizontal + value,
           depth: depth + aim * value,
-          aim
+          aim,
         };
       if (command === 'up')
         return {
           horizontal,
           depth,
-          aim: aim - value
+          aim: aim - value,
         };
       if (command === 'down')
         return {
           horizontal,
           depth,
-          aim: aim + value
+          aim: aim + value,
         };
       console.log('input error');
     },
     {
       horizontal: 0,
       depth: 0,
-      aim: 0
+      aim: 0,
     }
   );
 }

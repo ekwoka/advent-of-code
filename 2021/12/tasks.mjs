@@ -1,11 +1,5 @@
 import input from './input.mjs';
 
-// const input = ['start-A','start-b','A-c','A-b','b-d','A-end','b-end'];
-
-const inputB = ['dc-end','HN-start','start-kj','dc-start','dc-HN','LN-dc','HN-end','kj-sa','kj-HN','kj-dc']
-
-const inputC = ['fs-end','he-DX','fs-he','start-DX','pj-DX','end-zg','zg-sl','zg-pj','pj-he','RW-he','fs-DX','pj-RW','zg-RW','start-pj','he-WI','zg-he','pj-fs','start-RW'];
-
 function mapConnections(input) {
   const connections = {};
   input.forEach((connection) => {
@@ -26,7 +20,12 @@ function findPaths(input, allowMultiple) {
     const currentPath = queue.pop();
     const currentNode = currentPath.at(-1);
     connections[currentNode].forEach((nextNode) => {
-      if (isLowerCase(nextNode) && currentPath.includes(nextNode) && (!allowMultiple || hasTwoVisits(currentPath))) return;
+      if (
+        isLowerCase(nextNode) &&
+        currentPath.includes(nextNode) &&
+        (!allowMultiple || hasTwoVisits(currentPath))
+      )
+        return;
       if (nextNode === 'end') return completed.push([...currentPath, nextNode]);
       queue.push([...currentPath, nextNode]);
     });
@@ -35,7 +34,7 @@ function findPaths(input, allowMultiple) {
 }
 
 function hasTwoVisits(path) {
-    const onlySmallCaves = path.filter(node => isLowerCase(node));
+  const onlySmallCaves = path.filter((node) => isLowerCase(node));
   return new Set(onlySmallCaves).size !== onlySmallCaves.length;
 }
 
