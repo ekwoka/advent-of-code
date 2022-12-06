@@ -1,3 +1,13 @@
+/**
+ * --- Day 5: Supply Stacks ---
+ * Part 1: 00:27:14   4815
+ * Part 2: 00:29:53   4186
+ *
+ * Input is an image of the initial stacks of crates, followed by a list of actions to take moving items around among the stacks.
+ *
+ * Part 1 involves moving one item at a time, while Part 2 is able to move all the items in an action at once
+ */
+
 import { readFile } from 'node:fs/promises';
 
 const input: string = await readFile('input.txt', 'utf-8');

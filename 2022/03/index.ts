@@ -1,7 +1,14 @@
+/**
+ * --- Day 3: Rucksack Reorganization ---
+ * Part 1: 00:18:54   6815
+ * Part 2: 00:26:36   5696
+ */
 import { readFile } from 'node:fs/promises';
 
+// Input consists of strings representing the items in a sack being carried by an elf. Every character represents an item type.
 const input: string = await readFile('input.txt', 'utf-8');
 
+// Part 1 consists of finding items that appear in both the first and second half of a single sacks item list (representing multiple compartments in the sack)
 const splitInHalf = (input: string) => {
   const half = input.length / 2;
   return [input.slice(0, half), input.slice(half)];
@@ -22,6 +29,7 @@ const chunkArray = <T>(arr: T[], maxSize: number): T[][] => {
   return output;
 };
 
+// Part 2 consists of finding items that appear in all 3 sacks of a group (every 3 lines is a new group)
 const getBadges = (sacks: string[][]) => {
   const groups = chunkArray(
     sacks.map((comps) => comps.join('')),
@@ -33,6 +41,7 @@ const getBadges = (sacks: string[][]) => {
 const getDuplicates = (sacks: string[][]) =>
   sacks.map((sack) => getDuplicateItem(sack[0], sack[1]));
 
+// Items are assigned priorities, which are used to calculate the final answer, by adding up the priority scores of all items
 const priorities = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 const getPriority = (item: string) => priorities.indexOf(item) + 1;
