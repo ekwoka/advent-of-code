@@ -4,7 +4,7 @@
 
 Scores:
 
-![](https://img.shields.io/badge/2022%20📅-blue) ![](https://img.shields.io/badge/stars%20⭐-42-yellow)
+![](https://img.shields.io/badge/2022%20📅-blue) ![](https://img.shields.io/badge/stars%20⭐-44-yellow)
 
 ![](https://img.shields.io/badge/2021%20📅-blue) ![](https://img.shields.io/badge/stars%20⭐-36-yellow)
 
