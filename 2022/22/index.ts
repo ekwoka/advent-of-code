@@ -1,3 +1,9 @@
+/**
+ * --- Day 22: Monkey Map ---
+ * Part 1: 02:05:19   3287
+ * Part 2: 07:39:30   2830
+ */
+
 import { readFile } from 'node:fs/promises';
 
 const input: string = await readFile('input.txt', 'utf8');
