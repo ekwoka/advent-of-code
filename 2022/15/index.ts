@@ -24,7 +24,7 @@ const sensors = input
     return { sX, sY, bX, bY, r: getManhattenDistance([sX, sY], [bX, bY]) };
   });
 
-type Sensor = typeof sensors[0];
+type Sensor = (typeof sensors)[0];
 
 const sensorSpaces = new Set(sensors.map(({ sX, sY }) => `${sX},${sY}`));
 const beaconSpaces = new Set(sensors.map(({ bX, bY }) => `${bX},${bY}`));

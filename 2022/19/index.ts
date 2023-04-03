@@ -30,8 +30,8 @@ const blueprints = input.split('\n').map((line) => {
         return [type, costs];
       })
   ) as {
-    [key in typeof robotTypes[number]]: {
-      [key in typeof robotTypes[number]]: number;
+    [key in (typeof robotTypes)[number]]: {
+      [key in (typeof robotTypes)[number]]: number;
     };
   };
   return { id, robotCosts };
@@ -48,18 +48,18 @@ const getBestBlueprint = (totalTime: number, blueprintLimit?: number) => {
         );
         return [type, maxOfType];
       })
-    ) as Record<typeof robotTypes[number], number>;
+    ) as Record<(typeof robotTypes)[number], number>;
     // If all ore are over the maximum needed to build a robot, then we HAVE to build a robot.
     const allOreOverMaximum = (
-      inventory: Record<typeof robotTypes[number], number>
+      inventory: Record<(typeof robotTypes)[number], number>
     ) =>
       Object.entries(inventory).every(
         ([type, count]) => count >= maximumOfEachRobot[type] && type !== 'geode'
       );
     // Get the list of robots that can be built with the current inventory
     const getAffordableBot = (
-      inventory: Record<typeof robotTypes[number], number>,
-      currentBots: Record<typeof robotTypes[number], number>
+      inventory: Record<(typeof robotTypes)[number], number>,
+      currentBots: Record<(typeof robotTypes)[number], number>
     ) =>
       Object.entries(blueprint.robotCosts).filter(
         ([type, cost]) =>
@@ -67,7 +67,9 @@ const getBestBlueprint = (totalTime: number, blueprintLimit?: number) => {
           Object.entries(cost).every(
             ([material, value]) => inventory[material] >= value
           )
-      ) as Array<[typeof robotTypes[number], typeof blueprint.robotCosts.ore]>;
+      ) as Array<
+        [(typeof robotTypes)[number], typeof blueprint.robotCosts.ore]
+      >;
     // Our queue we will work through containing all the state
     const bfsqueue: Parameters<typeof step>[] = [
       [
@@ -82,9 +84,9 @@ const getBestBlueprint = (totalTime: number, blueprintLimit?: number) => {
       maxThusFar = Math.max(maxThusFar, val);
     };
     const step = (
-      inventory: Record<typeof robotTypes[number], number>,
-      currentBots: Record<typeof robotTypes[number], number>,
-      cantBuy: Array<typeof robotTypes[number]>,
+      inventory: Record<(typeof robotTypes)[number], number>,
+      currentBots: Record<(typeof robotTypes)[number], number>,
+      cantBuy: Array<(typeof robotTypes)[number]>,
       timeLeft: number
     ): void => {
       // If we have no time left, we can't do anything
@@ -134,7 +136,7 @@ const getBestBlueprint = (totalTime: number, blueprintLimit?: number) => {
                 oreType,
                 oreCount - (cost[oreType] ?? 0),
               ])
-            ) as Record<typeof robotTypes[number], number>;
+            ) as Record<(typeof robotTypes)[number], number>;
             return [
               inventoryAfterBuild,
               { ...currentBots, [type]: currentBots[type] + 1 },
