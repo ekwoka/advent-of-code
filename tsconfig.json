@@ -1,0 +1,12 @@
+{
+  "exclude": ["**/node_modules", "scripts"],
+  "compilerOptions": {
+    "types": ["vitest/importMeta", "vitest/globals", "bun-types"],
+    "allowJs": false,
+    "declaration": true,
+    "declarationMap": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "ESNext"
+  }
+}
