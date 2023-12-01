@@ -6,7 +6,7 @@ export default {
     'cdylib',
     '/Users/claire/git/advent-of-code/2023/01/main.rs',
     '--out-dir',
-    'build/main.rs',
+    'target/2023-01.rs',
   ],
   outDir: 'target/2023-01.rs',
   symbols: {
