@@ -40,7 +40,7 @@ const partTwoRegex = makeDigitRegex(
 export const partTwo = (input: AOCInput): number => {
   return input
     .lines()
-    .filter((line) => line.replaceAll(' ', '').length > 0)
+    .filter((line) => Boolean(line.length))
     .map((line) => line.match(partTwoRegex))
     .map(([_, first, second = first]) =>
       Number(
