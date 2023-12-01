@@ -1,6 +1,5 @@
 #!/usr/bin/env rust-script
 use std::fs;
-use std::str::Chars;
 
 fn part_one(contents: &str) -> i32 {
   contents
@@ -15,26 +14,21 @@ fn part_one(contents: &str) -> i32 {
 }
 
 fn part_two(contents: &str) -> i32 {
-
   contents
         .lines()
-        .map(|line| DecodedNumber::from(line).0
+        .map(|line| decode_number(line)
         ).sum::<i32>()
 }
-const NUMBER_PATTERNS: [&str;19] = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
-#[derive(Debug)]
-struct DecodedNumber(i32);
-impl From<&str> for DecodedNumber {
-  fn from(str: &str) -> Self {
 
+const NUMBER_PATTERNS: [&str;19] = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+fn decode_number(str: &str) -> i32 {
     let mut contained_number_strings = NUMBER_PATTERNS.iter().flat_map(|pattern| [str.find(pattern).map(|idx| (idx, pattern)),str.rfind(pattern).map(|idx| (idx, pattern))]).filter_map(|ptrn| ptrn).collect::<Vec<_>>();
     contained_number_strings.sort_by(|(idx_a, _), (idx_b, _)| idx_a.cmp(idx_b));
     let mut contained_numbers = contained_number_strings.iter().map(|(_, pattern)| to_number_string(pattern));
     let first = contained_numbers.next().unwrap_or("0");
     let last = contained_numbers.last().unwrap_or(first);
-    DecodedNumber(format!("{}{}", first, last).parse::<i32>().expect("Should be able to parse to number"))
+    format!("{}{}", first, last).parse::<i32>().expect("Should be able to parse to number")
   }
-}
 
 fn to_number_string(str: &str) -> &str {
   match str {
@@ -57,9 +51,7 @@ fn main() {
   println!("Part One Test: {}",part_one_example());
   println!("Part One: {}", part_one(&input));
   println!("Part Two Test: {}",part_two_example());
-  let part_two_result = part_two(&input);
-  assert!(part_two_result > 54819);
-  println!("Part Two: {}", part_two_result);
+  println!("Part Two: {}", part_two(&input));
 }
 
 fn part_one_example()->i32 {
