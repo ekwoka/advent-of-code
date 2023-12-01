@@ -33,7 +33,7 @@ export const getFromCache = async (year: Year, day: Day): Promise<string> => {
   return cacheFile.text();
 };
 
-class AOCInput extends String {
+export class AOCInput extends String {
   constructor(value: string) {
     super(value);
   }
