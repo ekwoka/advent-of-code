@@ -11,6 +11,9 @@ dependencies:
   '@ekwoka/rust-ts':
     specifier: ^0.0.5
     version: 0.0.5
+  hyperimport:
+    specifier: ^0.2.0
+    version: 0.2.0
 
 devDependencies:
   '@typescript-eslint/eslint-plugin':
@@ -1861,6 +1864,14 @@ packages:
     engines: { node: '>=14' }
     hasBin: true
     dev: true
+
+  /hyperimport@0.2.0:
+    resolution:
+      {
+        integrity: sha512-shqPB/YmBVW3cqtbu73dMQDU0PG1p1yPhIgIs/VpovGl8n/QsAH67ABVuSE3ccTW38Luv+GksYPMULBzqEXjzw==,
+      }
+    hasBin: true
+    dev: false
 
   /ignore@5.2.1:
     resolution:

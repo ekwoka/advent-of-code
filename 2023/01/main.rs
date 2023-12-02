@@ -7,6 +7,7 @@
  * Things got especially messy in part two when the logic wasn't quite as simple
  */
 use std::fs;
+use std::os::raw::c_char;
 
 /*
  * Part One:
@@ -22,7 +23,12 @@ fn isolate_number(line: String) -> i32 {
         .parse::<i32>()
         .expect("Should be able to parse to number")
 }
-fn part_one(contents: &str) -> i32 {
+
+#[no_mangle]
+pub extern "C" fn part_one(cstring: *const c_char) -> i32 {
+  let contents: &str = unsafe {
+        std::ffi::CStr::from_ptr(cstring).to_str().unwrap()
+    };
     contents
         .lines()
         .map(String::from)
@@ -60,7 +66,12 @@ fn swap_number_strings(str: &str) -> String {
         })
 }
 
-fn part_two(contents: &str) -> i32 {
+#[no_mangle]
+pub extern "C" fn part_two(cstring: *const c_char) -> i32 {
+
+  let contents: &str = unsafe {
+        std::ffi::CStr::from_ptr(cstring).to_str().unwrap()
+    };
     contents
         .lines()
         .map(swap_number_strings)
@@ -68,16 +79,8 @@ fn part_two(contents: &str) -> i32 {
         .sum::<i32>()
 }
 
-fn main() {
-    let input = fs::read_to_string("./utils/.cache/2023-1.txt").expect("Input should exist");
-    println!("Part One Test: {}", part_one_example());
-    println!("Part One: {}", part_one(&input));
-    println!("Part Two Test: {}", part_two_example());
-    println!("Part Two: {}", part_two(&input));
-}
-
 /* Tests to assert the code works for the sample code */
-fn part_one_example() -> i32 {
+/* fn part_one_example() -> i32 {
     let contents = "1abc2
 pqr3stu8vwx
 a1b2c3d4e5f
@@ -99,3 +102,4 @@ zoneight234
     assert!(outcome == 281);
     outcome
 }
+ */
