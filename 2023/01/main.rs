@@ -6,7 +6,6 @@
  * A fairly simple problem to start with. Most of my issues (on top of starting late) were from lack of familiarity with Rust.
  * Things got especially messy in part two when the logic wasn't quite as simple
  */
-use std::fs;
 use std::os::raw::c_char;
 
 /*

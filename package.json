@@ -6,6 +6,7 @@
     "lint:prettier": "prettier --write ."
   },
   "devDependencies": {
+    "@types/node": "20.10.2",
     "@typescript-eslint/eslint-plugin": "6.13.1",
     "@typescript-eslint/parser": "6.13.1",
     "bun-types": "1.0.14",
@@ -44,7 +45,7 @@
     }
   },
   "dependencies": {
-    "@ekwoka/rust-ts": "^0.0.5",
-    "hyperimport": "^0.2.0"
+    "@ekwoka/rust-ts": "0.0.5",
+    "hyperimport": "0.2.0"
   }
 }
