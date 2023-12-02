@@ -2,27 +2,56 @@
 //! [dependencies]
 //! regex = "1.10.2"
 //! ```
+
+/**
+ * --- Day 2: Cube Conundrum ---
+ * Part 1: 00:47:16  9912
+ * Part 2: 00:50:33  8786
+ * Here, we are figuring out potention numbers of cubes in a bag
+ * Based on specific handfuls of cubes shown from the bag
+ */
 const INPUT: &str = include_str!("../../utils/.cache/2023-2.txt");
 use regex::Regex;
 use std::cmp::max;
 
+/**
+ * Each game has a number of cubes of each color, or at least, a minimum number of cubes of each color.
+ */
 #[derive(Debug)]
 struct GameData {
-    game: i32,
+    id: i32,
     red: i32,
     green: i32,
     blue: i32,
 }
+
+/**
+ * For Part 2 we turn each games minimum cube count into a power level by multiplying them together
+ */
 impl GameData {
     fn to_power(self) -> i32 {
         self.red * self.green * self.blue
     }
 }
+
+/**
+ * This is our handling of the text input into our cube numbers
+ * We just find the maximum number of cubes of each color
+ * shown from among all the draws
+ * Example:
+ * Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
+ * GameData {
+ *   id: 1,
+ *   red: 4,
+ *   green: 2,
+ *   blue: 6,
+ * }
+ */
 impl From<&str> for GameData {
     fn from(line: &str) -> Self {
-        let game_regexp = Regex::new(r"Game (\d+):").unwrap();
+        let id_regexp = Regex::new(r"Game (\d+):").unwrap();
         let cube_regexp = Regex::new(r"(\d+) (red|blue|green)").unwrap();
-        let game_id = game_regexp
+        let game_id = id_regexp
             .captures(line)
             .unwrap()
             .get(1)
@@ -32,7 +61,7 @@ impl From<&str> for GameData {
             .unwrap();
         cube_regexp.captures_iter(line).fold(
             GameData {
-                game: game_id,
+                id: game_id,
                 red: 0,
                 green: 0,
                 blue: 0,
@@ -59,6 +88,10 @@ impl From<&str> for GameData {
         )
     }
 }
+
+/**
+ * Part One requires comparing numbers of cubes against a limit
+ */
 impl PartialEq for GameData {
     fn eq(&self, other: &Self) -> bool {
         self.red == other.red && self.green == other.green && self.blue == other.blue
@@ -75,24 +108,35 @@ impl PartialOrd for GameData {
         Some(self.eq(other).cmp(&true))
     }
 }
-const RED_LIMIT: i32 = 12;
-const GREEN_LIMIT: i32 = 13;
-const BLUE_LIMIT: i32 = 14;
+
+/**
+ * Part One:
+ * We are given a list of games, and need to find which games could not
+ * possibly have had only this number of cubes
+ * Simple map over the input, create the games, compare against our limits, and sum the ids
+ */
 const GAME_LIMITS: GameData = GameData {
-    game: 0,
-    red: RED_LIMIT,
-    green: GREEN_LIMIT,
-    blue: BLUE_LIMIT,
+    id: 0,
+    red: 12,
+    green: 13,
+    blue: 14,
 };
 fn part_one(input: &str) -> i32 {
     input
         .lines()
         .map(GameData::from)
         .filter(|game| game <= &GAME_LIMITS)
-        .map(|game| game.game)
+        .map(|game| game.id)
         .sum()
 }
 
+/**
+ * Part Two:
+ * We are given a list of games, and need to find the total power level of all the games
+ * Simply map over the input, create the games, find the power level, and sum the power levels
+ * Overall, Part Two was very simple to go from how I implemented Part One.
+ * No gotchas or catches with a naive approach.
+ */
 fn part_two(input: &str) -> i32 {
     input
         .lines()
