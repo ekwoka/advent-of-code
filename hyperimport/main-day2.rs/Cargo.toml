@@ -1,5 +1,5 @@
 [package]
-name = "day-02"
+name = "advent-of-code"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 regex = "1.10.2"
 
-[[bin]]
-name = "day-02"
-path = "main-day2.rs"
+[lib]
+name = "mainday2"
+crate-type = ["cdylib"]
+path = "../../2023/02/main-day2.rs"

@@ -1,8 +1,3 @@
-//! ```cargo
-//! [dependencies]
-//! regex = "1.10.2"
-//! ```
-
 /**
  * --- Day 2: Cube Conundrum ---
  * Part 1: 00:47:16  9912
@@ -10,9 +5,9 @@
  * Here, we are figuring out potention numbers of cubes in a bag
  * Based on specific handfuls of cubes shown from the bag
  */
-const INPUT: &str = include_str!("../../utils/.cache/2023-2.txt");
 use regex::Regex;
 use std::cmp::max;
+use std::os::raw::c_char;
 
 /**
  * Each game has a number of cubes of each color, or at least, a minimum number of cubes of each color.
@@ -121,7 +116,11 @@ const GAME_LIMITS: GameData = GameData {
     green: 13,
     blue: 14,
 };
-fn part_one(input: &str) -> i32 {
+#[no_mangle]
+pub extern "C" fn part_one(cstring: *const c_char) -> i32 {
+  let input: &str = unsafe {
+        std::ffi::CStr::from_ptr(cstring).to_str().unwrap()
+    };
     input
         .lines()
         .map(GameData::from)
@@ -137,32 +136,14 @@ fn part_one(input: &str) -> i32 {
  * Overall, Part Two was very simple to go from how I implemented Part One.
  * No gotchas or catches with a naive approach.
  */
-fn part_two(input: &str) -> i32 {
+#[no_mangle]
+pub extern "C" fn part_two(cstring: *const c_char) -> i32 {
+  let input: &str = unsafe {
+        std::ffi::CStr::from_ptr(cstring).to_str().unwrap()
+    };
     input
         .lines()
         .map(GameData::from)
         .map(GameData::to_power)
         .sum()
-}
-
-pub fn main() {
-    part_one_test(PART_ONE_EXAMPLE);
-    part_two_test(PART_ONE_EXAMPLE);
-    println!("Part one: {}", part_one(INPUT));
-    println!("Part two: {}", part_two(INPUT));
-}
-
-const PART_ONE_EXAMPLE: &str = "Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
-Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue
-Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
-Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
-Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green";
-
-fn part_one_test(contents: &str) {
-    let outcome = part_one(contents);
-    assert!(outcome == 8);
-}
-fn part_two_test(contents: &str) {
-    let outcome = part_two(contents);
-    assert!(outcome == 2286);
 }

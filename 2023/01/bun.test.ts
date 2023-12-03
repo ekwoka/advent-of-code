@@ -1,5 +1,5 @@
 import { partOne, partOneStream, partTwo, partTwoStream } from '.';
-import { part_one, part_two } from './main.rs';
+import { part_one, part_two } from './main-day1.rs';
 import { AOCInput, getInput } from '../../utils';
 
 export const toStr = (input: string) => new TextEncoder().encode(input);

@@ -1,4 +1,5 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-pnpm run precommit
+pnpm exec lint-staged --allow-empty
+bun test
