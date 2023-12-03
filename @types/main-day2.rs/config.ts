@@ -4,11 +4,11 @@ export default {
     'rustc',
     '--crate-type',
     'cdylib',
-    '/Users/claire/git/advent-of-code/2023/01/main.rs',
+    '/Users/claire/git/advent-of-code/2023/02/main-day2.rs',
     '--out-dir',
-    'target/2023-01.rs',
+    'build/main-day2.rs',
   ],
-  outDir: 'target/2023-01.rs',
+  outDir: 'build/main-day2.rs',
   symbols: {
     part_one: {
       args: [T.cstring],
