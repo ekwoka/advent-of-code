@@ -17,16 +17,12 @@ pub extern "C" fn part_one(cstring: *const c_char) -> i32 {
         .map(|card| {
           let number_regex = Regex::new(r"\d+").unwrap();
           let winning_numbers = number_regex.captures_iter(card[0]).map(|cap| cap[0].parse::<i32>().unwrap()).collect::<Vec<i32>>();
-          number_regex.captures_iter(card[1]).map(|cap| cap[0].parse::<i32>().unwrap()).fold(0, |acc, number| {
-            if winning_numbers.contains(&number) {
+          number_regex.captures_iter(card[1]).map(|cap| cap[0].parse::<i32>().unwrap()).filter(|number| winning_numbers.contains(&number)).fold(0, |acc, number| {
               if acc == 0 {
                 1
               } else {
                 acc * 2
               }
-            } else {
-              acc
-            }
           })
         }).sum()
 }
