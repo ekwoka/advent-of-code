@@ -8,7 +8,7 @@ export default {
     '--target-dir',
     'build',
   ],
-  outDir: 'build/debug',
+  outDir: 'build',
   symbols: {
     part_one: {
       args: [T.cstring],
