@@ -55,12 +55,14 @@ type AllStrings = string | String;
 const chars = function* (str: AllStrings) {
   yield* str;
 };
-const splitBy = function* (str: AllStrings, separator: string) {
+const splitBy = function* (str: AllStrings, separator: string | RegExp) {
   let buffer = '';
+  const regex =
+    typeof separator === 'string' ? new RegExp(`${separator}$`) : separator;
   for (const char of str) {
     buffer += char;
-    if (buffer.endsWith(separator)) {
-      yield new AOCInput(buffer.slice(0, -separator.length));
+    if (regex.test(buffer)) {
+      yield new AOCInput(buffer.replace(regex, ''));
       buffer = '';
     }
   }
