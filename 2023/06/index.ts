@@ -6,56 +6,43 @@ import { AOCInput } from '../../utils';
 export const partOne = (input: AOCInput): number => {
   return input
     .lines()
-    .map((line) =>
-      line
-        .splitBy(' ')
-        .filter((part) => Boolean(part.length))
-        .map(Number)
-        .filter(Boolean),
-    )
+    .map((line) => line.splitBy(/\s+/).filter(testRegexp(/^\d+$/)).map(Number))
     .window(2)
     .map(([a, b]) => a.zip(b))
     .nth(0)
-    .map(([time, distance]) => {
-      let minHoldTime = 0;
-      while (minHoldTime * (time - minHoldTime) <= distance) minHoldTime += 5;
-      while (minHoldTime * (time - minHoldTime) > distance) minHoldTime--;
-      let maxHoldTime = time;
-      while (maxHoldTime * (time - maxHoldTime) <= distance) maxHoldTime -= 5;
-      while (maxHoldTime * (time - maxHoldTime) > distance) maxHoldTime++;
-      return [minHoldTime, maxHoldTime - 1];
-    })
+    .map(
+      ([time, distance]) =>
+        [
+          (time - Math.sqrt(time ** 2 - 4 * distance)) / 2,
+          (time + Math.sqrt(time ** 2 - 4 * distance)) / 2,
+        ].map((t, i) => (Number.isInteger(t) ? t - i : Math.floor(t))) as [
+          number,
+          number,
+        ],
+    )
     .map(([min, max]) => max - min)
     .reduce((a, b) => a * b, 1);
 };
 
-export const partTwo = (input: AOCInput): bigint => {
+export const partTwo = (input: AOCInput): number => {
   return input
     .lines()
-    .filter((line) => line.length > 0)
-    .map((line) =>
-      line
-        .splitBy(' ')
-        .filter((part) => Boolean(part.length))
-        .map(Number)
-        .filter(Boolean)
-        .map((num) => `${num}`)
-        .sum(),
-    )
+    .map((line) => line.splitBy(/\s+/).filter(testRegexp(/^\d+$/)).sum())
     .map(Number)
-    .map(BigInt)
     .window(2)
-    .map(([time, distance]) => {
-      let minHoldTime = 0n;
-      while (minHoldTime * (time - minHoldTime) <= distance)
-        minHoldTime += 100n;
-      while (minHoldTime * (time - minHoldTime) > distance) minHoldTime--;
-      let maxHoldTime = time;
-      while (maxHoldTime * (time - maxHoldTime) <= distance)
-        maxHoldTime -= 100n;
-      while (maxHoldTime * (time - maxHoldTime) > distance) maxHoldTime++;
-      return [minHoldTime, maxHoldTime - 1n];
-    })
+    .map(
+      ([time, distance]) =>
+        [
+          (time - Math.sqrt(time ** 2 - 4 * distance)) / 2,
+          (time + Math.sqrt(time ** 2 - 4 * distance)) / 2,
+        ].map((t, i) => (Number.isInteger(t) ? t - i : Math.floor(t))) as [
+          number,
+          number,
+        ],
+    )
     .flat()
     .reduce((min, max) => max - min);
 };
+
+const testRegexp = (regex: RegExp) => (str: AOCInput | string) =>
+  regex.test(str as string);

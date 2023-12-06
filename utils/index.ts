@@ -46,7 +46,7 @@ export class AOCInput extends String {
   lines() {
     return new RustIterator(splitBy(this, '\n'));
   }
-  splitBy(separator: string) {
+  splitBy(separator: string | RegExp) {
     return new RustIterator(splitBy(this, separator));
   }
 }
@@ -58,14 +58,20 @@ const chars = function* (str: AllStrings) {
 const splitBy = function* (str: AllStrings, separator: string | RegExp) {
   let buffer = '';
   const regex =
-    typeof separator === 'string' ? new RegExp(`${separator}$`) : separator;
+    typeof separator === 'string'
+      ? new RegExp(`${separator}$`)
+      : new RegExp(`${separator.source}$`);
+  let matched = false;
   for (const char of str) {
     buffer += char;
-    if (regex.test(buffer)) {
-      yield new AOCInput(buffer.replace(regex, ''));
-      buffer = '';
+    if (matched && !regex.test(buffer)) {
+      yield new AOCInput(buffer.slice(0, -1).replace(regex, ''));
+      buffer = char;
     }
+    matched = regex.test(buffer);
   }
+  if (matched) buffer = buffer.replace(regex, '');
+
   yield new AOCInput(buffer);
 };
 
