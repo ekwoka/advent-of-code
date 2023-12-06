@@ -2,6 +2,7 @@ import { AOCInput } from '../../utils';
 /**
  * --- Day 6: Wait For It ---
  */
+const { sqrt } = Math;
 
 export const partOne = (input: AOCInput): number => {
   return input
@@ -12,15 +13,8 @@ export const partOne = (input: AOCInput): number => {
     .nth(0)
     .map(
       ([time, distance]) =>
-        [
-          (time - Math.sqrt(time ** 2 - 4 * distance)) / 2,
-          (time + Math.sqrt(time ** 2 - 4 * distance)) / 2,
-        ].map((t, i) => (Number.isInteger(t) ? t - i : Math.floor(t))) as [
-          number,
-          number,
-        ],
+        time - toNextOdd(time - sqrt(time ** 2 - 4 * distance)),
     )
-    .map(([min, max]) => max - min)
     .reduce((a, b) => a * b, 1);
 };
 
@@ -32,17 +26,12 @@ export const partTwo = (input: AOCInput): number => {
     .window(2)
     .map(
       ([time, distance]) =>
-        [
-          (time - Math.sqrt(time ** 2 - 4 * distance)) / 2,
-          (time + Math.sqrt(time ** 2 - 4 * distance)) / 2,
-        ].map((t, i) => (Number.isInteger(t) ? t - i : Math.floor(t))) as [
-          number,
-          number,
-        ],
+        time - toNextOdd(time - sqrt(time ** 2 - 4 * distance)),
     )
-    .flat()
-    .reduce((min, max) => max - min);
+    .sum();
 };
 
 const testRegexp = (regex: RegExp) => (str: AOCInput | string) =>
   regex.test(str as string);
+
+const toNextOdd = (n: number) => (n | 0) + ((n & 1) ^ 1);

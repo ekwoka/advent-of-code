@@ -52,7 +52,7 @@ export class AOCInput extends String {
 }
 // eslint-disable-next-line @typescript-eslint/ban-types
 type AllStrings = string | String;
-const chars = function* (str: AllStrings) {
+const chars = function* <T extends AllStrings>(str: T) {
   yield* str;
 };
 const splitBy = function* (str: AllStrings, separator: string | RegExp) {
