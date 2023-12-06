@@ -5,7 +5,7 @@ export const getInput = async (year: Year, day: Day) => {
   return new AOCInput(input);
 };
 
-export const fetchInput = async (year: Year, day: Day) => {
+export const fetchInput = async (year: Year, day: Day): Promise<Response> => {
   const session = process.env.AOC_SESSION;
   if (!session) throw new Error('No session cookie provided in .env file');
   const response = await fetch(
@@ -18,7 +18,7 @@ export const fetchInput = async (year: Year, day: Day) => {
   );
   if (!response.ok)
     throw new Error(`Failed to fetch input for day ${day} of year ${year}`);
-  return response;
+  return response as Response;
 };
 
 export const getFromCache = async (year: Year, day: Day): Promise<string> => {
