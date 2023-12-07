@@ -62,8 +62,7 @@ const handToType = (hand: AOCInput, partTwo = false) => {
     .toIter()
     .enumerate()
     .reverse()
-    .filter(([_, cards]) => cards.length > 0)
-    .collect();
+    .filter(([_, cards]) => cards.length > 0);
   if (partTwo && hand.includes('J'))
     bestCount[0] += hand
       .chars()
