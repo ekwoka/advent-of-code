@@ -1,4 +1,3 @@
-import { part_one, part_two } from './main-day5.rs';
 import { AOCInput, getInput } from '../../utils';
 import { partOne, partTwo } from '.';
 
@@ -6,21 +5,21 @@ export const toStr = (input: string) => new TextEncoder().encode(input);
 
 describe('2023 Day 5', async () => {
   const input = await getInput(2023, 5);
-  describe.skip('in TypeScript', () => {
+  describe('in TypeScript', () => {
     it('Passes Part 1 Test', () => {
-      expect(partOne(new AOCInput(exampleInput))).toBe(0);
+      expect(partOne(new AOCInput(exampleInput))).toBe(35);
     });
     it('Passes Part 2 Test', () => {
-      expect(partTwo(new AOCInput(exampleInput))).toBe(0);
+      expect(partTwo(new AOCInput(exampleInput))).toBe(46);
     });
     it('Passes Part 1', () => {
-      expect(partOne(input)).toBe(0);
+      expect(partOne(input)).toBe(289863851);
     });
-    it('Passes Part 2', () => {
-      expect(partTwo(input)).toBe(0);
+    it.skip('Passes Part 2', () => {
+      expect(partTwo(input)).toBe(60568880);
     });
   });
-  describe.only('in Rust', () => {
+  describe.skip('in Rust', () => {
     it('Passes Part 1 Test', () => {
       expect(part_one(toStr(exampleInput))).toBe(0);
     });

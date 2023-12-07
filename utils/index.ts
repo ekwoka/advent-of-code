@@ -5,6 +5,25 @@ export const getInput = async (year: Year, day: Day) => {
   return new AOCInput(input);
 };
 
+Set.prototype.toIter =
+  Array.prototype.toIter =
+  Map.prototype.toIter =
+    function () {
+      return new RustIterator(this);
+    };
+
+declare global {
+  interface Set<T> {
+    toIter(): RustIterator<T>;
+  }
+  interface Array<T> {
+    toIter(): RustIterator<T>;
+  }
+  interface Map<K, V> {
+    toIter(): RustIterator<[K, V]>;
+  }
+}
+
 export const fetchInput = async (year: Year, day: Day): Promise<Response> => {
   const session = process.env.AOC_SESSION;
   if (!session) throw new Error('No session cookie provided in .env file');
@@ -46,33 +65,24 @@ export class AOCInput extends String {
   lines() {
     return new RustIterator(splitBy(this, '\n'));
   }
-  splitBy(separator: string | RegExp) {
+  splitBy(separator: string) {
     return new RustIterator(splitBy(this, separator));
   }
 }
 // eslint-disable-next-line @typescript-eslint/ban-types
 type AllStrings = string | String;
-const chars = function* <T extends AllStrings>(str: T) {
+const chars = function* (str: AllStrings) {
   yield* str;
 };
-const splitBy = function* (str: AllStrings, separator: string | RegExp) {
+const splitBy = function* (str: AllStrings, separator: string) {
   let buffer = '';
-  const regex =
-    typeof separator === 'string'
-      ? new RegExp(`${separator}$`)
-      : new RegExp(`${separator.source}$`);
-  let matched = false;
   for (const char of str) {
-    buffer += char;
-    if (matched && !regex.test(buffer)) {
-      yield new AOCInput(buffer.slice(0, -1).replace(regex, ''));
-      buffer = char;
-    }
-    matched = regex.test(buffer);
+    if (char === separator) {
+      yield new AOCInput(buffer);
+      buffer = '';
+    } else buffer += char;
   }
-  if (matched) buffer = buffer.replace(regex, '');
-
-  yield new AOCInput(buffer);
+  if (buffer.length > 0) yield new AOCInput(buffer);
 };
 
 type Year = 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023;

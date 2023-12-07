@@ -7,7 +7,7 @@ const { sqrt } = Math;
 export const partOne = (input: AOCInput): number => {
   return input
     .lines()
-    .map((line) => line.splitBy(/\s+/).filter(testRegexp(/^\d+$/)).map(Number))
+    .map((line) => line.splitBy(' ').filter(testRegexp(/^\d+$/)).map(Number))
     .window(2)
     .map(([a, b]) => a.zip(b))
     .nth(0)

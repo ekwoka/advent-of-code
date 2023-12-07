@@ -9,8 +9,8 @@ overrides:
 
 dependencies:
   '@ekwoka/rust-ts':
-    specifier: 0.0.5
-    version: 0.0.5
+    specifier: file:../rust-ts
+    version: file:../rust-ts
   hyperimport:
     specifier: 0.2.0
     version: 0.2.0
@@ -67,13 +67,6 @@ packages:
       }
     engines: { node: '>=0.10.0' }
     dev: true
-
-  /@ekwoka/rust-ts@0.0.5:
-    resolution:
-      {
-        integrity: sha512-PvWNlz0G0ToOMx2IqmvrftdAKfT6v7TeXAQa2xgXJ/5yM3Mq2DIuE4MHd0GFnIWld4VrzFBVGXkIdW5qBQV+6g==,
-      }
-    dev: false
 
   /@esbuild/android-arm64@0.19.8:
     resolution:
@@ -3601,3 +3594,8 @@ packages:
       }
     engines: { node: '>=12.20' }
     dev: true
+
+  file:../rust-ts:
+    resolution: { directory: ../rust-ts, type: directory }
+    name: '@ekwoka/rust-ts'
+    dev: false

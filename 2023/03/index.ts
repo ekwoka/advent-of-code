@@ -1,4 +1,3 @@
-import { RustIterator } from '@ekwoka/rust-ts';
 import { AOCInput } from '../../utils';
 
 export const partOne = (input: AOCInput) => {
@@ -67,12 +66,3 @@ const collectNumbersAtCoord = (
   y: number,
 ): number[] =>
   offsets.map(([xO, yO]) => coords[y + yO]?.[x + xO]).filter(Boolean);
-Set.prototype.toIter = function () {
-  return new RustIterator(this);
-};
-
-declare global {
-  interface Set<T> {
-    toIter(): RustIterator<T>;
-  }
-}

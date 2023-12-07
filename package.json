@@ -44,7 +44,7 @@
     }
   },
   "dependencies": {
-    "@ekwoka/rust-ts": "0.0.5",
+    "@ekwoka/rust-ts": "file:../rust-ts",
     "hyperimport": "0.2.0"
   }
 }
