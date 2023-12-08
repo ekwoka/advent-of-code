@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 /**
  * Going to try to tackle this day in just the Type System
  * No "runtime" javascript, just Types
