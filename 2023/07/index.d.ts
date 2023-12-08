@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { Add, EQ, Mult, Sum } from './math';
 import { Split, SplitAll, ToNumber } from './transform';
 import { LessThan } from './compare';

@@ -31,6 +31,7 @@ export const fetchInput = async (year: Year, day: Day): Promise<Response> => {
     `https://adventofcode.com/${year}/day/${day}/input`,
     {
       headers: {
+        'User-Agent': 'github.com/ekwoka/advent-of-code',
         cookie: `session=${session}`,
       },
     },
