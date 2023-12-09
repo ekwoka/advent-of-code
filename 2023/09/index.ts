@@ -22,11 +22,11 @@ export const partTwo = (input: AOCInput): number => {
 };
 
 const reduceHistorySteps = (history: [number[]]): number[] => {
-  const [_, ...step] = history[0].toIter().scan((prev, curr) => {
-    const diff = curr - prev[0];
-    prev[0] = curr;
-    return diff;
-  }, 0);
+  const step = history[0]
+    .toIter()
+    .window(2)
+    .map(([prev, curr]) => curr - prev)
+    .collect();
 
   return (history[0] = step);
 };
