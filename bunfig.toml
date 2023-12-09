@@ -1,8 +1,3 @@
-preload = ["./node_modules/hyperimport/preload.ts"]
-
-[test]
-preload = ["./node_modules/hyperimport/preload.ts"]
-
 [hyperimport]
 loaders = ["rs"]
 debug = true
