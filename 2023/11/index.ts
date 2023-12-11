@@ -1,4 +1,3 @@
-import { range } from '@ekwoka/rust-ts';
 import { AOCInput } from '../../utils';
 
 const { abs } = Math;
@@ -10,26 +9,34 @@ export const solveWithExpansionFactor = (
   input: AOCInput,
   factor = 2,
 ): number => {
-  const emptyY = input
+  const [emptyX, emptyY] = input
     .lines()
     .enumerate()
-    .filter(([_, line]) => !line.includes('#'))
-    .map(([y]) => y)
-    .sort()
-    .reverse()
-    .collect();
-  const emptyX = input
-    .lines()
-    .fold(
-      (acc, line) => {
-        return acc.filter((i) => line[i] !== '#');
-      },
-      range(0, input.lines().nth(0).length - 1),
+    .flatMap(([y, line]) =>
+      line
+        .chars()
+        .enumerate()
+        .map(([x, ch]) => [x, y, ch]),
     )
-    .map((x) => x)
-    .sort()
-    .reverse()
-    .collect();
+    .fold(
+      (acc, [x, y, ch]) => {
+        acc[0][x] ??= x;
+        acc[1][y] ??= y;
+        if (ch === '#') {
+          acc[0][x] = false;
+          acc[1][y] = false;
+        }
+        return acc;
+      },
+      [[], []] as [(number | false)[], (number | false)[]],
+    )
+    .map(
+      (idxs) =>
+        idxs
+          .filter((idx) => typeof idx === 'number')
+          .sort()
+          .reverse() as number[],
+    );
   const galaxies = input
     .lines()
     .enumerate()
