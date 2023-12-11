@@ -1,214 +1,9 @@
 import { RustIterator, range } from '@ekwoka/rust-ts';
 import { AOCInput } from '../../utils';
-/**
- * --- Day 10: Pipe Maze ---
- */
-export const partOne = (input: AOCInput): number => {
-  const grid = input
-    .lines()
-    .filter((line) => line.length > 0)
-    .map((line) => line.chars().map(ConnectionsFromChar).collect())
-    .collect();
-  const start = getStartPosition(grid);
-  const stack = [[start, Connections.Start, 0]] as [
-    Coords,
-    Connections,
-    number,
-  ][];
-  const visited = new Set<string>();
-  while (stack.length) {
-    const [here, connections, steps] = stack.pop()!;
-    if (here[0] === start[0] && here[1] === start[1] && steps)
-      return Math.ceil(steps / 2);
-    if (connections !== Connections.Start) visited.add(here.toString());
-    ConnectionsToOffsets(connections)
-      .map(([x, y, neededconnection]) => [
-        here[0] + x,
-        here[1] + y,
-        grid[here[1] + y]?.[here[0] + x],
-        neededconnection,
-      ])
-      .filter(([_, __, connections, neededconnection]) =>
-        Boolean(connections & neededconnection),
-      )
-      .filter(([x, y]) => !visited.has([x, y].toString()))
-      .forEach(([x, y, connections, neededconnection]) =>
-        stack.push([[x, y], connections ^ neededconnection, steps + 1]),
-      );
-  }
-  grid.forEach((row, y) =>
-    console.log(
-      row.map((c, x) => (visited.has([x, y].toString()) ? 'X' : '.')).join(''),
-    ),
-  );
-  return 0;
-};
 
-const logWith = (prefix: string) => (v) => console.log(prefix, v);
+const { floor } = Math;
 
 type Coords = [number, number];
-
-const getStartPosition = (grid: Connections[][]): Coords => {
-  const offset = grid
-    .toIter()
-    .flatMap((row) => row.toIter())
-    .findIndex((connections) => connections === Connections.Start);
-  const x = offset % grid[0].length;
-  const y = Math.floor(offset / grid[0].length);
-  return [x, y];
-};
-
-export const partTwo = (input: AOCInput): number => {
-  const grid = input
-    .lines()
-    .filter((line) => line.length > 0)
-    .map((line) => line.chars().map(ConnectionsFromChar).collect())
-    .collect();
-  console.log(grid);
-  const start = getStartPosition(grid);
-  const stack = [[start, Connections.Start, 0]] as [
-    Coords,
-    Connections,
-    number,
-  ][];
-  const visited = new Set<string>();
-  const PathConnections = new Map<string, [Coords, Connections]>();
-  while (stack.length) {
-    const [here, connections, steps] = stack.pop()!;
-    console.log('checking position', here, connections, steps);
-    if (here[0] === start[0] && here[1] === start[1] && steps) break;
-    if (connections !== Connections.Start) visited.add(here.toString());
-    ConnectionsToOffsets(connections)
-      .inspect(logWith('offset: '))
-      .map(([x, y, neededconnection]) => [
-        here[0] + x,
-        here[1] + y,
-        grid[here[1] + y]?.[here[0] + x],
-        neededconnection,
-      ])
-      .inspect(logWith('new position: '))
-      .filter(([_, __, connections, neededconnection]) =>
-        Boolean(connections & neededconnection),
-      )
-      .filter(([x, y]) => !visited.has([x, y].toString()))
-      .inspect(logWith('valid: '))
-      .forEach(([x, y, connections, neededconnection]) => {
-        PathConnections.set([x, y].toString(), [here, neededconnection]);
-        stack.push([[x, y], connections ^ neededconnection, steps + 1]);
-      });
-  }
-  grid.forEach((row, y) =>
-    console.log(
-      row.map((c, x) => (visited.has([x, y].toString()) ? 'X' : '.')).join(''),
-    ),
-  );
-  const [path, fillStack] = walkPath(PathConnections, start).fold(
-    (acc, [next, dir]) => {
-      acc[0].add(next.toString());
-      SingleConnectionOffsets[dir << 1 || Connections.North] &&
-        acc[1].add(
-          applyOffset(
-            next,
-            SingleConnectionOffsets[dir >> 1 || Connections.West],
-          ).toString(),
-        );
-      return acc;
-    },
-    [new Set<string>([start.toString()]), new Set<string>()] as const,
-  );
-  console.log(path);
-  Array.from({ length: grid.length }, (_, y) =>
-    Array.from(
-      { length: y === 0 || y === grid.length - 1 ? grid[0].length : 2 },
-      (_, x) =>
-        [
-          y === 0 || y === grid.length - 1 ? x : x * (grid[0].length - 1),
-          y,
-        ] as Coords,
-    ),
-  )
-    .flat()
-    .filter(([x, y]) => !path.has([x, y].toString()))
-    .forEach((next) => fillStack.add(next.toString()));
-  path.forEach((next) => fillStack.delete(next.toString()));
-  const fillVisited = new Set<string>([...path, ...fillStack]);
-  const fillStack2 = [...fillStack].map((s) => s.split(',').map(Number));
-  while (fillStack2.length) {
-    const next = fillStack2.pop()!;
-    console.log('filling', next);
-    fillVisited.add(next.toString());
-    fillOffsets
-      .toIter()
-      .map(([x, y]) => [next[0] + x, next[1] + y] as Coords)
-      .filter(
-        ([x, y]) => x >= 0 && y >= 0 && x < grid[0].length && y < grid.length,
-      )
-      .filter(([x, y]) => !fillVisited.has([x, y].toString()))
-      .forEach((next) => {
-        fillVisited.add(next.toString());
-        fillStack2.push(next);
-      });
-  }
-  grid.forEach((row, y) =>
-    console.log(
-      row
-        .map((c, x) =>
-          fillVisited.has([x, y].toString())
-            ? path.has([x, y].toString())
-              ? 'X'
-              : '0'
-            : '.',
-        )
-        .join(''),
-    ),
-  );
-  console.log(fillVisited.size);
-  return (
-    grid
-      .toIter()
-      .flatMap((row) => row.toIter())
-      .count() - fillVisited.size
-  );
-};
-
-const fillOffsets: Coords[] = [
-  [0, -1],
-  [1, 0],
-  [0, 1],
-  [-1, 0],
-];
-
-const walkPath = (paths: Map<string, [Coords, Connections]>, start: Coords) => {
-  return range(0, paths.size).scan((last) => {
-    const next = paths.get(last[0].toString());
-    last[0] = next[0];
-    return next;
-  }, start);
-};
-
-const ConnectionsFromChar = (char: string): Connections => {
-  switch (char) {
-    case '.':
-      return Connections.Ground;
-    case '|':
-      return Connections.Vertical;
-    case '-':
-      return Connections.Horizontal;
-    case 'S':
-      return Connections.Start;
-    case 'L':
-      return Connections.NorthEast;
-    case 'J':
-      return Connections.NorthWest;
-    case 'F':
-      return Connections.SouthEast;
-    case '7':
-      return Connections.SouthWest;
-    default:
-      return Connections.Ground;
-  }
-};
-
 enum Connections {
   North = 0b0001,
   East = 0b0010,
@@ -223,6 +18,92 @@ enum Connections {
   NorthWest = North | West,
   Ground = 0b0000,
 }
+/**
+ * --- Day 10: Pipe Maze ---
+ */
+export const partOne = (input: AOCInput): number => {
+  const grid = makeGrid(input);
+  const start = getStartPosition(grid);
+  const startDirection = ConnectionsToOffsets(Connections.Start)
+    .map(([x, y, needed]) => [applyOffset(start, [x, y]), needed] as const)
+    .filter(([[x, y], needed]) => Boolean(grid[y]?.[x] & needed))
+    .map(([_, needed]) => flipDirection(needed))
+    .nth(0);
+  return (
+    (range(0, input.length)
+      .scan(walkPath(grid), [start, startDirection] as [Coords, Connections])
+      .takeWhile(([pos]) => pos !== start.toString())
+      .count() +
+      1) /
+    2
+  );
+};
+
+export const partTwo = (input: AOCInput): number => {
+  const grid = makeGrid(input);
+  const start = getStartPosition(grid);
+  const startConnections = ConnectionsToOffsets(Connections.Start)
+    .map(([x, y, needed]) => [applyOffset(start, [x, y]), needed] as const)
+    .filter(([[x, y], needed]) => Boolean(grid[y]?.[x] & needed))
+    .map(([_, needed]) => flipDirection(needed))
+    .collect();
+  const path = range(0, input.length)
+    .scan(walkPath(grid), [start, startConnections[0]] as [Coords, Connections])
+    .takeWhile(([pos]) => pos !== start.toString())
+    .fold(
+      ...into(
+        new Map<string, Connections>([
+          [start.toString(), startConnections[0] | startConnections[1]],
+        ]),
+      ),
+    );
+  return range(0, grid.length - 1)
+    .flatMap((y) => range(0, grid[0].length - 1).map((x) => [x, y].toString()))
+    .map(path.get.bind(path))
+    .filter(
+      (dir?: number) => dir === undefined || Boolean(dir & Connections.North),
+    )
+    .scan((state, direction: number | undefined) => {
+      if (direction === undefined) return state[0];
+      const previous = state[0];
+      const next = previous ^ (direction & Connections.North);
+      state[0] = next;
+      return 0;
+    }, 0)
+    .filter((dir) => Boolean(dir))
+    .count();
+};
+
+const makeGrid = (input: AOCInput): Connections[][] =>
+  input
+    .lines()
+    .filter((line) => line.length > 0)
+    .map((line) => line.chars().map(connectionsFromChar).collect())
+    .collect();
+
+const charConnections = {
+  '.': Connections.Ground,
+  '|': Connections.Vertical,
+  '-': Connections.Horizontal,
+  S: Connections.Start,
+  L: Connections.NorthEast,
+  J: Connections.NorthWest,
+  F: Connections.SouthEast,
+  7: Connections.SouthWest,
+} as const;
+
+const connectionsFromChar = (char: string): Connections =>
+  charConnections[char];
+
+const getStartPosition = (grid: Connections[][]): Coords => {
+  const offset = grid
+    .toIter()
+    .flatMap((row) => row.toIter())
+    .findIndex((connections) => connections === Connections.Start);
+  const x = offset % grid[0].length;
+  const y = floor(offset / grid[0].length);
+  return [x, y];
+};
 
 const SingleConnections = [
   Connections.North,
@@ -230,17 +111,14 @@ const SingleConnections = [
   Connections.South,
   Connections.West,
 ];
-const SingleConnectionOffsets = {
+const SingleConnectionOffsets: Partial<
+  Record<Connections, [number, number, Connections]>
+> = {
   [Connections.North]: [0, -1, Connections.South],
   [Connections.East]: [1, 0, Connections.West],
   [Connections.South]: [0, 1, Connections.North],
   [Connections.West]: [-1, 0, Connections.East],
 };
-
-const applyOffset = ([x, y]: Coords, [ox, oy]: Coords): Coords => [
-  x + ox,
-  y + oy,
-];
 
 const ConnectionsToOffsets = (
   connections: Connections,
@@ -248,3 +126,38 @@ const ConnectionsToOffsets = (
   SingleConnections.toIter()
     .filter((connection) => Boolean(connections & connection))
     .map((connection) => SingleConnectionOffsets[connection]);
+
+const applyOffset = ([x, y]: Coords, [ox, oy]: Coords): Coords => [
+  x + ox,
+  y + oy,
+];
+
+const flipDirection = (dir: Connections) =>
+  Connections.SouthWest & dir ? dir >> 2 : dir << 2;
+
+const walkPath = (grid: number[][]) => (state) => {
+  const [ox, oy, dir] = SingleConnectionOffsets[state[0][1]];
+  const position = applyOffset(state[0][0], [ox, oy]);
+  const connections = grid[position[1]][position[0]];
+  const direction = dir ^ (connections as Connections);
+  state[0] = [position, direction];
+  return [position.toString(), connections] as const;
+};
+
+const into = <
+  T extends Set<unknown> | Map<unknown, unknown>,
+  K = T extends Set<infer K>
+    ? K
+    : T extends Map<infer K, unknown>
+      ? K
+      : unknown,
+  V = T extends Map<unknown, infer V> ? V : unknown,
+>(
+  collection: T,
+) =>
+  [
+    collection instanceof Set
+      ? (set: Set<K>, item: K) => set.add(item)
+      : (map: Map<K, V>, item: [K, V]) => map.set(...item),
+    collection,
+  ] as [(coll: T, item: T extends Set<unknown> ? K : [K, V]) => T, T];
