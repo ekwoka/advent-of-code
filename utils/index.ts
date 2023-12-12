@@ -1,9 +1,64 @@
-import { RustIterator } from '@ekwoka/rust-ts';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Err, Ok, Result, RustIterator } from '@ekwoka/rust-ts';
 import { mkdir } from 'node:fs/promises';
+
+await mkdir(new URL('./.cache', import.meta.url), { recursive: true });
+
 export const getInput = async (year: Year, day: Day) => {
   const input = await getFromCache(year, day);
   return new AOCInput(input);
 };
+
+export const submitAnswer = async (
+  year: Year,
+  day: Day,
+  part: 1 | 2,
+  answer: string,
+): Promise<Result<never, Error>> => {
+  const cached = (await checkAnswerCache(year, day, part)).find(
+    (solution) => solution === answer,
+  );
+  if (cached)
+    return new Err(new Error('This answer has already been attempted'));
+  const result = await postAnswer(year, day, part, answer);
+  return new Ok();
+};
+
+const checkAnswerCache = async (year: Year, day: Day, part: 1 | 2) => {
+  const cachedAnswers = Bun.file(
+    new URL(`./.cache/${year}-${day}.answers.txt`, import.meta.url),
+  );
+  if (!(await cachedAnswers.exists())) {
+    await Bun.write(cachedAnswers, JSON.stringify({ [1]: [], [2]: [] }));
+  }
+
+  const data = await cachedAnswers.json<SolutionCache>();
+  return data[part];
+};
+
+type SolutionCache = {
+  [part in 1 | 2]: string[];
+};
+
+const postAnswer = (
+  year: Year,
+  day: Day,
+  part: 1 | 2,
+  answer: string,
+): Result<never, Error> => {
+  const url = `https://adventofcode.com/${year}/day/${day}/answer`;
+  const data = new FormData();
+  data.append('level', part.toString());
+  data.append('answer', answer);
+  console.log('posting answer to:', url);
+  return new Ok();
+};
+
+const INCORRECT_ANSWER = ["That's not the right answer"];
+const CORRECT_ANSWER = ["That's the right answer"];
+const TOO_HIGH = ["That's too high"];
+const TOO_LOW = ["That's too low"];
+const TOO_FAST = ["You're trying too fast"];
 
 Set.prototype.toIter =
   Array.prototype.toIter =
@@ -42,7 +97,6 @@ export const fetchInput = async (year: Year, day: Day): Promise<Response> => {
 };
 
 export const getFromCache = async (year: Year, day: Day): Promise<string> => {
-  await mkdir(new URL('./.cache', import.meta.url), { recursive: true });
   const cacheFile = Bun.file(
     new URL(`./.cache/${year}-${day}.txt`, import.meta.url),
   );
