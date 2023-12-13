@@ -5,124 +5,84 @@ import { AOCInput } from '../../utils';
  * --- Day 13: Point of Incidence ---
  */
 export const partOne = (input: AOCInput): number => {
-  const mirrors = input
+  return input
     .split('\n\n')
     .toIter()
     .map((mirror) => new AOCInput(mirror))
-    .map((mirror) => {
-      const rows = mirror
-        .lines()
-        .map((line) => line.chars().sum())
-        .collect();
-
-      for (const idx of rows
-        .toIter()
-        .window(2)
-        .enumerate()
-        .filter(([_, [a, b]]) => a === b)
-        .map(([i, _]) => i + 1)) {
-        const before = rows.slice(0, idx);
-        const after = rows.slice(idx);
-        if (
-          before
-            .toIter()
-            .reverse()
-            .zip(after)
-            .all(([a, b]) => a === b)
+    .map(toRowsAndColumns)
+    .map(([rows, cols]) =>
+      range(1, rows.length - 1)
+        .map((i) => [i, rows] as const)
+        .chain(range(1, cols.length - 1).map((i) => [i, cols]))
+        .filter(([i, group]) =>
+          hasExactlyNChanges(0)(splitZipAt<string>(i, group)),
         )
-          return [100, idx];
-      }
-
-      const cols = range(0, rows[0].length - 1)
-        .map((y) =>
-          range(0, rows.length - 1)
-            .map((x) => rows[x][y])
-            .sum(),
-        )
-        .collect();
-      for (const idx of cols
-        .toIter()
-        .window(2)
-        .enumerate()
-        .filter(([_, [a, b]]) => a === b)
-        .map(([i, _]) => i + 1)) {
-        const before = cols.slice(0, idx);
-        const after = cols.slice(idx);
-        if (
-          before
-            .toIter()
-            .reverse()
-            .zip(after)
-            .all(([a, b]) => a === b)
-        )
-          return [1, idx];
-      }
-
-      return [0, 0];
-    })
-    .map(([type, mid]) => mid * type)
+        .map(([i, group]) => (group === rows ? i * 100 : i))
+        .nth(0),
+    )
     .sum();
-
-  return mirrors;
 };
 
 export const partTwo = (input: AOCInput): number => {
-  const mirrors = input
+  return input
     .split('\n\n')
     .toIter()
-    .inspect(console.log)
     .map((mirror) => new AOCInput(mirror))
-    .map((mirror) => {
-      const rows = mirror
-        .lines()
-        .map((line) => line.chars().sum())
-        .collect();
-      const cols = range(0, rows[0].length - 1)
-        .map((y) =>
-          range(0, rows.length - 1)
-            .map((x) => rows[x][y])
-            .sum(),
+    .map(toRowsAndColumns)
+    .map(([rows, cols]) =>
+      range(1, rows.length - 1)
+        .map((i) => [i, rows] as const)
+        .chain(range(1, cols.length - 1).map((i) => [i, cols]))
+        .filter(([i, group]) =>
+          hasExactlyNChanges(1)(
+            splitZipAt<string>(i, group).flatMap<
+              RustIterator<[string, string]>
+            >(zip<string>),
+          ),
         )
-        .collect();
-      return [rows, cols];
-    })
-    .map(([rows, cols]) => {
-      const rReverse = rows.toIter().reverse().collect();
-      const cReverse = cols.toIter().reverse().collect();
-      const options = [
-        [rows, rReverse],
-        [cols, cReverse],
-      ] as const;
-      console.log(rows.length);
-      return range(1, rows.length - 1)
-        .chain(range(rows.length + 1, rows.length + cols.length - 1))
-        .filter((i) => {
-          if (i === rows.length) return false;
-          const group = options[Number(i > rows.length)];
-          i = i > rows.length ? i - rows.length : i;
-          const changes = group[0]
-            .slice(i)
-            .toIter()
-            .zip(group[1].slice(-i))
-            .flatMap(([a, b]) => new RustIterator(a).zip(new RustIterator(b)))
-            .filter(([a, b]) => a != b)
-            .take(2)
-            .collect();
-          return changes[0] && !changes[1];
-        })
-        .inspect((idx) => {
-          console.log(
-            'Mirror Point at:',
-            idx > rows.length ? 'Col' : 'Row',
-            idx > rows.length ? idx - rows.length : idx,
-          );
-        })
-        .inspect(console.log)
-        .map((i) => (i > rows.length ? i - rows.length : i * 100))
-        .nth(0);
-    })
-    .inspect(console.log)
+        .map(([i, group]) => (group === rows ? i * 100 : i))
+        .nth(0),
+    )
     .sum();
+};
 
-  return mirrors;
+const splitZipAt = <T>(
+  position: number,
+  list: Iterable<T>,
+): RustIterator<[T, T]> => {
+  const iter = new RustIterator(list);
+  return iter.take(position).reverse().zip<T>(iter) as RustIterator<[T, T]>;
+};
+
+const zip = <T>([a, b]: [Iterable<T>, Iterable<T>]): RustIterator<[T, T]> =>
+  new RustIterator(a).zip<T>(new RustIterator(b)) as RustIterator<[T, T]>;
+
+const different = <T>([a, b]: [T, T]): boolean => a !== b;
+
+const toInlineIndex = (acc: [number]) => ++acc[0];
+
+const hasExactlyNChanges =
+  (n: number) => (iter: RustIterator<[string, string]>) => {
+    const changes = iter
+      .filter(different)
+      .scan(toInlineIndex, 0)
+      .take(n + 1)
+      .collect();
+    return (n === 0 || changes.at(-2)) && !changes.at(-1);
+  };
+
+const toRowsAndColumns = (chunk: AOCInput): [string[], string[]] => {
+  const rows: string[][] = [];
+  const cols: string[][] = [];
+  let y = 0;
+  for (const ch of chunk.chars())
+    if (ch === '\n') {
+      y++;
+      continue;
+    } else (cols[(rows[y] ??= []).push(ch) - 1] ??= []).push(ch);
+
+  return [
+    rows.map((line) => line.join('')),
+    cols.map((line) => line.join('')),
+  ] as const;
 };

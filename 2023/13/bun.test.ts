@@ -24,8 +24,6 @@ describe('2023 Day 13', async () => {
       expect(partOne(input)).toBe(35691);
     });
     it('Passes Part 2', () => {
-      expect(partTwo(input)).toBeLessThan(66200);
-      expect(partTwo(input)).toBeGreaterThan(38994);
       expect(partTwo(input)).toBe(39037);
     });
   });
