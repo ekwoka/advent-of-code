@@ -3,22 +3,25 @@ import { partOne, partTwo } from '.';
 
 export const toStr = (input: string) => new TextEncoder().encode(input);
 
-describe('2023 Day 12', async () => {
-  const input = await getInput(2023, 13);
-  const example1 = new AOCInput('');
+describe('2023 Day 14', async () => {
+  const input = await getInput(2023, 14);
+  const example1 = new AOCInput(
+    'O....#....\nO.OO#....#\n.....##...\nOO.#O....O\n.O.....O#.\nO.#..O.#.#\n..O..#O..O\n.......O..\n#....###..\n#OO..#....\n',
+  );
 
   describe('in TypeScript', () => {
     it('Passes Part 1 Test', () => {
-      expect(partOne(example1)).toBe(0);
+      expect(partOne(example1)).toBe(136);
     });
     it('Passes Part 2 Test', () => {
-      expect(partTwo(example1)).toBe(0);
+      //console.log(partTwo(example1, false), 'should be 64');
+      expect(partTwo(example1)).toBe(64);
     });
     it('Passes Part 1', () => {
-      expect(partOne(input)).toBe(0);
+      expect(partOne(input)).toBe(112773);
     });
     it('Passes Part 2', () => {
-      expect(partTwo(input)).toBe(0);
+      expect(partTwo(input)).toBe(98894);
     });
   });
 });

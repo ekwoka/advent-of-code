@@ -1,5 +1,5 @@
 {
-  "exclude": ["**/node_modules", "scripts"],
+  "exclude": ["**/node_modules"],
   "compilerOptions": {
     "types": ["vitest/importMeta", "vitest/globals", "bun-types"],
     "allowJs": false,
