@@ -1,6 +1,6 @@
-import { getInput } from '../utils';
-const year = process.argv[2];
-const day = process.argv[3];
+import { Day, Year, getInput } from '../utils';
+const year = Number(process.argv[2]) as Year;
+const day = Number(process.argv[3]) as Day;
 
 const input = await getInput(year, day);
 

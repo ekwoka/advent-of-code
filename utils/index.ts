@@ -14,12 +14,11 @@ export const submitAnswer = async (
   day: Day,
   part: 1 | 2,
   answer: string,
-): Promise<Result<never, Error>> => {
+): Promise<Result<never, SubmissionResponse>> => {
   const cached = (await checkAnswerCache(year, day, part)).find(
-    (solution) => solution === answer,
+    ([solution]) => solution === answer,
   );
-  if (cached)
-    return new Err(new Error('This answer has already been attempted'));
+  if (cached) return new Err(cached[1]);
   const result = await postAnswer(year, day, part, answer);
   return new Ok();
 };
@@ -37,7 +36,7 @@ const checkAnswerCache = async (year: Year, day: Day, part: 1 | 2) => {
 };
 
 type SolutionCache = {
-  [part in 1 | 2]: string[];
+  [part in 1 | 2]: [string, SubmissionResponse][];
 };
 
 const postAnswer = (
@@ -59,6 +58,14 @@ const CORRECT_ANSWER = ["That's the right answer"];
 const TOO_HIGH = ["That's too high"];
 const TOO_LOW = ["That's too low"];
 const TOO_FAST = ["You're trying too fast"];
+
+enum SubmissionResponse {
+  Correct = "That's the right answer",
+  Incorrect = "That's not the right answer",
+  TooHigh = "That's too high",
+  TooLow = "That's too low",
+  TooFast = "You're trying too fast",
+}
 
 Set.prototype.toIter =
   Array.prototype.toIter =
@@ -140,9 +147,9 @@ const splitBy = function* (str: AllStrings, separator: string) {
   if (buffer.length > 0) yield new AOCInput(buffer);
 };
 
-type Year = 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023;
+export type Year = 2015 | 2016 | 2017 | 2018 | 2019 | 2020 | 2021 | 2022 | 2023;
 
-type Day =
+export type Day =
   | 1
   | 2
   | 3
