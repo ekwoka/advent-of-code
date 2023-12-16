@@ -14,7 +14,6 @@ describe('2023 Day 14', async () => {
       expect(partOne(example1)).toBe(136);
     });
     it('Passes Part 2 Test', () => {
-      //console.log(partTwo(example1, false), 'should be 64');
       expect(partTwo(example1)).toBe(64);
     });
     it('Passes Part 1', () => {

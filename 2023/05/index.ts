@@ -50,23 +50,18 @@ export const partOne = (input: AOCInput): number => {
 };
 
 export const partTwo = (input: AOCInput): number => {
-  console.time('part 2');
   const lines = input
     .lines()
     .filter((line) => line.length > 0)
-    .inspect(console.log)
     .peekable();
   const numberRegexp = /^\d+$/;
   const seeds = lines
     .nth(0)
     .words()
-    .inspect(console.log)
     .filter((item) => numberRegexp.test(item as unknown as string))
     .map(Number)
     .arrayChunks(2)
-    .inspect(console.log)
-    .map<[number, number]>(([start, range]) => [start, start + range])
-    .inspect(console.log);
+    .map<[number, number]>(([start, range]) => [start, start + range]);
   const result = lines
     .map((line) => {
       if (!line.includes('map')) console.error('what the heck happened?');
@@ -85,10 +80,9 @@ export const partTwo = (input: AOCInput): number => {
         .map(([target, start, range]) => [start, start + range, target - start])
         .collect() as [number, number, number][];
     })
-    .inspect(console.log)
     .fold(
       (seeds, modifiers) =>
-        seeds.inspect(console.log).flatMap((seed) =>
+        seeds.flatMap((seed) =>
           modifiers
             .toIter()
             .filter(([start, end]) => start <= seed[1] && end >= seed[0])
@@ -115,10 +109,7 @@ export const partTwo = (input: AOCInput): number => {
         ),
       seeds,
     )
-    .inspect(console.log)
     .map((seed) => seed[0])
-    .inspect(console.log)
     .min();
-  console.timeEnd('part 2');
   return result;
 };
