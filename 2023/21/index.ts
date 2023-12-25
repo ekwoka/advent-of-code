@@ -2,6 +2,9 @@ import { AOCInput } from '../../utils';
 
 /**
  * --- Day 21: ??? ---
+ * Got stuck here a while because my step counter would
+ * stop tracking once it was on the edge of the map,
+ * instead of BEYOND the edge of the map
  */
 export const partOne = (input: AOCInput, steps: number): number => {
   const grid = input
@@ -27,8 +30,6 @@ export const partOne = (input: AOCInput, steps: number): number => {
     .map((line) => line.chars().count())
     .count();
 
-  console.log(start, mapSize);
-
   const counter = makeCounter(rocks, mapSize);
   return counter(start, steps);
 };
@@ -53,21 +54,15 @@ export const partTwo = (input: AOCInput, steps: number): number => {
   const start: Coords = [middle, middle];
   const lastIndex = mapSize - 1;
 
-  console.log(start, mapSize);
-
   const counter = makeCounter(rocks, mapSize);
 
   const radius = Math.max(0, ~~(steps / mapSize) - 1);
-
-  console.log(radius);
 
   const odds = (((radius >> 1) << 1) + 1) ** 2;
   const evens = (((radius + 1) >> 1) << 1) ** 2;
 
   const oddCount = counter(start, mapSize * 4 + 1);
   const evenCount = counter(start, mapSize * 4);
-
-  console.log({ odds, evens, oddCount, evenCount });
 
   const smallSteps = (mapSize >> 1) - 1;
 
@@ -76,8 +71,6 @@ export const partTwo = (input: AOCInput, steps: number): number => {
   const SEsmall = counter([0, 0], smallSteps);
   const SWsmall = counter([lastIndex, 0], smallSteps);
 
-  console.log({ smallSteps, NEsmall, NWsmall, SEsmall, SWsmall });
-
   const largeSteps = ((mapSize * 3) >> 1) - 1;
 
   const NElarge = counter([0, lastIndex], largeSteps);
@@ -85,14 +78,10 @@ export const partTwo = (input: AOCInput, steps: number): number => {
   const SElarge = counter([0, 0], largeSteps);
   const SWlarge = counter([lastIndex, 0], largeSteps);
 
-  console.log({ largeSteps, NElarge, NWlarge, SElarge, SWlarge });
-
   const N = counter([middle, lastIndex], lastIndex);
   const E = counter([0, middle], lastIndex);
   const S = counter([middle, 0], lastIndex);
   const W = counter([lastIndex, middle], mapSize - 1);
-
-  console.log({ N, E, S, W });
 
   const main = odds * oddCount + evens * evenCount;
   const small = (radius + 1) * (NEsmall + NWsmall + SEsmall + SWsmall);
