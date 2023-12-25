@@ -26,8 +26,8 @@ devDependencies:
     specifier: 6.15.0
     version: 6.15.0(eslint@8.56.0)(typescript@5.3.3)
   bun-types:
-    specifier: 1.0.19
-    version: 1.0.19
+    specifier: 1.0.20
+    version: 1.0.20
   eslint:
     specifier: 8.56.0
     version: 8.56.0
@@ -972,10 +972,10 @@ packages:
       fill-range: 7.0.1
     dev: true
 
-  /bun-types@1.0.19:
+  /bun-types@1.0.20:
     resolution:
       {
-        integrity: sha512-7P5/r+twssrkDQ6HMit2GARMBbAxz1tLLEcMgQOCZeCX9BzNtabktjPCu+DmcvDYDnL/Ke75pmKg9CNBTlCzlQ==,
+        integrity: sha512-MB9OwwwNDdolaPBX9TSEq/9WlexEH1n2d5G/fnre/sz0NAzoxYaOgd3cpxNmNGsExMbgxkccSLNcVPV0rrfunA==,
       }
     dependencies:
       '@types/node': 20.10.5
