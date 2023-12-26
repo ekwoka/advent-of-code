@@ -20,7 +20,7 @@ describe('2023 Day 23', async () => {
       expect(partOne(input)).toBe(2162);
     });
     it('Passes Part 2', () => {
-      expect(partTwo(input)).toBe(0);
+      expect(partTwo(input)).toBe(6334);
     });
   });
 });

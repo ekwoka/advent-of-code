@@ -76,39 +76,82 @@ export const partTwo = (input: AOCInput): number => {
     pathSpaces[pathSpaces.length - 1].indexOf(Space.Path),
     pathSpaces.length - 1,
   ] as Coords;
-  const walk = (coords: Coords, visited = new Set<string>()): number => {
-    console.log('walking from', coords);
-    let nextStep = [coords, 0] as [Coords, number];
+  const junctionDistances = {} as Record<string, Record<string, number>>;
+  const visitedStartPoints = new Set<string>();
+  const walkSection = (
+    junctionStart: string,
+    coords: Coords,
+    dir: Direction,
+  ): number => {
+    if (visitedStartPoints.has(coords.toString())) return;
+    visitedStartPoints.add(coords.toString());
+    junctionDistances[junctionStart] ??= {};
+    let nextStep = [coords, 1, dir] as [Coords, steps: number, dir: Direction];
     while (nextStep) {
-      const [current, steps] = nextStep;
-      visited.add(current.toString());
-      if (current[0] === end[0] && current[1] === end[1]) return steps;
-      const neighbors = getOffsetsExcept(0 as Direction)
-        .inspect(console.log)
-        .map<Coords>(([_, offset]) => applyOffset(current, offset))
-        .inspect(console.log)
-        .filter(([x, y]) => !!pathSpaces[y]?.[x])
-        .inspect(console.log)
-        .filter(([_, coords]) => !visited.has(coords.toString()))
-        .inspect(console.log)
+      const [current, steps, dir] = nextStep;
+      if (current[0] === end[0] && current[1] === end[1]) {
+        junctionDistances[junctionStart][current.toString()] = steps;
+        junctionDistances[current.toString()] ??= {};
+        return;
+      }
+      const neighbors = getOffsetsExcept(reverseDirection(dir))
+        .map<[Direction, Coords]>(([dir, offset]) => [
+          dir,
+          applyOffset(current, offset),
+        ])
+        .filter(([_, [x, y]]) => !!pathSpaces[y]?.[x])
         .collect();
       if (neighbors.length === 1) {
-        nextStep = [neighbors[0], steps + 1] as const;
+        const [dir, coords] = neighbors[0];
+        nextStep = [coords, steps + 1, dir] as const;
         continue;
       }
-      return (
-        Math.max(
-          ...neighbors
-            .toIter()
-            .map((coords) => walk(coords, new Set<string>(visited))),
-        ) +
-        steps +
-        1
-      );
+      junctionDistances[junctionStart][current.toString()] = steps;
+      (junctionDistances[current.toString()] ??= {})[junctionStart] = steps;
+      if (
+        Object.keys(junctionDistances[current.toString()]).length ===
+        neighbors.length
+      )
+        return;
+      neighbors
+        .toIter()
+        .forEach(([dir, coords]) =>
+          walkSection(current.toString(), coords, dir),
+        );
+      return;
     }
-    return -1;
   };
-  return walk(start);
+  walkSection(start.toString(), [1, 1], Direction.South);
+  const branchNode = (node: bigint, steps: number, visited = 0b0n): number =>
+    node === nodeBitMap[end.toString()]
+      ? steps
+      : bitJunctions
+          .get(node)
+          .toIter()
+          .filter(([nextNode]) => !(visited & nextNode))
+          .map(([nextNode, distance]) =>
+            branchNode(nextNode, steps + distance, visited | nextNode),
+          )
+          .max() ?? 0;
+  const nodeBitMap = Object.keys(junctionDistances)
+    .toIter()
+    .enumerate()
+    .map(([i, node]) => [node, 1n << BigInt(i)] as const)
+    .fold(
+      (acc, [node, bit]) => ((acc[node] = bit), acc),
+      {} as Record<string, bigint>,
+    );
+  const bitJunctions = Object.entries(junctionDistances)
+    .toIter()
+    .map<[bigint, [bigint, number][]]>(([k, v]) => [
+      nodeBitMap[k],
+      Object.entries(v).map<[bigint, number]>(([k, v]) => [nodeBitMap[k], v]),
+    ])
+    .fold(
+      (acc, [k, v]) => acc.set(k, v),
+      new Map<bigint, [bigint, number][]>(),
+    );
+  return branchNode(nodeBitMap[start.toString()], 0);
 };
 
 enum Space {
