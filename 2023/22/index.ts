@@ -2,6 +2,8 @@ import { AOCInput } from '../../utils';
 
 /**
  * --- Day 22: Sand Slabs ---
+ * Got stuck here a while because I assumed that the input
+ * had the tetrinos in order on the Z axis
  */
 export const partOne = (input: AOCInput): number => {
   const restedTower = input
