@@ -14,6 +14,9 @@ describe('2023 Day 24', async () => {
       expect(partOne(example1, [7, 27])).toBe(2);
     });
     it.skip('Passes Part 2 Test', () => {
+      // Current Solution for part 2
+      // depends on the length of the real input
+      // to focus the search
       expect(partTwo(example1)).toBe(0);
     });
     it('Passes Part 1', () => {
@@ -23,12 +26,9 @@ describe('2023 Day 24', async () => {
       );
       expect(solution).toBe(25433);
     });
-    it.skip('Passes Part 2', () => {
-      const solution = partTwo(
-        input,
-        [200_000_000_000_000, 400_000_000_000_000],
-      );
-      expect(solution).toBe(0);
+    it('Passes Part 2', () => {
+      const solution = partTwo(input);
+      expect(solution).toBe(885093461440405);
     });
   });
 });

@@ -45,11 +45,85 @@ export const partOne = (
     .count();
 };
 
-export const partTwo = (
-  _input: AOCInput,
-  _limits: [min: number, max: number],
-): number => {
-  return 0;
+export const partTwo = (input: AOCInput): number => {
+  const hail = input
+    .lines()
+    .map<[number, number, number, number, number, number]>(
+      (line) =>
+        new RustIterator(line.matchAll(/-?\d+/g)).map(Number).collect() as [
+          number,
+          number,
+          number,
+          number,
+          number,
+          number,
+        ],
+    )
+    .map((match) => new Hail(...match))
+    .collect();
+  const [rxv, ryv, rzv]: Vec3 = ['x', 'y', 'z']
+    .toIter()
+    .map((axis) =>
+      hail
+        .toIter()
+        .map((stone) => [stone[axis], stone[`${axis}v`]] as const)
+        .fold(
+          (dict, [p, v]) => ((dict[v] ??= []).push(p), dict),
+          {} as Record<number, number[]>,
+        ),
+    )
+    .map((velocities) =>
+      range(-1000, 1000)
+        .filter((pv) =>
+          Object.entries(velocities)
+            .toIter()
+            .map(
+              ([v, positions]) =>
+                positions.length === 1 ||
+                (positions[0] - positions[1]) % (pv - Number(v)) === 0,
+            )
+            .all(Boolean),
+        )
+        .nth(0),
+    )
+    .collect() as Vec3;
+
+  const positions = range(0, hail.length - 1)
+    .flatMap((i) => zipLoopFrom(hail, i))
+    .map(([a, b]) => {
+      const ma = (a.yv - ryv) / (a.xv - rxv);
+      const mb = (b.yv - ryv) / (b.xv - rxv);
+
+      const ca = a.y - ma * a.x;
+      const cb = b.y - mb * b.x;
+
+      const x = (cb - ca) / (ma - mb);
+      const y = ma * x + ca;
+
+      const time = (x - a.x) / (a.xv - rxv);
+      const z = a.z + (a.zv - rzv) * time;
+
+      return [x, y, z] as Vec3;
+    })
+    .map((position) => position.toIter().reduce((a, b) => a + b, 0))
+    .filter((score) => score % 1 === 0)
+    .fold(
+      (positions, score) => (
+        (positions[score] = (positions[score] || 0) + 1), positions
+      ),
+      {} as Record<number, number>,
+    );
+
+  return Object.entries(positions)
+    .toIter()
+    .sort(([_, a], [__, b]) => b - a)
+    .map(([k]) => Number(k))
+    .nth(0);
+};
+
+const zipLoopFrom = <T>(it: Array<T>, pivot: number): RustIterator<[T, T]> => {
+  const iter = it.toIter();
+  return [iter.nth(pivot)].toIter().cycle().zip(iter);
 };
 
 class Hail {
