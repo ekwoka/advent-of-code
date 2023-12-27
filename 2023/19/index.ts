@@ -15,10 +15,8 @@ export const partOne = (input: AOCInput): number => {
   const parts = lines.collect();
   const workflows = actions
     .toIter()
-
     .map((line) => line.match(workflowRegex))
     .filter(Boolean)
-
     .map(
       ({ groups: { name, checks } }) =>
         [
@@ -41,15 +39,14 @@ export const partOne = (input: AOCInput): number => {
     .map((line) =>
       new RustIterator(line.matchAll(kvRegex)).fold<Part>(
         (acc, { groups: { key, value } }) => ((acc[key] = Number(value)), acc),
-        {},
+        {} as Part,
       ),
     )
     .map((part) => {
       // eslint-disable-next-line @typescript-eslint/ban-types
       let nextProcess: Function | symbol = workflows.in;
-      while (typeof nextProcess !== 'symbol') {
+      while (typeof nextProcess !== 'symbol')
         nextProcess = nextProcess(part, workflows);
-      }
       return [part, nextProcess] as const;
     })
     .filter(([_, x]) => x === Accept)
@@ -88,41 +85,31 @@ export const partTwo = (input: AOCInput): number => {
       (acc, process) => ((acc[process.name] = process), acc),
       {} as Record<string, Part2Process>,
     );
-  const getCombinations = (part: PartRange, process: string): bigint => {
-    console.log(process, part);
-    if (process === 'A') {
-      const put = Object.values(part)
-        .toIter()
-        .map(([min, max]) => BigInt(Math.max(0, max - min)))
-        .reduce((a, b) => a * b, 1n);
-      console.log(put);
-      return put;
-    }
-    if (process === 'R' || process === undefined) return 0n;
+  const getCombinations = (part: PartRange, process: string): PartRange[] => {
+    if (process === 'A') return [part];
+    if (process === 'R' || process === undefined) return [];
+    const possibilities: PartRange[] = [];
     const { checks, else: elseDo } = workflows[process];
-    let count = 0n;
     for (const check of checks) {
       if (isInvalid(part[check.key])) continue;
       const [t, f] = splitCombos(part, check);
       part = f;
       if (isInvalid(t[check.key])) continue;
-      console.log('passing', check, t, f);
-      count = count + getCombinations(t, check.do);
+      possibilities.push(...getCombinations(t, check.do));
     }
-    console.log('handling else', elseDo);
-    count += count + getCombinations(part, elseDo);
-    console.log('counting combos later', count);
-    return count;
+    possibilities.push(...getCombinations(part, elseDo));
+    return possibilities;
   };
-  return getCombinations(
+  const combos = getCombinations(
     {
-      x: [0, 4000],
-      m: [0, 4000],
-      a: [0, 4000],
-      s: [0, 4000],
+      x: [1, 4000],
+      m: [1, 4000],
+      a: [1, 4000],
+      s: [1, 4000],
     },
     'in',
   );
+  return calculateCombos(combos);
 };
 
 const splitCombos = (part: PartRange, check: Check): [PartRange, PartRange] => {
@@ -138,6 +125,19 @@ const splitCombos = (part: PartRange, check: Check): [PartRange, PartRange] => {
       { ...part, [key]: [value + 1, max] },
       { ...part, [key]: [min, value] },
     ];
+};
+
+const calculateCombos = (parts: PartRange[]): number => {
+  const combos = parts
+    .map((part) =>
+      Object.values(part)
+        .toIter()
+        .map(([min, max]) => max - min + 1)
+        .reduce((a, b) => a * b, 1),
+    )
+    .toIter()
+    .sum();
+  return combos;
 };
 
 type Part2Process = {
