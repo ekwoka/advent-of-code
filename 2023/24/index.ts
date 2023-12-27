@@ -25,13 +25,10 @@ export const partOne = (
     .collect();
 
   return range(0, hail.length - 1)
-    .flatMap((i) => {
-      const hailIter = hail.toIter();
-      const first = hailIter.nth(i);
-      return hailIter.map(
-        (second) => [first, second, first.intersects2D(second)] as const,
-      );
-    })
+    .flatMap((i) => zipLoopFrom(hail, i))
+    .map(
+      ([first, second]) => [first, second, first.intersects2D(second)] as const,
+    )
     .filter((v) => Boolean(v[2]))
     .filter(
       ([a, b, intersection]) =>
@@ -123,7 +120,7 @@ export const partTwo = (input: AOCInput): number => {
 
 const zipLoopFrom = <T>(it: Array<T>, pivot: number): RustIterator<[T, T]> => {
   const iter = it.toIter();
-  return [iter.nth(pivot)].toIter().cycle().zip(iter);
+  return [iter.nth(pivot)].toIter().cycle().zip<T>(iter);
 };
 
 class Hail {
