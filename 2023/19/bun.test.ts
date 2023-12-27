@@ -14,13 +14,15 @@ describe('2023 Day 19', async () => {
       expect(partOne(example1)).toBe(19114);
     });
     it('Passes Part 2 Test', () => {
-      expect(partTwo(example1)).toBe(167409079868000);
+      const solution = partTwo(example1);
+      expect(solution).toBe(167409079868000);
     });
     it('Passes Part 1', () => {
       expect(partOne(input)).toBe(476889);
     });
-    it.skip('Passes Part 2', () => {
-      expect(partTwo(input)).toBe(0);
+    it('Passes Part 2', () => {
+      const solution = partTwo(input);
+      expect(solution).toBe(132380153677887);
     });
   });
 });
