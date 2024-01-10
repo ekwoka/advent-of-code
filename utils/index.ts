@@ -98,8 +98,10 @@ export const fetchInput = async (year: Year, day: Day): Promise<Response> => {
       },
     },
   );
-  if (!response.ok)
+  if (!response.ok) {
+    console.error(await response.text());
     throw new Error(`Failed to fetch input for day ${day} of year ${year}`);
+  }
   return response as Response;
 };
 

@@ -1,6 +1,7 @@
 import { partOne, partOneStream, partTwo, partTwoStream } from '.';
-import { part_one, part_two } from './main-day1.rs';
+/* import { part_one, part_two } from './main-day1.rs'; */
 import { AOCInput, getInput } from '../../utils';
+import { resolve } from 'node:path';
 
 export const toStr = (input: string) => new TextEncoder().encode(input);
 
@@ -52,7 +53,7 @@ describe('Character Stream', async () => {
     expect(partTwoStream(input)).toBe(54845);
   });
 });
-describe('in Rust', async () => {
+/* describe('in Rust', async () => {
   const input = await getInput(2023, 1);
   it('Passes Part 1 Test', () => {
     expect(part_one(toStr('1abc2\npqr3stu8vwx\na1b2c3d4e5f\ntreb7uchet'))).toBe(
@@ -73,5 +74,33 @@ describe('in Rust', async () => {
   });
   it('Passes Part 2', () => {
     expect(part_two(toStr(input.toString()))).toBe(54845);
+  });
+}); */
+
+describe('in WAT', async () => {
+  const input = await getInput(2023, 1);
+
+  it('Passes Part 1 Test', async () => {
+    const chars = input.chars();
+    const {
+      instance: { exports },
+    } = await WebAssembly.instantiate(
+      await Bun.file(
+        resolve(import.meta.url.split(':')[1], '..', './main-day1.wasm'),
+      ).arrayBuffer(),
+      {
+        env: {
+          log: console.log,
+          next() {
+            const { value, done } = chars.next();
+            if (done) return 0;
+            return value.charCodeAt(0);
+          },
+        },
+      },
+    );
+    const partone = exports.partone as () => number;
+    const result = partone();
+    expect(result).toBe(142);
   });
 });
