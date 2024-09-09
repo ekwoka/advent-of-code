@@ -4,13 +4,15 @@
 
 Scores:
 
-![](https://img.shields.io/badge/2023%20📅-blue) ![](https://img.shields.io/badge/stars%20⭐-50-yellow)
+![](https://img.shields.io/badge/2023-blue?style=for-the-badge&logo=googlecalendar&logoColor=white&color=blue) ![](https://img.shields.io/badge/stars-50-yellow?style=for-the-badge&logo=adventofcode&logoColor=white&color=FFFF66)
 
-![](https://img.shields.io/badge/2022%20📅-blue) ![](https://img.shields.io/badge/stars%20⭐-50-yellow)
+![](https://img.shields.io/badge/2022-blue?style=for-the-badge&logo=googlecalendar&logoColor=white&color=blue) ![](https://img.shields.io/badge/stars-50-yellow?style=for-the-badge&logo=adventofcode&logoColor=white&color=FFFF66)
 
-![](https://img.shields.io/badge/2021%20📅-blue) ![](https://img.shields.io/badge/stars%20⭐-36-yellow)
+![](https://img.shields.io/badge/2021-blue?style=for-the-badge&logo=googlecalendar&logoColor=white&color=blue) ![](https://img.shields.io/badge/stars-36-yellow?style=for-the-badge&logo=adventofcode&logoColor=white&color=FFFF66)
 
-![](https://img.shields.io/badge/2020%20📅-blue) ![](https://img.shields.io/badge/stars%20⭐-10-yellow)
+![](https://img.shields.io/badge/2020-blue?style=for-the-badge&logo=googlecalendar&logoColor=white&color=blue) ![](https://img.shields.io/badge/stars-10-yellow?style=for-the-badge&logo=adventofcode&logoColor=white&color=FFFF66)
+
+![](https://img.shields.io/badge/2015-blue?style=for-the-badge&logo=googlecalendar&logoColor=white&color=blue) ![](https://img.shields.io/badge/stars-4-yellow?style=for-the-badge&logo=adventofcode&logoColor=white&color=FFFF66)
 
 ## About
 
