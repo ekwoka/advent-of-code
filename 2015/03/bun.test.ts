@@ -1,7 +1,7 @@
 import { partOne, partTwo } from '.';
 import { AOCInput, getInput } from '../../utils';
 
-describe('2023 Day 1', async () => {
+describe('2015 Day 3', async () => {
   const input = await getInput(2015, 3);
   it('Passes Part 1 Test', () => {
     expect(partOne(new AOCInput('^>v<'))).toBe(4);
