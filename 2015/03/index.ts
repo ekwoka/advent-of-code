@@ -7,6 +7,7 @@ const DirectionVector = {
   v: new Vec2(0, -1),
   '<': new Vec2(-1, 0),
 };
+
 export const partOne = (input: AOCInput): number => {
   return (
     1 +
