@@ -7,6 +7,6 @@ describe('2015 Day 21', async () => {
     expect(partOne(input)).toBe(91);
   });
   it('Passes Part 2', () => {
-    expect(partTwo(input)).toBe(0);
+    expect(partTwo(input)).toBe(158);
   });
 });
