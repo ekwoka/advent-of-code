@@ -4,13 +4,13 @@ import { AOCInput, getInput } from '../../utils';
 describe('2015 Day 4', async () => {
   const input = await getInput(2015, 4);
   it('Passes Part 1 Test', () => {
-    expect(partOne(new AOCInput('pqrstuv'))).toBe(1048970);
-    expect(partOne(new AOCInput('abcdef'))).toBe(609043);
+    expect(partOne(new AOCInput('pqrstuv'))).toBe(1_048_970);
+    expect(partOne(new AOCInput('abcdef'))).toBe(609_043);
   });
   it('Passes Part 1', () => {
-    expect(partOne(input)).toBe(282749);
+    expect(partOne(input)).toBe(282_749);
   });
   it('Passes Part 2', () => {
-    expect(partTwo(input)).toBe(0);
+    expect(partTwo(input)).toBe(9_962_624);
   });
 });
