@@ -1,4 +1,4 @@
-import { partOne, partTwo } from '.';
+import { partOne } from '.';
 import { AOCInput, getInput } from '../../utils';
 
 describe('2015 Day 22', async () => {
@@ -17,6 +17,6 @@ Damage: 8`),
     expect(partOne(input)).toBe(1_269);
   });
   it('Passes Part 2', () => {
-    expect(partTwo(input)).toBe(1_309);
+    expect(partOne(input, undefined, undefined, true)).toBe(1_309);
   });
 });

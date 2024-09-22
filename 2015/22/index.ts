@@ -1,6 +1,33 @@
+import { RustIterator } from '@ekwoka/rust-ts';
 import type { AOCInput } from '../../utils';
+/**
+ * As this problem, similar to the previous, is meant to emulate game decisions
+ * but with much more complicated action choices,
+ * I decided to go with a more "game dev" style Entity-Component-System (ECS)
+ * This is not because it's inherently more efficient or optimized
+ * but because it's a common structure for handling this kind of simulation
+ * and because it's kind of fun
+ */
 
-class Player {
+Set.prototype.innerValues = Set.prototype.values;
+Set.prototype.values = function () {
+  return new RustIterator(this.innerValues());
+};
+Set.prototype.clone = function (this: Set<Entity>) {
+  return new Set(this.values().map((entity) => entity.clone()));
+};
+
+interface Entity {
+  clone(): Entity;
+}
+
+interface Character extends Entity {
+  health: number;
+  clone(): Character;
+  toString(): string;
+}
+
+class Player implements Character {
   constructor(
     public health = 50,
     public mana = 500,
@@ -14,17 +41,19 @@ class Player {
       this.health,
       this.mana,
       this.armor,
-      new Set(Array.from(this.effects).map((effect) => effect.clone())),
+      this.effects.clone(),
       this.spentMana,
-      [...this.spellsCast],
+      structuredClone(this.spellsCast),
     );
   }
   toString() {
-    return `${this.health}-${this.mana}-${this.spentMana}-${Array.from(this.effects).reduce((a, effect) => a | effect.valueOf(), 0)}`;
+    return `${this.health}-${this.mana}-${this.spentMana}-${this.effects
+      .values()
+      .fold((a, effect) => a | effect.valueOf(), 0)}`;
   }
 }
 
-class Boss {
+class Boss implements Character {
   constructor(
     public health: number,
     public damage: number,
@@ -34,231 +63,212 @@ class Boss {
     player.health -= Math.max(1, this.damage - player.armor);
   }
   clone() {
-    return new Boss(
-      this.health,
-      this.damage,
-      new Set(Array.from(this.effects).map((effect) => effect.clone())),
-    );
+    return new Boss(this.health, this.damage, this.effects.clone());
   }
   toString() {
-    return `${this.health}-${Array.from(this.effects).reduce((a, effect) => a | effect.valueOf(), 0)}`;
+    return `${this.health}-${this.effects
+      .values()
+      .reduce((a, effect) => a | effect.valueOf(), 0)}`;
   }
 }
 
-interface Effect {
-  tick(player: Player, boss: Boss, effects: Set<Effect>): void;
+interface Effect extends Entity {
+  timer: number;
+  tick(target: Character): void;
   clone(): Effect;
   valueOf(): number;
 }
 
 class Poisoned implements Effect {
   constructor(public timer = 6) {}
-  tick(_player: Player, boss: Boss, effects: Set<Effect>) {
+  tick(boss: Boss) {
     boss.health -= 3;
-    if (--this.timer === 0) effects.delete(this);
+    if (--this.timer === 0) boss.effects.delete(this);
   }
   clone() {
     return new Poisoned(this.timer);
   }
   valueOf() {
-    return 1 << 0;
+    return ((1 << 3) | this.timer) << 0;
   }
 }
 
 class Shielded implements Effect {
   constructor(public timer = 6) {}
-  tick(player: Player, _boss: Boss, effects: Set<Effect>) {
+  tick(player: Player) {
     if (--this.timer === 0) {
       player.armor -= 7;
-      effects.delete(this);
+      player.effects.delete(this);
     }
   }
   clone() {
     return new Shielded(this.timer);
   }
   valueOf() {
-    return 1 << 1;
+    return ((1 << 3) | this.timer) << 4;
   }
 }
 
 class Charging implements Effect {
   constructor(public timer = 5) {}
-  tick(player: Player, _boss: Boss, effects: Set<Effect>) {
+  tick(player: Player) {
     player.mana += 101;
-    if (--this.timer === 0) effects.delete(this);
+    if (--this.timer === 0) player.effects.delete(this);
   }
   clone() {
     return new Charging(this.timer);
   }
   valueOf() {
-    return 1 << 2;
+    return ((1 << 3) | this.timer) << 8;
   }
 }
 
 class Spell {
   constructor(
     public name: string,
-    public spell: (player: Player, boss: Boss) => void,
+    public spell: (state: GameState) => void,
     public cost: number,
   ) {}
-  cast(player: Player, boss: Boss) {
-    player.mana -= this.cost;
-    player.spentMana += this.cost;
-    this.spell(player, boss);
-    player.spellsCast.push(this.name);
+  cast(state: GameState) {
+    state.Player.mana -= this.cost;
+    state.Player.spentMana += this.cost;
+    this.spell(state);
+    state.Player.spellsCast.push(this.name);
   }
 }
 
 const MagicMissile = new Spell(
   'magic missile',
-  (_player, boss) => {
-    boss.health -= 4;
+  ({ Boss }) => {
+    Boss.health -= 4;
   },
   53,
 );
 
 const Drain = new Spell(
   'drain',
-  (player, boss) => {
-    player.health += 2;
-    boss.health -= 2;
+  ({ Player, Boss }) => {
+    Player.health += 2;
+    Boss.health -= 2;
   },
   73,
 );
 
 const Shield = new Spell(
   'shield',
-  (player) => {
-    if (Array.from(player.effects).some((effect) => effect instanceof Shielded))
-      player.health -= Infinity;
-    player.armor += 7;
-    player.effects.add(new Shielded());
+  ({ Player }) => {
+    if (Array.from(Player.effects).some((effect) => effect instanceof Shielded))
+      Player.health -= Infinity;
+    Player.armor += 7;
+    Player.effects.add(new Shielded());
   },
   113,
 );
 
 const Poison = new Spell(
   'poison',
-  (player, boss) => {
-    if (Array.from(boss.effects).some((effect) => effect instanceof Poisoned))
-      player.health -= Infinity;
-    boss.effects.add(new Poisoned());
+  ({ Player, Boss }) => {
+    if (Boss.effects.values().any((effect) => effect instanceof Poisoned))
+      Player.health -= Infinity;
+    Boss.effects.add(new Poisoned());
   },
   173,
 );
 
 const Recharge = new Spell(
   'recharge',
-  (player) => {
-    if (Array.from(player.effects).some((effect) => effect instanceof Charging))
-      player.health -= Infinity;
-    player.effects.add(new Charging());
+  ({ Player }) => {
+    if (Player.effects.values().any((effect) => effect instanceof Charging))
+      Player.health -= Infinity;
+    Player.effects.add(new Charging());
   },
   229,
 );
 
-/**
- * Magic Missile costs 53 mana. It instantly does 4 damage.
- * Drain costs 73 mana. It instantly does 2 damage and heals you for 2 hit points.
- * Shield costs 113 mana. It starts an effect that lasts for 6 turns. While it is active, your armor is increased by 7.
- * Poison costs 173 mana. It starts an effect that lasts for 6 turns. At the start of each turn while it is active, it deals the boss 3 damage.
- * Recharge costs 229 mana. It starts an effect that lasts for 5 turns. At the start of each turn while it is active, it gives you 101 new mana.
- */
-const Spells = [MagicMissile, Drain, Shield, Poison, Recharge];
-export const partOne = (input: AOCInput, health = 50, mana = 500) => {
-  const player = new Player(health, mana);
-  const boss = new Boss(
-    ...([...input.matchAll(/\d+/g)].map(([match]) => Number(match)) as [
-      number,
-      number,
-    ]),
-  );
-  const queue: [player: Player, boss: Boss, nextSpell: Spell][] = Spells.filter(
-    (spell) => spell.cost <= player.mana,
-  ).map((spell) => [player.clone(), boss.clone(), spell]);
-  const score = (player: Player, boss: Boss, nextSpell: Spell) =>
-    boss.health + player.spentMana + nextSpell.cost - player.health;
-  const visitedStates = new Set<string>();
-  const addToQueue = (player: Player, boss: Boss, nextSpell: Spell) => {
-    const key = `${player.toString()}-${boss.toString()}-${nextSpell.name}`;
-    if (visitedStates.has(key)) return;
-    else visitedStates.add(key);
-    const insertPoint = queue.findIndex(
-      (action) =>
-        score(action[0], action[1], action[2]) > score(player, boss, nextSpell),
-    );
-    if (insertPoint >= 0)
-      queue.splice(insertPoint, 0, [player.clone(), boss.clone(), nextSpell]);
-    else queue.push([player.clone(), boss.clone(), nextSpell]);
-  };
-  while (queue.length) {
-    const [player, boss, nextSpell] = queue.shift()!;
-    nextSpell.cast(player, boss);
-    if (player.health <= 0) continue;
-    if (boss.health <= 0) return player.spentMana;
-    player.effects.forEach((effect) =>
-      effect.tick(player, boss, player.effects),
-    );
-    boss.effects.forEach((effect) => effect.tick(player, boss, boss.effects));
-    if (boss.health <= 0) return player.spentMana;
-    boss.act(player);
-    if (player.health <= 0) continue;
-    player.effects.forEach((effect) =>
-      effect.tick(player, boss, player.effects),
-    );
-    boss.effects.forEach((effect) => effect.tick(player, boss, boss.effects));
-    if (boss.health <= 0) return player.spentMana;
-    Spells.filter((spell) => spell.cost <= player.mana).forEach((spell) =>
-      addToQueue(player, boss, spell),
-    );
+class GameState {
+  constructor(
+    public Player: Player,
+    public Boss: Boss,
+  ) {}
+  tick() {
+    this.Player.effects.forEach((effect) => effect.tick(this.Player));
+    this.Boss.effects.forEach((effect) => effect.tick(this.Boss));
   }
-};
-export const partTwo = (input: AOCInput, health = 50, mana = 500) => {
-  const player = new Player(health, mana);
-  const boss = new Boss(
-    ...([...input.matchAll(/\d+/g)].map(([match]) => Number(match)) as [
-      number,
-      number,
-    ]),
+  clone() {
+    return new GameState(this.Player.clone(), this.Boss.clone());
+  }
+  toString() {
+    return `${this.Player.toString()}-${this.Boss.toString()}`;
+  }
+  get done() {
+    return Boolean(this.winner);
+  }
+  get winner() {
+    if (this.Player.health <= 0) return this.Boss;
+    if (this.Boss.health <= 0) return this.Player;
+    return null;
+  }
+  log() {
+    console.table({
+      done: Boolean(this.winner),
+      mana: this.Player.spentMana,
+      Player: this.Player.toString(),
+      Boss: this.Boss.toString(),
+      spells: this.Player.spellsCast.length,
+      spellsList: this.Player.spellsCast.join(', '),
+    });
+  }
+}
+const Spells = [MagicMissile, Drain, Shield, Poison, Recharge];
+export const partOne = (
+  input: AOCInput,
+  health = 50,
+  mana = 500,
+  hardMode = false,
+) => {
+  const startingState = new GameState(
+    new Player(health, mana),
+    new Boss(
+      ...([...input.matchAll(/\d+/g)].map(([match]) => Number(match)) as [
+        number,
+        number,
+      ]),
+    ),
   );
-  const queue: [player: Player, boss: Boss, nextSpell: Spell][] = Spells.filter(
-    (spell) => spell.cost <= player.mana,
-  ).map((spell) => [player.clone(), boss.clone(), spell]);
-  const score = (player: Player, boss: Boss, nextSpell: Spell) =>
-    boss.health + player.spentMana + nextSpell.cost - player.health;
+  const queue: [state: GameState, nextSpell: Spell][] = Spells.filter(
+    (spell) => spell.cost <= startingState.Player.mana,
+  ).map((spell) => [startingState.clone(), spell]);
+  const score = ({ Player, Boss }, nextSpell: Spell) =>
+    Boss.health + Player.spentMana + nextSpell.cost - Player.health;
   const visitedStates = new Set<string>();
-  const addToQueue = (player: Player, boss: Boss, nextSpell: Spell) => {
-    const key = `${player.toString()}-${boss.toString()}-${nextSpell.name}`;
+  const addToQueue = (state: GameState, nextSpell: Spell) => {
+    const key = `${state.toString()}-${nextSpell.name}`;
     if (visitedStates.has(key)) return;
     else visitedStates.add(key);
     const insertPoint = queue.findIndex(
-      (action) =>
-        score(action[0], action[1], action[2]) > score(player, boss, nextSpell),
+      (action) => score(action[0], action[1]) > score(state, nextSpell),
     );
     if (insertPoint >= 0)
-      queue.splice(insertPoint, 0, [player.clone(), boss.clone(), nextSpell]);
-    else queue.push([player.clone(), boss.clone(), nextSpell]);
+      queue.splice(insertPoint, 0, [state.clone(), nextSpell]);
+    else queue.push([state.clone(), nextSpell]);
   };
   while (queue.length) {
-    const [player, boss, nextSpell] = queue.shift()!;
-    nextSpell.cast(player, boss);
-    if (player.health <= 0) continue;
-    if (boss.health <= 0) return player.spentMana;
-    player.effects.forEach((effect) =>
-      effect.tick(player, boss, player.effects),
-    );
-    boss.effects.forEach((effect) => effect.tick(player, boss, boss.effects));
-    if (boss.health <= 0) return player.spentMana;
-    boss.act(player);
-    player.health -= 1;
-    if (player.health <= 0) continue;
-    player.effects.forEach((effect) =>
-      effect.tick(player, boss, player.effects),
-    );
-    boss.effects.forEach((effect) => effect.tick(player, boss, boss.effects));
-    if (boss.health <= 0) return player.spentMana;
-    Spells.filter((spell) => spell.cost <= player.mana).forEach((spell) =>
-      addToQueue(player, boss, spell),
+    const [state, nextSpell] = queue.shift()!;
+    if (hardMode) state.Player.health -= 1;
+    nextSpell.cast(state);
+    if (state.done)
+      if (state.winner instanceof Boss) continue;
+      else return state.Player.spentMana;
+    state.tick();
+    if (state.done && state.winner instanceof Player)
+      return state.Player.spentMana;
+    state.Boss.act(state.Player);
+    if (state.done && state.winner instanceof Boss) continue;
+    state.tick();
+    if (state.done && state.winner instanceof Player)
+      return state.Player.spentMana;
+    Spells.filter((spell) => spell.cost <= state.Player.mana).forEach((spell) =>
+      addToQueue(state, spell),
     );
   }
 };
