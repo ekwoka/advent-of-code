@@ -12,6 +12,8 @@ Scores:
 
 ![](https://img.shields.io/badge/2020-blue?style=for-the-badge&logo=googlecalendar&logoColor=white&color=blue) ![](https://img.shields.io/badge/stars-12-yellow?style=for-the-badge&logo=adventofcode&logoColor=white&color=FFFF66) ![](https://img.shields.io/badge/python-3776AB?style=for-the-badge&logo=python&logoColor=white) ![](https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 
+![](https://img.shields.io/badge/2016-blue?style=for-the-badge&logo=googlecalendar&logoColor=white&color=blue) ![](https://img.shields.io/badge/stars-2-yellow?style=for-the-badge&logo=adventofcode&logoColor=white&color=FFFF66) ![](https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+
 ![](https://img.shields.io/badge/2015-blue?style=for-the-badge&logo=googlecalendar&logoColor=white&color=blue) ![](https://img.shields.io/badge/stars-50-yellow?style=for-the-badge&logo=adventofcode&logoColor=white&color=FFFF66) ![](https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 
 ## About
