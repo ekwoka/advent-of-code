@@ -1,5 +1,5 @@
 import { range } from '@ekwoka/rust-ts';
-import { AOCInput } from '../../utils';
+import type { AOCInput } from '../../utils';
 
 /**
  *--- Day 16: The Floor Will Be Lava ---

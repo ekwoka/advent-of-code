@@ -50,7 +50,7 @@ const getRangeOnRow = (sensor: Sensor, row: number) => {
 const mergeRanges = (ranges: [number, number][]): [number, number][] => {
   const sortedRanges = ranges.sort(([a], [b]) => a - b);
   const mergedRanges: [number, number][] = [
-    sortedRanges.shift()! as [number, number],
+    sortedRanges.shift() as [number, number],
   ];
   for (const [min, max] of sortedRanges) {
     const [_prevMin, prevMax] = mergedRanges[mergedRanges.length - 1];
@@ -70,7 +70,7 @@ const coverageByRanges = (ranges: [number, number][]) =>
 // checks if a range is completely contained within another range
 const rangeInRange = (
   ranges: [number, number][],
-  range: [number, number]
+  range: [number, number],
 ): boolean => {
   const [min, max] = range;
   return ranges.some(([rMin, rMax]) => min >= rMin && max <= rMax);
@@ -84,7 +84,7 @@ const spaceInRanges = (x: number, ranges: [number, number][]) =>
 const findMissingSpace = (
   ranges: [number, number][],
   min: number,
-  max: number
+  max: number,
 ) => {
   let lastMax = min;
   for (const [rmin, rmax] of ranges) {
@@ -105,7 +105,7 @@ const getSpacesOnRow = (row: number) => {
       const [min, max] = getRangeOnRow(sensor, row);
       acc.push([min, max]);
       return acc;
-    }, [])
+    }, []),
   );
   const knownObjects = [...beaconSpaces, ...sensorSpaces].filter((space) => {
     const [x, y] = space.split(',').map(Number);
@@ -124,12 +124,12 @@ const getEmptySpaceInBox = (min: number, max: number) => {
         const [min, max] = getRangeOnRow(sensor, row);
         acc.push([min, max]);
         return acc;
-      }, [])
+      }, []),
     );
     if (!rangeInRange(coveredRanges, [min, max]))
       return [findMissingSpace(coveredRanges, min, max), row] as Coord;
     if (row % 100000 === 0)
-      console.log((((max - row) / (max - min)) * 100).toFixed(1) + '%', 'done');
+      console.log(`${(((max - row) / (max - min)) * 100).toFixed(1)}%`, 'done');
   }
   console.timeEnd('getSpacesOnRow');
   return;
@@ -141,7 +141,7 @@ console.log('Part One:', getSpacesOnRow(2_000_000));
 console.time('Part Two');
 console.log(
   'Part Two:',
-  processCoord(getEmptySpaceInBox(0, 4_000_000) ?? [0, 0])
+  processCoord(getEmptySpaceInBox(0, 4_000_000) ?? [0, 0]),
 );
 console.timeEnd('Part Two');
 

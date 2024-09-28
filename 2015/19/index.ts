@@ -51,7 +51,7 @@ export const partTwo = (input: AOCInput) => {
     .collect();
   const queue: [molecule: string, replacements: number][] = [[molecule, 0]];
   while (queue.length) {
-    const [mol, count] = queue.pop()!;
+    const [mol, count] = queue.pop();
     if (mol === 'e') return count;
     new RustIterator(replacements)
       .flatMap((change) =>

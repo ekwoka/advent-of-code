@@ -16,18 +16,21 @@ const monkeysOne: number = input
     const [name, operation] = string.split(':');
     return [name, operation];
   })
-  .reduce((acc, [name, operation]) => {
-    const getter = new Function(
-      'monkeys',
-      `with (monkeys) { return ${operation}; }`
-    );
-    return Object.defineProperty(acc, name, {
-      get() {
-        return getter(acc);
-      },
-      enumerable: true,
-    });
-  }, {} as Record<string, number>);
+  .reduce(
+    (acc, [name, operation]) => {
+      const getter = new Function(
+        'monkeys',
+        `with (monkeys) { return ${operation}; }`,
+      );
+      return Object.defineProperty(acc, name, {
+        get() {
+          return getter(acc);
+        },
+        enumerable: true,
+      });
+    },
+    {} as Record<string, number>,
+  );
 
 // Part 2 consists of finding out which number to provide to `humn` for `root` to evaluate as both inputs being true. This is mainly just brute forced but with some modifications to use the output from the last check to determine closeness to modify the input for the next.
 const monkeysTwo: number = input
@@ -36,21 +39,24 @@ const monkeysTwo: number = input
     const [name, operation] = string.split(':');
     return [name, operation];
   })
-  .reduce((acc, [name, operation]) => {
-    if (name === 'humn') return acc;
-    const getter = new Function(
-      'monkeys',
-      `with (monkeys) { return ${
-        name === 'root' ? operation.replace('+', '-') : operation
-      }; }`
-    );
-    return Object.defineProperty(acc, name, {
-      get() {
-        return getter(acc);
-      },
-      enumerable: true,
-    });
-  }, {} as Record<string, number | boolean>);
+  .reduce(
+    (acc, [name, operation]) => {
+      if (name === 'humn') return acc;
+      const getter = new Function(
+        'monkeys',
+        `with (monkeys) { return ${
+          name === 'root' ? operation.replace('+', '-') : operation
+        }; }`,
+      );
+      return Object.defineProperty(acc, name, {
+        get() {
+          return getter(acc);
+        },
+        enumerable: true,
+      });
+    },
+    {} as Record<string, number | boolean>,
+  );
 
 // There was a positive relationship between the input and output so it was pretty simple to just run the operations and adjust along the graph.
 const getPartTwo = () => {
@@ -65,7 +71,11 @@ const getPartTwo = () => {
     }
     const mod = Math.ceil(output / 10);
     current = current + mod;
-    if (current === Infinity || current === -Infinity) return false;
+    if (
+      current === Number.POSITIVE_INFINITY ||
+      current === Number.NEGATIVE_INFINITY
+    )
+      return false;
   }
   return result;
 };

@@ -1,4 +1,4 @@
-import { AOCInput } from '../../utils';
+import type { AOCInput } from '../../utils';
 /**
  * --- Day 7: Camel Cards ---
  */
@@ -34,13 +34,13 @@ const processInputs = (input: AOCInput, partTwo = false): number => {
 };
 
 enum HandTypes {
-  HighCard,
-  Pair,
-  TwoPair,
-  ThreeOfAKind,
-  FullHouse,
-  FourOfAKind,
-  FiveOfAKind,
+  HighCard = 0,
+  Pair = 1,
+  TwoPair = 2,
+  ThreeOfAKind = 3,
+  FullHouse = 4,
+  FourOfAKind = 5,
+  FiveOfAKind = 6,
 }
 
 const handToType = (hand: AOCInput, partTwo = false) => {

@@ -30,8 +30,8 @@ const startValue = 0 - GRID[0][0];
 function task1(grid, height, width) {
   [height, width] = [height || grid.length, width || grid[0].length];
   console.log(height, width);
-  let queue = [[...START, startValue]];
-  let costs = Array.from(Array(height), () => Array(width).fill(undefined));
+  const queue = [[...START, startValue]];
+  const costs = Array.from(Array(height), () => Array(width).fill(undefined));
   let maxQ = queue.length;
   let operations = 0;
   while (queue.length) {
@@ -42,23 +42,23 @@ function task1(grid, height, width) {
         'Percentage Complete:',
         (1000 - Math.floor((queue.length / maxQ) * 1000)) / 10,
         '% of',
-        operations + maxQ
+        operations + maxQ,
       );
       console.log('Remaining Operations:', queue.length);
     }
-    let [x, y, sum] = queue.shift();
+    const [x, y, sum] = queue.shift();
 
-    let adjustment =
+    const adjustment =
       Math.floor(x / grid[0].length) + Math.floor(y / grid.length);
     let cell = grid[y % grid.length][x % grid[0].length] + adjustment;
     cell = cell > 9 ? cell - 9 : cell;
     operations++;
-    let newSum = sum + cell;
+    const newSum = sum + cell;
     if (!costs[y][x] || newSum < costs[y][x]) {
       costs[y][x] = newSum;
       OFFSETS.forEach(([dx, dy]) => {
-        let newX = x + dx;
-        let newY = y + dy;
+        const newX = x + dx;
+        const newY = y + dy;
         if (newX >= 0 && newX < width && newY >= 0 && newY < height) {
           queue.push([newX, newY, newSum]);
         }

@@ -12,9 +12,9 @@ export const partOne = (input: AOCInput, groups = 3) => {
   function* getCombos() {
     const queue: [idx: number, sum: number, product: number, count: number][] =
       packages.map((pkg, i) => [i, pkg, pkg, 1]);
-    let minCount = Infinity;
+    let minCount = Number.POSITIVE_INFINITY;
     while (queue.length) {
-      const [idx, sum, product, count] = queue.shift()!;
+      const [idx, sum, product, count] = queue.shift();
       if (count > minCount) continue;
       if (sum === targetWeight) {
         yield product;

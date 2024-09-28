@@ -15,7 +15,7 @@ const offsets = [
 
 function task1(input) {
   let swarm = [
-    ...input.map((row) => row.split('').map((octo) => parseInt(octo))),
+    ...input.map((row) => row.split('').map((octo) => Number.parseInt(octo))),
   ];
   let flashes = 0;
   let steps = 100;
@@ -27,10 +27,10 @@ function task1(input) {
 
 function task2(input) {
   let swarm = [
-    ...input.map((row) => row.split('').map((octo) => parseInt(octo))),
+    ...input.map((row) => row.split('').map((octo) => Number.parseInt(octo))),
   ];
   let steps = 0;
-  while (synced(swarm) == false) {
+  while (synced(swarm) === false) {
     swarm = step(0, [...swarm])[1];
     steps++;
   }

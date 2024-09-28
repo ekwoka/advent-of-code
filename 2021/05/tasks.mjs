@@ -9,33 +9,33 @@ import input from './input.mjs';
 // only consider straight lines
 function task1(input) {
   const map = Array.from(Array(1000).keys()).map(() =>
-    Array.from(Array(1000).keys()).fill(0)
+    Array.from(Array(1000).keys()).fill(0),
   );
   const filteredInput = filterOutDiagonals(input);
   filteredInput.forEach((pair) => mapPointsBetween(...pair, map));
   return map.reduce(
     (acc, row) =>
       acc + row.reduce((acc, point) => acc + (point > 1 ? 1 : 0), 0),
-    0
+    0,
   );
 }
 
 // consider diagonals
 function task2(input) {
   const map = Array.from(Array(1000).keys()).map(() =>
-    Array.from(Array(1000).keys()).fill(0)
+    Array.from(Array(1000).keys()).fill(0),
   );
   input.forEach((pair) => mapPointsBetween(...pair, map));
   return map.reduce(
     (acc, row) =>
       acc + row.reduce((acc, point) => acc + (point > 1 ? 1 : 0), 0),
-    0
+    0,
   );
 }
 
 function filterOutDiagonals(input) {
   return input.filter(
-    (pair) => pair[0][0] == pair[1][0] || pair[0][1] == pair[1][1]
+    (pair) => pair[0][0] === pair[1][0] || pair[0][1] === pair[1][1],
   );
 }
 
@@ -49,10 +49,10 @@ function mapPointsBetween(start, end, map) {
 
   for (
     let i = start;
-    i.toString() != end.toString();
+    i.toString() !== end.toString();
     i[0] += stepy, i[1] += stepx
   ) {
-    let point = i;
+    const point = i;
     map[point[0]][point[1]]++;
   }
   map[end[0]][end[1]]++;

@@ -93,7 +93,7 @@ const getGridFaces = (map: string[][]) => {
     verticalSlices.push(map.slice(i, i + sideSize));
   }
   const allFaces = verticalSlices
-    .map((slice) => {
+    .flatMap((slice) => {
       const faces: string[][][] = [];
       for (let i = 0; i < slice[0].length; i += sideSize) {
         const face: string[][] = [];
@@ -104,7 +104,6 @@ const getGridFaces = (map: string[][]) => {
       }
       return faces;
     })
-    .flat()
     .filter((face) => face[0][0] !== ' ');
   const faceMapping = {
     A: {

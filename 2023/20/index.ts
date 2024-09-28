@@ -1,4 +1,4 @@
-import { AOCInput } from '../../utils';
+import type { AOCInput } from '../../utils';
 
 /**
  * --- Day 20: ??? ---
@@ -32,7 +32,7 @@ export const partOne = (input: AOCInput): number => {
       ),
     );
   });
-  const broadcaster = modules.get('broadcaster')![0];
+  const broadcaster = modules.get('broadcaster')?.[0];
   for (let i = 0; i < 1000; i++) {
     counters.presses++;
     broadcaster.lowPulse();
@@ -76,12 +76,11 @@ export const partTwo = (input: AOCInput): number => {
       mod[0].registerOutput(modules.get(output)?.[0] ?? rx),
     );
   });
-  const broadcaster = modules.get('broadcaster')![0];
+  const broadcaster = modules.get('broadcaster')?.[0];
 
   const nodes = rx.inputs
     .toIter()
-    .map((input) => input.inputs)
-    .flat()
+    .flatMap((input) => input.inputs)
     .map((node) => {
       const done = { value: 0 };
       const watcher = new Watcher(counters, (count) => (done.value = count));
@@ -101,9 +100,9 @@ export const partTwo = (input: AOCInput): number => {
 };
 
 enum ModuleType {
-  Broadcaster,
-  Conjunction,
-  FlipFlop,
+  Broadcaster = 0,
+  Conjunction = 1,
+  FlipFlop = 2,
 }
 
 class PulseModule {
@@ -157,9 +156,6 @@ class Broadcaster extends PulseModule {
 class FlipFlop extends PulseModule {
   type = ModuleType.FlipFlop;
   on = false;
-  constructor(name: string, state: PulseCounter) {
-    super(name, state);
-  }
   lowPulse(): PulseModule {
     this.state.low++;
     this.on = !this.on;
@@ -179,9 +175,6 @@ class FlipFlop extends PulseModule {
 class Conjunction extends PulseModule {
   type = ModuleType.Conjunction;
   inputHistory: Map<PulseModule, boolean> = new Map();
-  constructor(name: string, state: PulseCounter) {
-    super(name, state);
-  }
   registerInput(input: PulseModule): PulseModule {
     this.inputs.push(input);
     this.inputHistory.set(input, false);
@@ -235,9 +228,6 @@ type PulseCounter = {
 };
 
 class RX extends PulseModule {
-  constructor(name: string, state: PulseCounter) {
-    super(name, state);
-  }
   lowPulse(): PulseModule {
     this.state.low++;
     this.state.done = true;

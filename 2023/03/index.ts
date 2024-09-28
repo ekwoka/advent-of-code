@@ -1,4 +1,4 @@
-import { AOCInput } from '../../utils';
+import type { AOCInput } from '../../utils';
 
 export const partOne = (input: AOCInput) => {
   const { symbolCoords, numberCoords } = getMemberCoords(input);
@@ -18,7 +18,7 @@ const getMemberCoords = (input: AOCInput) => {
     .forEach(([y, line]) => {
       const chars = line.chars().peekable();
       return chars
-        .map((ch) => {
+        .flatMap((ch) => {
           if (ch === '.') return ch as string;
           if (!isNumberString(ch)) return '$';
           let output = Number(ch);
@@ -30,7 +30,6 @@ const getMemberCoords = (input: AOCInput) => {
           if (count === 0) return output;
           return Array<number>(count + 1).fill(output);
         })
-        .flat()
         .enumerate()
         .forEach(([x, ch]) => {
           if (ch === '.') return ch;
@@ -57,8 +56,7 @@ export const partTwo = (input: AOCInput) => {
 type CoordHash = Record<number, Record<number, number>>;
 [1, [2, 3]].flat();
 const offsets = [-1, 0, 1]
-  .map((y) => [-1, 0, 1].map((x) => [x, y] as const))
-  .flat(1)
+  .flatMap((y) => [-1, 0, 1].map((x) => [x, y] as const))
   .filter(([x, y]) => x !== 0 || y !== 0);
 const collectNumbersAtCoord = (
   coords: CoordHash,

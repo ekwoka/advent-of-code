@@ -15,7 +15,7 @@ const instructions = input.trim().split('\n').filter(Boolean);
 // This is genarlized by accepting a stepCallback that runs on every clock cycle
 const processInstructions = (
   instructions: string[],
-  stepCallback: (cycle: number, x: number) => void
+  stepCallback: (cycle: number, x: number) => void,
 ) => {
   const ctx = {
     cycle: 1,
@@ -50,7 +50,7 @@ const calculateSignalStrength = (instructions: string[]) => {
 // Part 2 consists of the x value representing a 3 pixel sprite, and the cycle representing which pixel of the display is being painted. When these overlap, the pixel is painted.
 const paintToDisplay = (instructions: string[]) => {
   const screen = Array.from({ length: 6 }, () =>
-    Array.from({ length: 40 }, () => ' ')
+    Array.from({ length: 40 }, () => ' '),
   );
   const stepCallback = (cycle: number, x: number) => {
     const row = (cycle / 40) | 0;

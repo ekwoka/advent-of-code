@@ -90,7 +90,7 @@ const PartOne = (input: number[]) => {
 const PartTwo = (input: number[]) => {
   console.time('Part Two');
   const [head, originalList] = createLinkedList(
-    input.map((val) => val * 811_589_153)
+    input.map((val) => val * 811_589_153),
   );
   for (let i = 0; i < 10; i++) mixList(originalList, input.length);
   console.timeEnd('Part Two');

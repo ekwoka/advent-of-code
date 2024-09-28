@@ -7,9 +7,9 @@
  * may be passed type recursion limits
  */
 
-import { GreaterThan, Max } from './compare';
-import { EQ, Sum } from './math';
-import { Split } from './transform';
+import type { GreaterThan, Max } from './compare';
+import type { EQ, Sum } from './math';
+import type { Split } from './transform';
 
 /**
  * Types for our structs/data

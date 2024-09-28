@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Err, Ok, Result, RustIterator } from '@ekwoka/rust-ts';
 import { mkdir } from 'node:fs/promises';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Err, Ok, type Result, RustIterator } from '@ekwoka/rust-ts';
 
 await mkdir(new URL('./.cache', import.meta.url), { recursive: true });
 
@@ -117,9 +117,6 @@ export const getFromCache = async (year: Year, day: Day): Promise<string> => {
 };
 
 export class AOCInput extends String {
-  constructor(value: string) {
-    super(value);
-  }
   chars() {
     return new RustIterator(chars(this));
   }
@@ -134,7 +131,7 @@ export class AOCInput extends String {
   }
 }
 // eslint-disable-next-line @typescript-eslint/ban-types
-type AllStrings = string | String;
+type AllStrings = string | string;
 const chars = function* (str: AllStrings) {
   yield* str;
 };

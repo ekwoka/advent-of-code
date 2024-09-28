@@ -17,7 +17,7 @@ const pairs = input
     pair
       .split('\n')
       .filter(Boolean)
-      .map((signal) => eval(signal))
+      .map((signal) => new Function(`return ${signal}`)()),
   );
 
 // For Part 1, we just need to know which pairs are out of order
@@ -35,7 +35,7 @@ const compare = (a: number | number[], b: number | number[], part2 = false) => {
     return part2 ? a - b : compareToBoolean(a - b);
   const [aArray, bArray] = [a, b].map(arrayWrap).map(deepClone);
   while (aArray.length && bArray.length) {
-    const result = compare(aArray.shift()!, bArray.shift()!, part2);
+    const result = compare(aArray.shift(), bArray.shift(), part2);
     if (result !== undefined) return result;
   }
   if (aArray.length) return part2 ? 1 : false;
@@ -50,8 +50,8 @@ const findDecoderKeys = (pairs: number[][][][]) => {
   const keys = decoderKeys
     .map((key) =>
       sortedSignals.findIndex(
-        (signal) => JSON.stringify(signal) === JSON.stringify(key)
-      )
+        (signal) => JSON.stringify(signal) === JSON.stringify(key),
+      ),
     )
     .map((key) => key + 1);
   return keys;
@@ -61,11 +61,11 @@ console.log(
   'Part One:',
   deepClone(pairs)
     .map(([a, b]) => compare(a, b))
-    .reduce((acc, bool, i) => (bool ? acc + i + 1 : acc), 0)
+    .reduce((acc, bool, i) => (bool ? acc + i + 1 : acc), 0),
 );
 console.log(
   'Part Two',
-  findDecoderKeys(pairs).reduce((a, b) => a * b)
+  findDecoderKeys(pairs).reduce((a, b) => a * b),
 );
 
 function arrayWrap<T>(a: T | T[]): T[] {

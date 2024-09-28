@@ -1,8 +1,8 @@
+import type { LessThan } from './compare';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
-import { Add, EQ, Mult, Sum } from './math';
-import { Split, SplitAll, ToNumber } from './transform';
-import { LessThan } from './compare';
+import type { Add, EQ, Mult, Sum } from './math';
+import type { Split, SplitAll, ToNumber } from './transform';
 
 type Input = '32T3K 65\nT55J5 84\nKK677 28\nKTJJT 20\nQQQJA 83\n';
 export enum HandTypes {

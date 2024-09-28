@@ -41,14 +41,14 @@ export const partTwo = (input: AOCInput): number => {
 const cache = new Map<string, number>();
 const getPossibleCombos = (
   initialSprings: string[],
-  streak = 0,
+  streak,
   groups: readonly number[],
   history = '',
 ): number => {
   const key = `${initialSprings.join('')}-${streak}-${groups.join(',')}`;
 
   if (cache.has(key)) {
-    return cache.get(key)!;
+    return cache.get(key);
   }
   const remainingGroups = groups.slice();
   const remainingSprings = initialSprings.toIter().peekable();
@@ -58,19 +58,17 @@ const getPossibleCombos = (
     .takeWhile((ch) => ch !== '?' && !done)
     .forEach((next) => {
       if (done) return;
-      if (next === '#')
-        if (!remainingGroups.length) {
-          return (done = true);
-        } else if (streak === remainingGroups[0]) {
-          return (done = true);
-        } else streak++;
+      if (next === '#') {
+        if (!remainingGroups.length) return (done = true);
+        if (streak === remainingGroups[0]) return (done = true);
+        streak++;
+      }
       if (next === '.')
-        if (streak)
-          if (streak !== remainingGroups[0]) {
-            return (done = true);
-          } else {
-            (streak = 0), remainingGroups.shift();
-          }
+        if (streak) {
+          if (streak !== remainingGroups[0]) return (done = true);
+          streak = 0;
+          remainingGroups.shift();
+        }
     });
   if (done) {
     cache.set(key, 0);
@@ -85,10 +83,9 @@ const getPossibleCombos = (
     ) {
       cache.set(key, 1);
       return 1;
-    } else {
-      cache.set(key, 0);
-      return 0;
     }
+    cache.set(key, 0);
+    return 0;
   }
 
   const rest = remainingSprings.collect();
@@ -100,21 +97,21 @@ const getPossibleCombos = (
         rest,
         streak + 1,
         remainingGroups,
-        historical + '#',
+        `${historical}#`,
       );
     else
       count += getPossibleCombos(
         rest,
         0,
         remainingGroups.slice(1),
-        historical + '.',
+        `${historical}.`,
       );
   else if (!remainingGroups.length)
-    count += getPossibleCombos(rest, 0, remainingGroups, historical + '.');
+    count += getPossibleCombos(rest, 0, remainingGroups, `${historical}.`);
   else
     count +=
-      getPossibleCombos(rest, 1, remainingGroups, historical + '#') +
-      getPossibleCombos(rest, 0, remainingGroups, historical + '.');
+      getPossibleCombos(rest, 1, remainingGroups, `${historical}#`) +
+      getPossibleCombos(rest, 0, remainingGroups, `${historical}.`);
 
   cache.set(key, count);
   return count;

@@ -1,4 +1,4 @@
-import { AOCInput } from '../../utils';
+import type { AOCInput } from '../../utils';
 
 const makeDigitRegex = (digit: string) => {
   const has_number_after = `(?:.\\D*${digit})`;
@@ -84,9 +84,9 @@ Array.from({ length: 10 }, (_, i) => i).forEach((i) => (wordDigitMap[i] = i));
 Object.entries(wordDigitMap).forEach(([word, digit]) => {
   let current = characterTree;
   const chars = word.split('');
-  const final = chars.pop()!;
+  const final = chars.pop();
   while (chars.length) {
-    const char = chars.shift()!;
+    const char = chars.shift();
     current = (current[char] ||= {}) as Tree;
   }
   current[final] = digit;
@@ -117,7 +117,7 @@ export const partTwoStream = (input: AOCInput): number => {
       return;
     }
     if (typeof trackers[0] !== 'number') return;
-    const num = trackers.shift()!;
+    const num = trackers.shift();
     left ||= num * 10;
     right = num;
   });

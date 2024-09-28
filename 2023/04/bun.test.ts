@@ -1,8 +1,8 @@
-import { part_one, part_two } from './main-day4.rs';
-import { AOCInput, getInput } from '../../utils';
 import { partOne, partTwo } from '.';
+import { AOCInput, getInput } from '../../utils';
+import { part_one, part_two } from './main-day4.rs';
 
-export const toStr = (input: string) => new TextEncoder().encode(input);
+const toStr = (input: string) => new TextEncoder().encode(input);
 
 describe('2023 Day 4', async () => {
   const input = await getInput(2023, 4);

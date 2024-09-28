@@ -9,17 +9,17 @@ import input from './input.mjs';
 function task1(input) {
   const max = Math.max(...input);
   const min = Math.min(...input);
-  let positions = Array.from(Array(max + 1).keys()).slice(min);
-  let fuelCost = positions.reduce(
+  const positions = Array.from(Array(max + 1).keys()).slice(min);
+  const fuelCost = positions.reduce(
     (cheapest, target) => {
-      let cost = input.reduce((fuel, pos) => {
+      const cost = input.reduce((fuel, pos) => {
         return Math.abs(pos - target) + fuel;
       }, 0);
       cost;
       if (cost < cheapest[1]) return [target, cost];
       return cheapest;
     },
-    [-1, Infinity]
+    [-1, Number.POSITIVE_INFINITY],
   );
   return fuelCost;
 }
@@ -29,18 +29,18 @@ function task1(input) {
 function task2(input) {
   const max = Math.max(...input);
   const min = Math.min(...input);
-  let positions = Array.from(Array(max + 1).keys()).slice(min);
-  let fuelCost = positions.reduce(
+  const positions = Array.from(Array(max + 1).keys()).slice(min);
+  const fuelCost = positions.reduce(
     (cheapest, target) => {
-      let cost = input.reduce((fuel, pos) => {
-        let diff = Math.abs(pos - target);
+      const cost = input.reduce((fuel, pos) => {
+        const diff = Math.abs(pos - target);
         return fuel + (diff * (diff + 1)) / 2;
       }, 0);
       cost;
       if (cost < cheapest[1]) return [target, cost];
       return cheapest;
     },
-    [-1, Infinity]
+    [-1, Number.POSITIVE_INFINITY],
   );
   return fuelCost;
 }

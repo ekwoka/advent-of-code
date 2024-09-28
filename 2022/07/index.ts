@@ -35,14 +35,14 @@ const buildFS = (commandLines: string[]) => {
 
 // Here we calculate the sizes of all the directories and return it as a flat object
 const calculateDirectorySizes = (
-  fs: Record<string, unknown>
+  fs: Record<string, unknown>,
 ): Record<string, number> => {
   const sizes: Record<string, number> = {};
   const calculateSize = (
     node: string | Record<string, string>,
-    prefix: string
+    prefix: string,
   ) => {
-    if (typeof node === 'string') return parseInt(node);
+    if (typeof node === 'string') return Number.parseInt(node);
     sizes[`${prefix}`] = Object.entries(node)
       .map(([name, value]) => {
         if (name === 'parent') return 0;
@@ -61,14 +61,14 @@ const fsSizes = calculateDirectorySizes(buildFS(commandLines));
 // Part 1 consists of finding all directories with a size under 100_000 and summing them
 console.log(
   'Part 1:',
-  Object.values(fsSizes).filter(underHundredThousand).reduce(sum)
+  Object.values(fsSizes).filter(underHundredThousand).reduce(sum),
 );
 // Part 2 consists of finding the smallest single directory whose deletion would free up enough space to allow for the update
 console.log(
   'Part 2:',
   Object.values(fsSizes)
     .filter((size) => size >= NEEDED_FREE_SPACE - (MAX_MEMORY - fsSizes['']))
-    .reduce(getSmallestSize)
+    .reduce(getSmallestSize),
 );
 
 function sum(a: number, b: number) {

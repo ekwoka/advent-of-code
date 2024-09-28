@@ -23,7 +23,7 @@ const getNeighbours = (input: Coord3D): Coord3D[] => {
   for (let i = 0; i < 3; i++)
     for (const offset of offsets)
       neighbours.push(
-        input.map((v, j) => (i === j ? v + offset : v)) as Coord3D
+        input.map((v, j) => (i === j ? v + offset : v)) as Coord3D,
       );
   return neighbours;
 };
@@ -40,16 +40,16 @@ const makeFullVolume = (input: Coord3D[]): string[][][] => {
   return Array.from({ length: max.z + 1 }, (_, z) =>
     Array.from({ length: max.y + 1 }, (_, y) =>
       Array.from({ length: max.x + 1 }, (_, x) =>
-        dropSet.has([x, y, z].join(',')) ? '#' : '.'
-      )
-    )
+        dropSet.has([x, y, z].join(',')) ? '#' : '.',
+      ),
+    ),
   );
 };
 
 const floodVolume = (volume: string[][][]): string[][][] => {
   const queue: Coord3D[] = [[0, 0, 0]];
   while (queue.length) {
-    const coord = queue.shift()!;
+    const coord = queue.shift();
     const [x, y, z] = coord;
     if (!volume[z]?.[y]?.[x] || ['#', '@'].includes(volume[z][y][x])) continue;
     volume[z][y][x] = '@';
@@ -66,7 +66,7 @@ const getSidesExposedToWater = (input: string[]): number => {
     volume[z]?.[y]?.[x] !== undefined;
   const getExposedSideCount = (coord: Coord3D): number =>
     getNeighbours(coord).filter(
-      ([x, y, z]) => !exists([x, y, z]) || volume[z][y][x] === '@'
+      ([x, y, z]) => !exists([x, y, z]) || volume[z][y][x] === '@',
     ).length;
   return lavaDrops.map(getExposedSideCount).reduce((a, b) => a + b);
 };
@@ -76,7 +76,7 @@ console.log(
   input
     .map(stringToCoord)
     .map((coord) => getExposedSideCount(coord))
-    .reduce((a, b) => a + b)
+    .reduce((a, b) => a + b),
 );
 console.log('Part Two:', getSidesExposedToWater(input));
 

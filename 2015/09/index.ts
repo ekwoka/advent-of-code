@@ -1,5 +1,5 @@
-import type { AOCInput } from '../../utils';
 import { RustIterator } from '@ekwoka/rust-ts';
+import type { AOCInput } from '../../utils';
 
 export const partOne = (input: AOCInput): number => {
   const tree = input
@@ -24,7 +24,7 @@ export const partOne = (input: AOCInput): number => {
   };
 
   while (queue.length) {
-    const [current, visited, distance] = queue.shift()!;
+    const [current, visited, distance] = queue.shift();
     if (visited.size + 1 === tree.size) return distance;
     tree.get(current).forEach((distanceTo, to) => {
       if (visited.has(to)) return;
@@ -50,7 +50,7 @@ export const partTwo = (input: AOCInput): number => {
   return new RustIterator(
     (function* () {
       while (queue.length) {
-        const [current, visited, distance] = queue.shift()!;
+        const [current, visited, distance] = queue.shift();
         if (visited.size + 1 === tree.size) yield distance;
         tree.get(current).forEach((distanceTo, to) => {
           if (visited.has(to)) return;

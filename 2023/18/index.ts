@@ -1,5 +1,5 @@
-import { RustIterator, range } from '@ekwoka/rust-ts';
-import { AOCInput } from '../../utils';
+import { type RustIterator, range } from '@ekwoka/rust-ts';
+import type { AOCInput } from '../../utils';
 
 /**
  * --- Day 18: ??? ---
@@ -35,7 +35,7 @@ export const partOne = (input: AOCInput): number => {
     .map(Number)
     .fold(
       ([min, max], x) => [Math.min(min, x), Math.max(max, x)],
-      [Infinity, -Infinity],
+      [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY],
     );
   const adjustedMap = Object.keys(map)
     .toIter()
@@ -62,7 +62,7 @@ export const partOne = (input: AOCInput): number => {
     .nth(0);
   const stack: Coords[] = [firstInside];
   while (stack.length) {
-    const [x, y] = stack.pop()!;
+    const [x, y] = stack.pop();
     if (
       adjustedMap[y]?.[x] === '#' ||
       !(y in adjustedMap) ||
@@ -93,7 +93,7 @@ export const partTwo = (input: AOCInput): number => {
         .filter((c) => !markerChars.includes(c))
         .collect();
       const dir = (1 << Number(hex.pop())) as Direction;
-      const length = parseInt(hex.join(''), 16);
+      const length = Number.parseInt(hex.join(''), 16);
       return [dir, length];
     })
     .scan(

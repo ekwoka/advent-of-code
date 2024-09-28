@@ -1,7 +1,7 @@
-import { part_one, part_two } from './main-day2.rs';
 import { getInput } from '../../utils';
+import { part_one, part_two } from './main-day2.rs';
 
-export const toStr = (input: string) => new TextEncoder().encode(input);
+const toStr = (input: string) => new TextEncoder().encode(input);
 
 describe('in Rust', async () => {
   const input = await getInput(2023, 2);

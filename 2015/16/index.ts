@@ -29,7 +29,7 @@ export const partOne = (input: AOCInput) => {
           .slice(line.indexOf(':') + 1)
           .split(',')
           .map((pair) => pair.split(':'))
-          .map(([key, value]) => [key.trim(), parseInt(value.trim())]),
+          .map(([key, value]) => [key.trim(), Number.parseInt(value.trim())]),
       )
       .enumerate()
       .filter(isCandidate)
@@ -58,7 +58,7 @@ export const partTwo = (input: AOCInput) => {
           .slice(line.indexOf(':') + 1)
           .split(',')
           .map((pair) => pair.split(':'))
-          .map(([key, value]) => [key.trim(), parseInt(value.trim())]),
+          .map(([key, value]) => [key.trim(), Number.parseInt(value.trim())]),
       )
       .enumerate()
       .filter(isCandidate)

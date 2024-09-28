@@ -1,4 +1,4 @@
-import { AOCInput } from '../../utils';
+import type { AOCInput } from '../../utils';
 
 export const partOne = (_input: AOCInput): number => {
   return 0;

@@ -16,7 +16,7 @@ const VALUES = Array(200)
   .map((_, i) => i);
 
 function calcHeight(xV, yV) {
-  let position = [...ORIGIN];
+  const position = [...ORIGIN];
   let inTarget = false;
   let maxHeight = 0;
 
@@ -49,10 +49,10 @@ function findMaxHeight() {
   let trajectory = [];
   let options = 0;
 
-  for (let xV of VALUES) {
+  for (const xV of VALUES) {
     for (let yV of VALUES) {
       yV -= Math.ceil(VALUES.at(-1) / 2);
-      let height = calcHeight(xV, yV);
+      const height = calcHeight(xV, yV);
       if (height !== null) {
         options += 1;
         if (height > maxHeight) {

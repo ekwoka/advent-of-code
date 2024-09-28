@@ -1,5 +1,5 @@
-import { RustIterator, range } from '@ekwoka/rust-ts';
-import { AOCInput } from '../../utils';
+import { type RustIterator, range } from '@ekwoka/rust-ts';
+import type { AOCInput } from '../../utils';
 
 /**
  * --- Day 25: ??? ---
@@ -82,7 +82,7 @@ export const partOne = (input: AOCInput): number => {
   const queue = [Object.keys(remainingConnections)[0]];
   const connected = new Set<string>();
   while (queue.length > 0) {
-    const node = queue.shift()!;
+    const node = queue.shift();
     if (connected.has(node)) continue;
     connected.add(node);
     queue.push(...remainingConnections[node]);
@@ -96,14 +96,14 @@ const getShortestDistance = (connections: Record<string, string[]>) => {
     if (from === to) return 0;
     const key = `${from}:${to}`;
     const key2 = `${to}:${from}`;
-    if (cache.has(key)) return cache.get(key)!;
-    if (cache.has(key2)) return cache.get(key2)!;
+    if (cache.has(key)) return cache.get(key);
+    if (cache.has(key2)) return cache.get(key2);
     const visited = new Set<string>([from]);
     const queue = connections[from].map(
       (node) => [node, 1] as [string, number],
     );
     while (queue.length > 0) {
-      const [node, distance] = queue.shift()!;
+      const [node, distance] = queue.shift();
       if (node === to) {
         cache.set(key, distance);
         cache.set(key2, distance);
@@ -117,7 +117,7 @@ const getShortestDistance = (connections: Record<string, string[]>) => {
         ),
       );
     }
-    return -Infinity;
+    return Number.NEGATIVE_INFINITY;
   };
 };
 

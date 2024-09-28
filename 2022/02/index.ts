@@ -25,7 +25,7 @@ const rounds: number[][] = input
     round
       .split(' ')
       .filter(Boolean)
-      .map((type) => typeMap[type])
+      .map((type) => typeMap[type]),
   );
 
 // Part 1 consists of calculating the score for each round, and then summing the scores

@@ -1,4 +1,4 @@
-import { range, RustIterator } from '@ekwoka/rust-ts';
+import { RustIterator, range } from '@ekwoka/rust-ts';
 import type { AOCInput } from '../../utils';
 
 class Ingredient {

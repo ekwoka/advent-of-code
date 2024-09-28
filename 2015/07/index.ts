@@ -73,7 +73,7 @@ class Not implements Gate {
   cache: number | null = null;
   get(gates: Map<string, Gate>) {
     if (this.cache === null)
-      this.cache = parseInt(
+      this.cache = Number.parseInt(
         gateIDtoNumber(this.target, gates)
           .toString(2)
           .padStart(16, '0')
@@ -121,7 +121,7 @@ const gateFromInstruction = (instruction: string) => {
 const gateIDtoNumber = (id: string, gates: Map<string, Gate>): number =>
   /\d+/.test(id) ? Number(id) : gates.get(id).get(gates);
 
-export const partOne = (input: AOCInput, output: string = 'a'): number => {
+export const partOne = (input: AOCInput, output = 'a'): number => {
   const gates = input
     .lines()
     .filter(Boolean)

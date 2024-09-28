@@ -1,4 +1,4 @@
-import { ExplodeNumber, Join, MapToStrings, ToNumber } from './transform';
+import type { ExplodeNumber, Join, MapToStrings, ToNumber } from './transform';
 
 /**
  * Is Equal. Works for non-numbers as well
