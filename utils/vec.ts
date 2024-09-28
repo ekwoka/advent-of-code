@@ -5,6 +5,7 @@ interface Vector<N extends number> {
   dot(v: Vector<N>): number;
   length(): number;
   normalize(): Vector<N>;
+  between(v: Vector<N>): IterableIterator<Vector<N>>;
   toArray(): number[];
   toString(): string;
 }
@@ -38,6 +39,15 @@ export class Vec2 implements Vector<2> {
   normalize(): Vec2 {
     const length = this.length();
     return new Vec2(this.x / length, this.y / length);
+  }
+  *between(v: Vec2, inclusive = false): IterableIterator<Vec2> {
+    const diff = v.sub(this);
+    const length = diff.length();
+    const step = diff.scale(1 / length);
+    for (let i = 1; i < length; i++) {
+      yield this.add(step.scale(i));
+    }
+    if (inclusive) yield v;
   }
 
   toArray(): number[] {
@@ -91,6 +101,14 @@ export class Vec3 implements Vector<3> {
   normalize(): Vec3 {
     const length = this.length();
     return new Vec3(this.x / length, this.y / length, this.z / length);
+  }
+  *between(v: Vec3): IterableIterator<Vec3> {
+    const diff = v.sub(this);
+    const length = diff.length();
+    const step = diff.scale(1 / length);
+    for (let i = 1; i < length; i++) {
+      yield this.add(step.scale(i));
+    }
   }
 
   toArray(): number[] {
