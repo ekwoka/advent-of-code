@@ -1,4 +1,4 @@
-import { AOCInput } from '../../utils';
+import type { AOCInput } from '../../utils';
 
 /**
  * --- Day 17: ??? ---
@@ -21,7 +21,7 @@ export const partOne = (input: AOCInput): number => {
     coords: Coords,
     direction: Direction,
     previousloss: number,
-    sinceTurn: number = 1,
+    sinceTurn = 1,
   ) => {
     const [x, y] = coords;
     if (x < 0 || y < 0 || x >= grid[0].length || y >= grid.length) return;
@@ -36,7 +36,7 @@ export const partOne = (input: AOCInput): number => {
   };
   const pathGrid = grid.map((row) => row.map(() => 0));
   while (queue.length) {
-    const [[x, y], dir, loss, sinceTurn] = queue.pop()!;
+    const [[x, y], dir, loss, sinceTurn] = queue.pop();
     if (pathGrid[y][x] < loss) pathGrid[y][x] = loss;
     if (x === end[0] && y === end[1]) return loss;
     if (sinceTurn < 3)
@@ -92,7 +92,7 @@ export const partTwo = (input: AOCInput): number => {
     coords: Coords,
     direction: Direction,
     previousloss: number,
-    sinceTurn: number = 1,
+    sinceTurn = 1,
   ) => {
     const [x, y] = coords;
     if (x < 0 || y < 0 || x >= grid[0].length || y >= grid.length) return;
@@ -107,7 +107,7 @@ export const partTwo = (input: AOCInput): number => {
   };
   const pathGrid = grid.map((row) => row.map(() => 0));
   while (queue.length) {
-    const [[x, y], dir, loss, sinceTurn] = queue.pop()!;
+    const [[x, y], dir, loss, sinceTurn] = queue.pop();
     if (pathGrid[y][x] < loss) pathGrid[y][x] = loss;
     if (x === end[0] && y === end[1]) return loss;
     if (sinceTurn < 10)

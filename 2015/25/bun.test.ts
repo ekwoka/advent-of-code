@@ -7,7 +7,7 @@ describe('2015 Day 25', async () => {
     expect(
       partOne(
         new AOCInput(
-          `To continue, please consult the code grid in the manual.  Enter the code at row 4, column 3.`,
+          'To continue, please consult the code grid in the manual.  Enter the code at row 4, column 3.',
         ),
       ),
     ).toBe(21_345_942n);

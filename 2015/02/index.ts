@@ -1,4 +1,4 @@
-import { RustIterator } from '@ekwoka/rust-ts';
+import type { RustIterator } from '@ekwoka/rust-ts';
 import type { AOCInput } from '../../utils';
 
 export const partOne = (input: AOCInput): number => {

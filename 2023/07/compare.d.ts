@@ -1,5 +1,5 @@
-import { Dec, EQ } from './math';
-import { ExplodeNumber } from './transform';
+import type { Dec, EQ } from './math';
+import type { ExplodeNumber } from './transform';
 
 export type Max<LHS extends number, RHS extends number> = LessThan<
   LHS,

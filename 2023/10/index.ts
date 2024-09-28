@@ -1,5 +1,5 @@
-import { RustIterator, range } from '@ekwoka/rust-ts';
-import { AOCInput } from '../../utils';
+import { type RustIterator, range } from '@ekwoka/rust-ts';
+import type { AOCInput } from '../../utils';
 
 const { floor } = Math;
 

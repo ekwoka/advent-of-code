@@ -1,5 +1,5 @@
-import { RustIterator, r } from '@ekwoka/rust-ts';
-import { AOCInput } from '../../utils';
+import { type RustIterator, r } from '@ekwoka/rust-ts';
+import type { AOCInput } from '../../utils';
 /**
  * --- Day 9: Mirage Maintenance ---
  */

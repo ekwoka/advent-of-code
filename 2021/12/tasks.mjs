@@ -6,8 +6,8 @@ function mapConnections(input) {
     const [start, end] = connection.split('-');
     if (!connections[start]) connections[start] = [];
     if (!connections[end]) connections[end] = [];
-    if (end != 'start') connections[start].push(end);
-    if (start != 'start') connections[end].push(start);
+    if (end !== 'start') connections[start].push(end);
+    if (start !== 'start') connections[end].push(start);
   });
   return connections;
 }

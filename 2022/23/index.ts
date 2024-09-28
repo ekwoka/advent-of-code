@@ -11,15 +11,12 @@ import { readFile } from 'node:fs/promises';
 const input: string = (await readFile('input.txt', 'utf8')).trim();
 
 // Input consists of a grid of # and . characters indicating positions of elves and empty spaces respectively
-const initialPositions: Coord[] = input
-  .split('\n')
-  .map((line, y) =>
-    line
-      .split('')
-      .map((char, x) => (char === '#' ? [x, y] : false))
-      .filter(Boolean)
-  )
-  .flat() as Coord[];
+const initialPositions: Coord[] = input.split('\n').flatMap((line, y) =>
+  line
+    .split('')
+    .map((char, x) => (char === '#' ? [x, y] : false))
+    .filter(Boolean),
+) as Coord[];
 
 const offsets: Record<string, Coord[]> = {
   N: [
@@ -53,19 +50,19 @@ const getDuplicates = (arr: string[]) =>
 // this is the main simulation function for processing the elves position changes
 const simulateSteps = (
   steps: number,
-  noMoveCallback?: (round: number) => void
+  noMoveCallback?: (round: number) => void,
 ) => {
   const positions: Set<string> = new Set(
-    initialPositions.map((p) => coordToString(p))
+    initialPositions.map((p) => coordToString(p)),
   );
   const dirs = ['N', 'S', 'W', 'E'] as (keyof typeof offsets)[];
   const checkDirection = (
     direction: keyof typeof offsets,
     x: number,
-    y: number
+    y: number,
   ) =>
     offsets[direction].every(
-      ([dx, dy]) => !positions.has(coordToString([x + dx, y + dy]))
+      ([dx, dy]) => !positions.has(coordToString([x + dx, y + dy])),
     );
 
   for (let i = 1; i <= steps; i++) {
@@ -100,11 +97,11 @@ const simulateSteps = (
 
     // update the positions of the elves
     elfPositions.forEach(([p, n]) =>
-      positions.add(duplicates.includes(n) ? p : n)
+      positions.add(duplicates.includes(n) ? p : n),
     );
 
     // change the first direction considered by the elves in the loop
-    dirs.push(dirs.shift()!);
+    dirs.push(dirs.shift());
   }
   return positions;
 };
@@ -121,7 +118,12 @@ const getContainingRect = (coords: string[]) => {
         Math.max(maxY, y),
       ];
     },
-    [Infinity, Infinity, -Infinity, -Infinity]
+    [
+      Number.POSITIVE_INFINITY,
+      Number.POSITIVE_INFINITY,
+      Number.NEGATIVE_INFINITY,
+      Number.NEGATIVE_INFINITY,
+    ],
   );
   return { minX, minY, maxX, maxY };
 };

@@ -5,7 +5,7 @@ describe('2015 Day 12', async () => {
   const input = await getInput(2015, 12);
   it('Passes Part 1 Test', () => {
     expect(partOne(new AOCInput(`{"a":{"b":4},"c":-1}`))).toBe(
-      partOne(new AOCInput(`[[[3]]]`)),
+      partOne(new AOCInput('[[[3]]]')),
     );
   });
   it('Passes Part 1', () => {

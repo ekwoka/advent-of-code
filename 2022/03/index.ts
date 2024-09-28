@@ -33,7 +33,7 @@ const chunkArray = <T>(arr: T[], maxSize: number): T[][] => {
 const getBadges = (sacks: string[][]) => {
   const groups = chunkArray(
     sacks.map((comps) => comps.join('')),
-    3
+    3,
   );
   return groups.map(([first, ...rest]) => getDuplicateItem(first, ...rest));
 };
@@ -51,12 +51,12 @@ console.log(
   getDuplicates(sacks)
     .filter(Boolean)
     .map(getPriority)
-    .reduce((a, b) => a + b)
+    .reduce((a, b) => a + b),
 );
 console.log(
   'Part 2:',
   getBadges(sacks)
     .filter(Boolean)
     .map(getPriority)
-    .reduce((a, b) => a + b)
+    .reduce((a, b) => a + b),
 );

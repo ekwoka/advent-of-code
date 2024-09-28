@@ -36,7 +36,7 @@ const part1 = (grid: number[][]) => {
       return getSightLines(x, y, grid)
         .flat()
         .some((line) => line.every((cell) => cell < tree));
-    })
+    }),
   );
   return areVisible.length;
 };
@@ -51,7 +51,7 @@ const part2 = (grid: number[][]) => {
         return range === -1 ? line.length : range + 1;
       });
       return ranges.reduce((a, b) => a * b);
-    })
+    }),
   );
   return Math.max(...scenicScores);
 };

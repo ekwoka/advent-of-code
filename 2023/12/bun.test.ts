@@ -1,7 +1,7 @@
-import { AOCInput, getInput } from '../../utils';
 import { partOne, partTwo } from '.';
+import { AOCInput, getInput } from '../../utils';
 
-export const toStr = (input: string) => new TextEncoder().encode(input);
+const toStr = (input: string) => new TextEncoder().encode(input);
 
 describe('2023 Day 12', async () => {
   const input = await getInput(2023, 12);

@@ -47,7 +47,7 @@ const simulateRopes = (moves: string[], ropeLength = 2) => {
           rope[i] = moveChange.map((val, i) => (knot[i] + val) | 0) as coord;
           return [...(rope[i] as coord)];
         },
-        [...headPosition] as coord
+        [...headPosition] as coord,
       );
       tailPositions.unshift(newTail);
     }

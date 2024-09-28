@@ -10,7 +10,7 @@ function countDepth(samples) {
       if (current > prev) return [count + 1, current];
       return [count, current];
     },
-    [-1, 0]
+    [-1, 0],
   )[0];
 }
 
@@ -21,11 +21,11 @@ function countRollingDepth(samples) {
     ([count, previous, rolling], current) => {
       if (rolling.length < 2) return [count, previous, [...rolling, current]];
       rolling.push(current);
-      let newSum = rolling.reduce((a, b) => a + b);
+      const newSum = rolling.reduce((a, b) => a + b);
       if (newSum > previous) return [count + 1, newSum, rolling.slice(1)];
       return [count, newSum, rolling.slice(1)];
     },
-    [-1, 0, []]
+    [-1, 0, []],
   )[0];
 }
 

@@ -35,7 +35,7 @@ grid.forEach((line, y) =>
         x,
         mapHeight - ((turn + (mapHeight - y)) % mapHeight),
       ]);
-  })
+  }),
 );
 
 const start = [grid[0].indexOf('.'), 0] as Coord;
@@ -58,7 +58,7 @@ const navigateValley = (start: Coord, end: Coord, startTurn = 0) => {
   // Only needs to prune duplicate conditions (same position at same turn)
   const processed: Set<string> = new Set();
   while (queue.length) {
-    const [coord, turn] = queue.shift()!;
+    const [coord, turn] = queue.shift();
     const key = coord.join(',') + turn;
     if (processed.has(key)) continue;
     processed.add(key);
@@ -71,7 +71,7 @@ const navigateValley = (start: Coord, end: Coord, startTurn = 0) => {
       continue;
     if (
       blizzards.some((blizzard) =>
-        blizzard(turn).every((val, i) => val === coord[i])
+        blizzard(turn).every((val, i) => val === coord[i]),
       )
     )
       continue;

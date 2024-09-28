@@ -25,10 +25,10 @@ const blueprints = input.split('\n').map((line) => {
           [...costString.matchAll(/\d+\s[a-z]+/g)].map((match) => {
             const [value, material] = match[0].split(' ');
             return [material, Number(value)];
-          })
+          }),
         );
         return [type, costs];
-      })
+      }),
   ) as {
     [key in (typeof robotTypes)[number]]: {
       [key in (typeof robotTypes)[number]]: number;
@@ -42,31 +42,32 @@ const getBestBlueprint = (totalTime: number, blueprintLimit?: number) => {
     // There is no benefit to building more robots than the maximum number of each type of ore required to build a robot of that type (as the speed of robot manufacture is capped. ie: collecting 15 ore when you can only consume 10 ore per round is useless)
     const maximumOfEachRobot = Object.fromEntries(
       robotTypes.map((type) => {
-        if (type === 'geode') return ['geode', Infinity];
+        if (type === 'geode') return ['geode', Number.POSITIVE_INFINITY];
         const maxOfType = Math.max(
-          ...Object.values(blueprint.robotCosts).map((cost) => cost[type] ?? 0)
+          ...Object.values(blueprint.robotCosts).map((cost) => cost[type] ?? 0),
         );
         return [type, maxOfType];
-      })
+      }),
     ) as Record<(typeof robotTypes)[number], number>;
     // If all ore are over the maximum needed to build a robot, then we HAVE to build a robot.
     const allOreOverMaximum = (
-      inventory: Record<(typeof robotTypes)[number], number>
+      inventory: Record<(typeof robotTypes)[number], number>,
     ) =>
       Object.entries(inventory).every(
-        ([type, count]) => count >= maximumOfEachRobot[type] && type !== 'geode'
+        ([type, count]) =>
+          count >= maximumOfEachRobot[type] && type !== 'geode',
       );
     // Get the list of robots that can be built with the current inventory
     const getAffordableBot = (
       inventory: Record<(typeof robotTypes)[number], number>,
-      currentBots: Record<(typeof robotTypes)[number], number>
+      currentBots: Record<(typeof robotTypes)[number], number>,
     ) =>
       Object.entries(blueprint.robotCosts).filter(
         ([type, cost]) =>
           currentBots[type] < maximumOfEachRobot[type] &&
           Object.entries(cost).every(
-            ([material, value]) => inventory[material] >= value
-          )
+            ([material, value]) => inventory[material] >= value,
+          ),
       ) as Array<
         [(typeof robotTypes)[number], typeof blueprint.robotCosts.ore]
       >;
@@ -87,10 +88,13 @@ const getBestBlueprint = (totalTime: number, blueprintLimit?: number) => {
       inventory: Record<(typeof robotTypes)[number], number>,
       currentBots: Record<(typeof robotTypes)[number], number>,
       cantBuy: Array<(typeof robotTypes)[number]>,
-      timeLeft: number
+      timeLeft: number,
     ): void => {
       // If we have no time left, we can't do anything
-      if (timeLeft === 0) return setMax(inventory.geode);
+      if (timeLeft === 0) {
+        setMax(inventory.geode);
+        return;
+      }
       // If we too few of certain robots late into the time, then it's impossible to have a good result, so we can cut that branch short
       if (
         currentBots.obsidian === 0 &&
@@ -111,7 +115,7 @@ const getBestBlueprint = (totalTime: number, blueprintLimit?: number) => {
         return;
       // We filter the list of robots we can build at this turn to remove unaffordable robots and those robots that we could have built last turn. There is no benefit to waiting to build a bot if you can build it now so we can't build anything this turn we could have built last turn
       const affordableBots = getAffordableBot(inventory, currentBots).filter(
-        ([type]) => !cantBuy.includes(type)
+        ([type]) => !cantBuy.includes(type),
       );
       // let the robots harvest their materials
       Object.entries(currentBots).forEach(([type, count]) => {
@@ -135,7 +139,7 @@ const getBestBlueprint = (totalTime: number, blueprintLimit?: number) => {
               Object.entries(inventory).map(([oreType, oreCount]) => [
                 oreType,
                 oreCount - (cost[oreType] ?? 0),
-              ])
+              ]),
             ) as Record<(typeof robotTypes)[number], number>;
             return [
               inventoryAfterBuild,
@@ -143,10 +147,10 @@ const getBestBlueprint = (totalTime: number, blueprintLimit?: number) => {
               [],
               timeLeft - 1,
             ] as Parameters<typeof step>;
-          })
+          }),
         );
     };
-    while (bfsqueue.length) step(...bfsqueue.shift()!);
+    while (bfsqueue.length) step(...bfsqueue.shift());
 
     const result = [blueprint.id, maxThusFar] as [string, number];
     return result;
@@ -160,16 +164,16 @@ wrapInTime('one', () =>
     'Part One:',
     getBestBlueprint(24).reduce(
       (acc, [id, geodes]) => acc + Number(id) * geodes,
-      0
-    )
-  )
+      0,
+    ),
+  ),
 );
 // Part 2 involves processing just the first 3 blueprints for 32 minutes and multiplying the final geode counts from each blueprint
 wrapInTime('two', () =>
   console.log(
     'Part Two:',
-    getBestBlueprint(32, 3).reduce((acc, [_, geodes]) => acc * geodes, 1)
-  )
+    getBestBlueprint(32, 3).reduce((acc, [_, geodes]) => acc * geodes, 1),
+  ),
 );
 
 function wrapInTime(label: string, fn: () => void) {

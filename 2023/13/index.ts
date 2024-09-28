@@ -78,7 +78,6 @@ const toRowsAndColumns = (chunk: AOCInput): [string[], string[]] => {
   for (const ch of chunk.chars())
     if (ch === '\n') {
       y++;
-      continue;
     } else (cols[(rows[y] ??= []).push(ch) - 1] ??= []).push(ch);
 
   return [

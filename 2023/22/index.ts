@@ -1,4 +1,4 @@
-import { AOCInput } from '../../utils';
+import type { AOCInput } from '../../utils';
 
 /**
  * --- Day 22: Sand Slabs ---
@@ -89,7 +89,7 @@ const walkDisintegration = (tetrino: Tetrino): number => {
   const disintegrated = new Set<Tetrino>([tetrino]);
   const queue = tetrino.supports.slice();
   while (queue.length) {
-    const next = queue.shift()!;
+    const next = queue.shift();
     if (next.supportedBy.some((t) => !disintegrated.has(t))) continue;
     disintegrated.add(next);
     queue.push(...next.supports.filter((t) => !disintegrated.has(t)));
@@ -101,7 +101,6 @@ class GravityMatrix {
   heightMap: Map<string, number> = new Map();
   tetrinos: Tetrino[] = [];
   matrix: Matrix<Tetrino> = new Matrix();
-  constructor() {}
   getHeight(vec: Vec2): number {
     return this.heightMap.get(vec.toString()) ?? 0;
   }
@@ -136,7 +135,6 @@ class GravityMatrix {
 
 class Matrix<T> {
   matrix: T[][][] = [];
-  constructor() {}
   get(vec: Vec3): T {
     return this.matrix[vec.z]?.[vec.y]?.[vec.x];
   }

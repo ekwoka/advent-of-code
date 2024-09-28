@@ -12,17 +12,17 @@ const rockPaths = input
   .split('\n')
   .filter(Boolean)
   .map((path) =>
-    path.split(' -> ').map((point) => point.split(',').map(Number) as Coord)
+    path.split(' -> ').map((point) => point.split(',').map(Number) as Coord),
   );
 
 const maxX = Math.max(
-  ...rockPaths.map((path) => Math.max(...path.map((point) => point[0])))
+  ...rockPaths.map((path) => Math.max(...path.map((point) => point[0]))),
 );
 const maxY = Math.max(
-  ...rockPaths.map((path) => Math.max(...path.map((point) => point[1])))
+  ...rockPaths.map((path) => Math.max(...path.map((point) => point[1]))),
 );
 const caveGrid = Array.from({ length: maxY + 1 }, () =>
-  Array.from({ length: maxX * 2 }, () => '.')
+  Array.from({ length: maxX * 2 }, () => '.'),
 );
 // Sand enters at x = 500, y = 0
 caveGrid[0][500] = '+';
@@ -41,7 +41,7 @@ const fillLine = (start: Coord, end: Coord) => {
 
 // This processes each continuous connection of rocks
 rockPaths.forEach((path) =>
-  path.reduce((last, next) => (fillLine(last, next), next))
+  path.reduce((last, next) => (fillLine(last, next), next)),
 );
 
 const sandEntry: Coord = [500, 0];
@@ -89,8 +89,8 @@ const fillCave = (grid: string[][]) => {
 const fillCaveCompletely = (grid: string[][]) => {
   const cave = JSON.parse(JSON.stringify(grid)).concat(
     Array.from({ length: 2 }, (_, i) =>
-      Array.from({ length: grid[0].length }, () => (i ? '#' : '.'))
-    )
+      Array.from({ length: grid[0].length }, () => (i ? '#' : '.')),
+    ),
   );
   return fillCave(cave);
 };

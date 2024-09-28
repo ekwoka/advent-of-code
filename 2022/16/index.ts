@@ -5,7 +5,7 @@
  * Pretty wild and had a lot of issues with this. It seemed doing some kind of DFS through the caves and adding stuff up as I went would make sense, and it kind of got the job done (slowly) for part 1, but it was entirely inadequate for part 2.
  * After lots of optimizations I got part 2 to go fast enough, but it was wrong!!! Because the way I was memoizing was preventing some paths from being registered
  */
-import { CircularBuffer, RustIterator } from '@ekwoka/rust-ts';
+import { CircularBuffer, type RustIterator } from '@ekwoka/rust-ts';
 import { getInput } from '../../utils';
 
 // Input is a collections of caves, some with valves that can release some pressure. Basic node list.
@@ -40,7 +40,7 @@ const getLowestCost = (start: string, end: string) => {
     visited: string[];
   }>([{ room: start, cost: 0, visited: [start] }]);
   while (queue.length) {
-    const { room, cost, visited } = queue.shift()!;
+    const { room, cost, visited } = queue.shift();
     if (room === end) return cost;
     const { tunnelConnections } = valveMap[room];
     if (tunnelConnections.includes(end)) return cost + 1;

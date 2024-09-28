@@ -1,5 +1,5 @@
-import { AOCInput, getInput } from '../../utils';
 import { determineCombinations, fewestContainers } from '.';
+import { AOCInput, getInput } from '../../utils';
 
 describe('2015 Day 17', async () => {
   const input = await getInput(2015, 17);

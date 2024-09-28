@@ -1,4 +1,4 @@
-import { AOCInput } from '../../utils';
+import type { AOCInput } from '../../utils';
 /**
  * --- Day 6: Wait For It ---
  */

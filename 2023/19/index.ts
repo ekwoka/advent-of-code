@@ -1,5 +1,5 @@
 import { RustIterator } from '@ekwoka/rust-ts';
-import { AOCInput } from '../../utils';
+import type { AOCInput } from '../../utils';
 
 /**
  * --- Day 19: ??? ---
@@ -44,7 +44,7 @@ export const partOne = (input: AOCInput): number => {
     )
     .map((part) => {
       // eslint-disable-next-line @typescript-eslint/ban-types
-      let nextProcess: Function | symbol = workflows.in;
+      let nextProcess: Workflow | symbol = workflows.in;
       while (typeof nextProcess !== 'symbol')
         nextProcess = nextProcess(part, workflows);
       return [part, nextProcess] as const;

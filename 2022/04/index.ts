@@ -14,7 +14,7 @@ const pairs = input.split('\n').filter(Boolean);
 // The number ranges reference rooms an Elf is assigned to clean, and the pairs indicate two partnered elves.
 
 const assignments = pairs.map((pair) =>
-  pair.split(`,`).map((room) => room.split(`-`).map(Number))
+  pair.split(',').map((room) => room.split('-').map(Number)),
 );
 
 const pointInRange = (point: number, range: [number, number]) =>
@@ -28,8 +28,8 @@ const rangeInRange = (range: [number, number], range2: [number, number]) =>
 console.log(
   'Part 1:',
   assignments.filter((groups) =>
-    rangeInRange(...(groups as [[number, number], [number, number]]))
-  ).length
+    rangeInRange(...(groups as [[number, number], [number, number]])),
+  ).length,
 );
 
 // Part 2 consists in finding room assignments where both elves in a team will clean at least one room in common
@@ -38,9 +38,9 @@ console.log(
   assignments.filter((groups) => {
     const output = groups.some((group, i) =>
       group.some((room) =>
-        pointInRange(room, groups[(i + 1) % 2] as [number, number])
-      )
+        pointInRange(room, groups[(i + 1) % 2] as [number, number]),
+      ),
     );
     return output;
-  }).length
+  }).length,
 );

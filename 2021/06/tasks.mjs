@@ -30,18 +30,18 @@ function simulateLife2(input) {
 
   while (days > 0) {
     population = Object.entries(population).reduce(
-      (acc, [daysTilSpawn, Number]) => {
+      (acc, [daysTilSpawn, num]) => {
         if (daysTilSpawn > 0) {
           if (!acc[daysTilSpawn - 1]) acc[daysTilSpawn - 1] = 0;
-          acc[daysTilSpawn - 1] += Number;
+          acc[daysTilSpawn - 1] += num;
         } else {
           if (!acc['6']) acc['6'] = 0;
-          acc['6'] += Number;
-          acc['8'] = Number;
+          acc['6'] += num;
+          acc['8'] = num;
         }
         return acc;
       },
-      {}
+      {},
     );
     days--;
   }

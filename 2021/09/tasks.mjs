@@ -11,15 +11,15 @@ const map = input.map((x) => [...x.toString()]);
 function task1(map) {
   const lowestPoints = map.flatMap((row, y) => {
     return row.filter((cell, x) => {
-      let offsets = [
+      const offsets = [
         [0, 1],
         [1, 0],
         [0, -1],
         [-1, 0],
       ];
       return offsets.every((offset) => {
-        let x2 = x + offset[0];
-        let y2 = y + offset[1];
+        const x2 = x + offset[0];
+        const y2 = y + offset[1];
         if (x2 < 0 || y2 < 0 || x2 >= map[0].length || y2 >= map.length) {
           return true;
         }
@@ -27,7 +27,10 @@ function task1(map) {
       });
     });
   });
-  return lowestPoints.reduce((acc, point) => acc + 1 + parseInt(point), 0);
+  return lowestPoints.reduce(
+    (acc, point) => acc + 1 + Number.parseInt(point),
+    0,
+  );
 }
 
 console.log(task1(map));
@@ -60,22 +63,24 @@ function objectifyMap(map) {
 function findLowestPoints(map) {
   const lowestPoints = map.flatMap((row, y) => {
     return row.reduce((acc, cell, x) => {
-      let offsets = [
+      const offsets = [
         [0, 1],
         [1, 0],
         [0, -1],
         [-1, 0],
       ];
-      return offsets.every((offset) => {
-        let x2 = x + offset[0];
-        let y2 = y + offset[1];
-        if (x2 < 0 || y2 < 0 || x2 >= map[0].length || y2 >= map.length) {
-          return true;
-        }
-        return map[y2][x2].height > cell.height;
-      })
-        ? [...acc, [y, x]]
-        : acc;
+      if (
+        offsets.every((offset) => {
+          const x2 = x + offset[0];
+          const y2 = y + offset[1];
+          if (x2 < 0 || y2 < 0 || x2 >= map[0].length || y2 >= map.length) {
+            return true;
+          }
+          return map[y2][x2].height > cell.height;
+        })
+      )
+        acc.push([y, x]);
+      return acc;
     }, []);
   });
   return lowestPoints;
@@ -85,15 +90,15 @@ function flood(map, y, x) {
   if (map[y][x].filled) return 0;
   if (map[y][x].height >= 9) return 0;
   map[y][x].filled = true;
-  let offsets = [
+  const offsets = [
     [0, 1],
     [1, 0],
     [0, -1],
     [-1, 0],
   ];
   return offsets.reduce((acc, offset) => {
-    let x2 = x + offset[0];
-    let y2 = y + offset[1];
+    const x2 = x + offset[0];
+    const y2 = y + offset[1];
     if (x2 < 0 || y2 < 0 || x2 >= map[0].length || y2 >= map.length) {
       return acc;
     }

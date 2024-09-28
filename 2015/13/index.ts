@@ -69,7 +69,7 @@ export const partTwo = (input: AOCInput) => {
       {} as Record<string, Record<string, number>>,
     );
   Object.keys(relations).forEach((name) => (relations[name].you = 0));
-  relations['you'] = Object.fromEntries(
+  relations.you = Object.fromEntries(
     Object.keys(relations).map((name) => [name, 0]),
   );
   const wholeTable = Object.keys(relations);

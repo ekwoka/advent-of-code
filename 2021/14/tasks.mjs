@@ -1,4 +1,4 @@
-import { start, reactions } from './input.mjs';
+import { reactions, start } from './input.mjs';
 
 /* const start = 'NNCB';
 
@@ -17,8 +17,8 @@ function react(start, steps) {
   while (steps--) {
     combinations = Object.entries(combinations).reduce(
       (acc, [combo, count]) => {
-        let [oldPolymers, newPolymer] = [combo.split(''), REACTIONS[combo]];
-        let newCombinations = formCombinations([
+        const [oldPolymers, newPolymer] = [combo.split(''), REACTIONS[combo]];
+        const newCombinations = formCombinations([
           oldPolymers[0],
           newPolymer,
           oldPolymers[1],
@@ -30,12 +30,12 @@ function react(start, steps) {
 
         return acc;
       },
-      {}
+      {},
     );
   }
   console.timeEnd('Reaction Time');
 
-  let polymerCount = countPolymers(combinations);
+  const polymerCount = countPolymers(combinations);
   polymerCount[start.at(-1)]++;
 
   return Object.entries(polymerCount).reduce(
@@ -45,14 +45,14 @@ function react(start, steps) {
       if (!chain[i + 1]) return acc[0] - acc[1];
       return acc;
     },
-    []
+    [],
   );
 }
 
 function formCombinations(polymer) {
   return polymer.reduce((acc, cur, i, comp) => {
-    let combo = cur + comp[i + 1];
-    if (combo.length != 2) return acc;
+    const combo = cur + comp[i + 1];
+    if (combo.length !== 2) return acc;
     acc[combo] = acc[combo] + 1 || 1;
     return acc;
   }, {});

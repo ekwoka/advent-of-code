@@ -1,5 +1,5 @@
 import { RustIterator, range } from '@ekwoka/rust-ts';
-import { AOCInput } from '../../utils';
+import type { AOCInput } from '../../utils';
 
 /**
  * --- Day 24: Never Tell Me The Odds ---

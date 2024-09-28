@@ -3,9 +3,9 @@ import type { AOCInput } from '../../utils';
 import { Vec2 } from '../../utils/vec';
 
 enum Instruction {
-  Off,
-  On,
-  Toggle,
+  Off = 0,
+  On = 1,
+  Toggle = 2,
 }
 
 export const partOne = (input: AOCInput): number => {
@@ -13,7 +13,7 @@ export const partOne = (input: AOCInput): number => {
     .lines()
     .map((line) => {
       const [instruction, start, end] = line
-        .match(/(turn on|turn off|toggle) (\d+,\d+) through (\d+,\d+)/)!
+        .match(/(turn on|turn off|toggle) (\d+,\d+) through (\d+,\d+)/)
         .slice(1);
       return [
         instruction === 'turn off'
@@ -52,7 +52,7 @@ export const partTwo = (input: AOCInput): number => {
     .lines()
     .map((line) => {
       const [instruction, start, end] = line
-        .match(/(turn on|turn off|toggle) (\d+,\d+) through (\d+,\d+)/)!
+        .match(/(turn on|turn off|toggle) (\d+,\d+) through (\d+,\d+)/)
         .slice(1);
       return [
         instruction === 'turn off'

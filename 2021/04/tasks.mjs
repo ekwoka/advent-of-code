@@ -36,57 +36,57 @@ const boards = {
 }; */
 
 function findWinningBoard(boards, numbers) {
-  let selectedNumbers = [];
+  const selectedNumbers = [];
   let winningBoard;
 
   while (!winningBoard && numbers.length) {
     selectedNumbers.push(numbers.splice(0, 1)[0]);
     winningBoard = Object.values(boards).find((board) =>
-      checkWinningRows(board, selectedNumbers)
+      checkWinningRows(board, selectedNumbers),
     );
     winningBoard =
       winningBoard ||
       Object.values(boards).find((board) =>
-        checkWinningColumns(board, selectedNumbers)
+        checkWinningColumns(board, selectedNumbers),
       );
   }
   return { winningBoard, selectedNumbers };
 }
 
 function checkWinningRows(board, numbers) {
-  let status = board.map((row) => {
+  const status = board.map((row) => {
     return row.filter((n) => !numbers.includes(n)).length === 0;
   });
   return status.some((row) => row === true);
 }
 
 function checkWinningColumns(board, numbers) {
-  let translatedBoard = board[0].map((n, i) => board.map((row) => row[i]));
+  const translatedBoard = board[0].map((n, i) => board.map((row) => row[i]));
   return checkWinningRows(translatedBoard, numbers);
 }
 
 // Get first board to win and 'score' of board when it wins
 
 function task1(boards, numbers) {
-  let { winningBoard, selectedNumbers } = findWinningBoard(boards, numbers);
-  let remaining = winningBoard
+  const { winningBoard, selectedNumbers } = findWinningBoard(boards, numbers);
+  const remaining = winningBoard
     .flat()
     .filter((n) => !selectedNumbers.includes(n));
-  let finalNumber = selectedNumbers.at(-1);
+  const finalNumber = selectedNumbers.at(-1);
   return finalNumber * remaining.reduce((acc, n) => acc + n);
 }
 
 function findLastBoard(boards, numbers) {
-  let selectedNumbers = [];
+  const selectedNumbers = [];
   let remainingBoards = Object.values(boards);
 
   while (remainingBoards.length > 1 && numbers.length) {
     selectedNumbers.push(numbers.splice(0, 1)[0]);
     remainingBoards = remainingBoards.filter(
-      (board) => !checkWinningRows(board, selectedNumbers)
+      (board) => !checkWinningRows(board, selectedNumbers),
     );
     remainingBoards = remainingBoards.filter(
-      (board) => !checkWinningColumns(board, selectedNumbers)
+      (board) => !checkWinningColumns(board, selectedNumbers),
     );
   }
 
@@ -103,9 +103,11 @@ function findLastBoard(boards, numbers) {
 // Get last board to win and 'score' of board when it wins
 
 function task2(boards, numbers) {
-  let { lastBoard, selectedNumbers } = findLastBoard(boards, numbers);
-  let remaining = lastBoard.flat().filter((n) => !selectedNumbers.includes(n));
-  let finalNumber = selectedNumbers.at(-1);
+  const { lastBoard, selectedNumbers } = findLastBoard(boards, numbers);
+  const remaining = lastBoard
+    .flat()
+    .filter((n) => !selectedNumbers.includes(n));
+  const finalNumber = selectedNumbers.at(-1);
   return finalNumber * remaining.reduce((acc, n) => acc + n);
 }
 

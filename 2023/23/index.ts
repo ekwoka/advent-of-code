@@ -1,5 +1,5 @@
-import { range, RustIterator } from '@ekwoka/rust-ts';
-import { AOCInput } from '../../utils';
+import { type RustIterator, range } from '@ekwoka/rust-ts';
+import type { AOCInput } from '../../utils';
 
 /**
  * --- Day 23: A Long Walk ---
@@ -125,14 +125,14 @@ export const partTwo = (input: AOCInput): number => {
   const branchNode = (node: bigint, steps: number, visited = 0b0n): number =>
     node === nodeBitMap[end.toString()]
       ? steps
-      : bitJunctions
+      : (bitJunctions
           .get(node)
           .toIter()
           .filter(([nextNode]) => !(visited & nextNode))
           .map(([nextNode, distance]) =>
             branchNode(nextNode, steps + distance, visited | nextNode),
           )
-          .max() ?? 0;
+          .max() ?? 0);
   const nodeBitMap = Object.keys(junctionDistances)
     .toIter()
     .enumerate()

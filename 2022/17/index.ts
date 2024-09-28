@@ -134,8 +134,8 @@ const simulateTetris = (rounds: number) => {
     // Creates space above the tower for the new block to fall through
     tower.unshift(
       ...Array.from({ length: 4 - towerTop }, () =>
-        Array.from({ length: 7 }, () => '.')
-      )
+        Array.from({ length: 7 }, () => '.'),
+      ),
     );
     let nextBlock = positionBlock(generateBlock(blockIndex++));
 

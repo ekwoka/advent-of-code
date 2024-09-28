@@ -16,6 +16,11 @@ Set.prototype.values = function () {
 Set.prototype.clone = function (this: Set<Entity>) {
   return new Set(this.values().map((entity) => entity.clone()));
 };
+interface Set<T> {
+  innerValues(): IterableIterator<T>;
+  values(): RustIterator<T>;
+  clone(): Set<T>;
+}
 
 interface Entity {
   clone(): Entity;
@@ -158,7 +163,7 @@ const Shield = new Spell(
   'shield',
   ({ Player }) => {
     if (Array.from(Player.effects).some((effect) => effect instanceof Shielded))
-      Player.health -= Infinity;
+      Player.health -= Number.POSITIVE_INFINITY;
     Player.armor += 7;
     Player.effects.add(new Shielded());
   },
@@ -169,7 +174,7 @@ const Poison = new Spell(
   'poison',
   ({ Player, Boss }) => {
     if (Boss.effects.values().any((effect) => effect instanceof Poisoned))
-      Player.health -= Infinity;
+      Player.health -= Number.POSITIVE_INFINITY;
     Boss.effects.add(new Poisoned());
   },
   173,
@@ -179,7 +184,7 @@ const Recharge = new Spell(
   'recharge',
   ({ Player }) => {
     if (Player.effects.values().any((effect) => effect instanceof Charging))
-      Player.health -= Infinity;
+      Player.health -= Number.POSITIVE_INFINITY;
     Player.effects.add(new Charging());
   },
   229,
@@ -244,7 +249,7 @@ export const partOne = (
   const addToQueue = (state: GameState, nextSpell: Spell) => {
     const key = `${state.toString()}-${nextSpell.name}`;
     if (visitedStates.has(key)) return;
-    else visitedStates.add(key);
+    visitedStates.add(key);
     const insertPoint = queue.findIndex(
       (action) => score(action[0], action[1]) > score(state, nextSpell),
     );
@@ -253,11 +258,12 @@ export const partOne = (
     else queue.push([state.clone(), nextSpell]);
   };
   while (queue.length) {
-    const [state, nextSpell] = queue.shift()!;
+    const [state, nextSpell] = queue.shift();
     if (hardMode) state.Player.health -= 1;
     nextSpell.cast(state);
     if (state.done)
       if (state.winner instanceof Boss) continue;
+      // biome-ignore lint/style/noUselessElse: Required to not move up another level
       else return state.Player.spentMana;
     state.tick();
     if (state.done && state.winner instanceof Player)

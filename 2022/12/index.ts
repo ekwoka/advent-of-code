@@ -30,7 +30,7 @@ const mountainGrid = input
         if (cell === 'S') start = [x, y];
         if (cell === 'E') end = [x, y];
         return heightMap(cell);
-      })
+      }),
   );
 
 const neighborOffsets = [-1, 0, 1]
@@ -44,7 +44,7 @@ const getNeighbors = ([x, y]: Coord): Coord[] =>
         x >= 0 &&
         y >= 0 &&
         x < mountainGrid[0].length &&
-        y < mountainGrid.length
+        y < mountainGrid.length,
     );
 
 const getValueAt = (coord: Coord): number => {
@@ -57,7 +57,7 @@ const findStepCount = (grid: number[][], start: Coord, end: Coord): number => {
   const queue: [Coord, number][] = [[start, 0]];
   const visited = new Set<string>();
   while (queue.length) {
-    const [current, stepCount] = queue.shift()!;
+    const [current, stepCount] = queue.shift();
     // Don't revisit a coordinate
     if (visited.has(current.toString())) continue;
     visited.add(current.toString());
@@ -68,7 +68,7 @@ const findStepCount = (grid: number[][], start: Coord, end: Coord): number => {
       ...getNeighbors(current)
         // Next steps can at most be 1 height heigher than the last, but can be much lower
         .filter((coord) => getValueAt(coord) <= getValueAt(current) + 1)
-        .map((coord) => [coord, stepCount + 1] as [Coord, number])
+        .map((coord) => [coord, stepCount + 1] as [Coord, number]),
     );
   }
   return Number.MAX_SAFE_INTEGER;
@@ -79,7 +79,7 @@ const getHikingTrailLength = (grid: number[][], start: Coord): number => {
   const queue: [Coord, number][] = [[start, 0]];
   const visited = new Set<string>();
   while (queue.length) {
-    const [current, stepCount] = queue.shift()!;
+    const [current, stepCount] = queue.shift();
     if (visited.has(current.toString())) continue;
     if (getValueAt(current) === 0) return stepCount;
     visited.add(current.toString());
@@ -87,7 +87,7 @@ const getHikingTrailLength = (grid: number[][], start: Coord): number => {
     queue.push(
       ...getNeighbors(current)
         .filter((coord) => getValueAt(coord) >= getValueAt(current) - 1)
-        .map((coord) => [coord, stepCount + 1] as [Coord, number])
+        .map((coord) => [coord, stepCount + 1] as [Coord, number]),
     );
   }
   return Number.MAX_SAFE_INTEGER;

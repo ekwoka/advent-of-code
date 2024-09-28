@@ -39,8 +39,7 @@ class BrokenLight implements Light {
 }
 
 const offsets = [-1, 0, 1]
-  .map((x) => [-1, 0, 1].map((y) => new Vec2(x, y)))
-  .flat()
+  .flatMap((x) => [-1, 0, 1].map((y) => new Vec2(x, y)))
   .filter((coord) => coord.x !== 0 || coord.y !== 0);
 
 class LightGrid {

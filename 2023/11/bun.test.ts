@@ -1,7 +1,7 @@
-import { AOCInput, getInput } from '../../utils';
 import { solveWithExpansionFactor } from '.';
+import { AOCInput, getInput } from '../../utils';
 
-export const toStr = (input: string) => new TextEncoder().encode(input);
+const toStr = (input: string) => new TextEncoder().encode(input);
 
 describe('2023 Day 11', async () => {
   const input = await getInput(2023, 11);

@@ -22,7 +22,7 @@ const monkeys = () =>
           line
             .trim()
             .split(':')
-            .map((part) => part.trim())
+            .map((part) => part.trim()),
         );
       return {
         items: items[1]
@@ -31,7 +31,7 @@ const monkeys = () =>
           .filter(Boolean),
         operation: new Function(
           'old',
-          `return ${operationString[1].split('=')[1]}`
+          `return ${operationString[1].split('=')[1]}`,
         ) as (old: number) => number,
         test: Number(test[1].match(/\d+/g)?.[0] ?? 0),
         trueTarget: truthy[1].match(/\d+/g)?.map(Number)[0] ?? 0,
@@ -43,8 +43,8 @@ const monkeys = () =>
 // In a round, we cycle through each item, update it's value, test it, and send it to another monkey
 const processRound = (
   monkeyGroup: ReturnType<typeof monkeys>,
-  relief = 1,
-  modulo: number
+  relief,
+  modulo: number,
 ) => {
   for (const monkey of monkeyGroup) {
     while (monkey.items.length) {
@@ -62,12 +62,12 @@ const processRound = (
 const cycleRounds = (
   monkeyGroup: ReturnType<typeof monkeys>,
   rounds: number,
-  relief: number
+  relief: number,
 ) => {
   // We use a global modulo of all the divisors to prevent the numbers from growing larger than we can handle safely in floating point math
   const modulo = [...new Set(monkeyGroup.map(({ test }) => test))].reduce(
     (mod, next) => mod * next,
-    1
+    1,
   );
   while (rounds--) processRound(monkeyGroup, relief, modulo);
   return monkeyGroup;
@@ -76,7 +76,7 @@ const cycleRounds = (
 // For the answers, we need to gather just the two monkeys that are most active
 const getMostActiveMonkeys = (
   monkeyGroup: ReturnType<typeof monkeys>,
-  count = 1
+  count = 1,
 ) => {
   const sorted = monkeyGroup.sort((a, b) => b.inpections - a.inpections);
   return sorted.slice(0, count);
@@ -87,7 +87,7 @@ console.log(
   'Part One:',
   getMostActiveMonkeys(cycleRounds(monkeys(), 20, 3), 2)
     .map((monkey) => monkey.inpections)
-    .reduce(multiply)
+    .reduce(multiply),
 );
 
 // Part 2 is 10_000 rounds and out worry does not decrease at all
@@ -95,7 +95,7 @@ console.log(
   'Part Two:',
   getMostActiveMonkeys(cycleRounds(monkeys(), 10_000, 1), 2)
     .map((monkey) => monkey.inpections)
-    .reduce(multiply)
+    .reduce(multiply),
 );
 
 function multiply(a: number, b: number) {

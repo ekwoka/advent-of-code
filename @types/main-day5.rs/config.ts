@@ -1,4 +1,4 @@
-import { LoaderConfig, T } from 'hyperimport';
+import { type LoaderConfig, T } from 'hyperimport';
 export default {
   buildCommand: [
     'cargo',

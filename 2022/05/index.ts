@@ -19,7 +19,7 @@ const stacks = starting
   .map((line) =>
     line.includes('[')
       ? Array.from(line.matchAll(/([A-Z]+|\s{3})/g)).map((m) => m[1])
-      : Array.from(line.matchAll(/(\d+)/g)).map((m) => m[1])
+      : Array.from(line.matchAll(/(\d+)/g)).map((m) => m[1]),
   );
 
 const startingStacks = stacks.slice(0, -1).reduce(
@@ -29,7 +29,7 @@ const startingStacks = stacks.slice(0, -1).reduce(
     }),
     acc
   ),
-  stacks.slice(-1)[0].map((_) => [] as string[])
+  stacks.slice(-1)[0].map((_) => [] as string[]),
 );
 
 const instructions = operations

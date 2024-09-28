@@ -31,9 +31,9 @@ const queue = {
   q: [],
   add(x, y, sum) {
     if (sum === undefined) return console.log('Invalid sum');
-    if (this.q.length == 0) return this.q.push([x, y, sum]);
+    if (this.q.length === 0) return this.q.push([x, y, sum]);
     let insertion = this.q.findIndex((e) => e[2] < sum);
-    if (insertion == -1) insertion = this.q.length;
+    if (insertion === -1) insertion = this.q.length;
     this.q.splice(insertion, 0, [x, y, sum]);
   },
   pop() {
@@ -44,7 +44,7 @@ const queue = {
 function task1(grid, height, width) {
   [height, width] = [height || grid.length, width || grid[0].length];
   queue.add(...START, startValue);
-  let costs = Array.from(Array(height), () => Array(width).fill(undefined));
+  const costs = Array.from(Array(height), () => Array(width).fill(undefined));
   let maxQ = queue.q.length;
   let operations = 0;
   console.time('Operation Time');
@@ -56,23 +56,23 @@ function task1(grid, height, width) {
         'Percentage Complete:',
         (1000 - Math.floor((queue.q.length / maxQ) * 1000)) / 10,
         '% of',
-        operations + maxQ
+        operations + maxQ,
       );
       console.log('Remaining Operations:', queue.q.length);
     }
-    let [x, y, sum] = queue.pop();
+    const [x, y, sum] = queue.pop();
 
-    let adjustment =
+    const adjustment =
       Math.floor(x / grid[0].length) + Math.floor(y / grid.length);
     let cell = grid[y % grid.length][x % grid[0].length] + adjustment;
     cell = cell > 9 ? cell - 9 : cell;
     operations++;
-    let newSum = sum + cell;
+    const newSum = sum + cell;
     if (!costs[y][x] || newSum < costs[y][x]) {
       costs[y][x] = newSum;
       OFFSETS.forEach(([dx, dy]) => {
-        let newX = x + dx;
-        let newY = y + dy;
+        const newX = x + dx;
+        const newY = y + dy;
         if (newX >= 0 && newX < width && newY >= 0 && newY < height) {
           queue.add(newX, newY, newSum);
         }

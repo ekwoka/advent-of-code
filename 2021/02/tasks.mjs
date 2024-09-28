@@ -7,8 +7,8 @@ import input from './input.mjs';
 // Task 2:
 
 const commands = input.map((i) => {
-  let [command, value] = i.split(' ');
-  return { command, value: parseInt(value) };
+  const [command, value] = i.split(' ');
+  return { command, value: Number.parseInt(value) };
 });
 
 function task2(commands) {
@@ -38,7 +38,7 @@ function task2(commands) {
       horizontal: 0,
       depth: 0,
       aim: 0,
-    }
+    },
   );
 }
 
