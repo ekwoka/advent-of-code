@@ -2,6 +2,7 @@ interface Vector<N extends number> {
   add(v: Vector<N>): Vector<N>;
   sub(v: Vector<N>): Vector<N>;
   scale(scalar: number): Vector<N>;
+  clamp(min: Vector<N>, max: Vector<N>): Vector<N>;
   dot(v: Vector<N>): number;
   length(): number;
   normalize(): Vector<N>;
@@ -26,6 +27,13 @@ export class Vec2 implements Vector<2> {
 
   scale(scalar: number): Vec2 {
     return new Vec2(this.x * scalar, this.y * scalar);
+  }
+
+  clamp(min: Vec2, max: Vec2): Vec2 {
+    return new Vec2(
+      Math.min(max.x, Math.max(min.x, this.x)),
+      Math.min(max.y, Math.max(min.y, this.y)),
+    );
   }
 
   dot(v: Vec2): number {
@@ -88,6 +96,14 @@ export class Vec3 implements Vector<3> {
 
   scale(scalar: number): Vec3 {
     return new Vec3(this.x * scalar, this.y * scalar, this.z * scalar);
+  }
+
+  clamp(min: Vec3, max: Vec3): Vec3 {
+    return new Vec3(
+      Math.min(max.x, Math.max(min.x, this.x)),
+      Math.min(max.y, Math.max(min.y, this.y)),
+      Math.min(max.z, Math.max(min.z, this.z)),
+    );
   }
 
   dot(v: Vec3): number {
