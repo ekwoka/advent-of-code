@@ -77,6 +77,32 @@ export class Vec2 implements Vector<2> {
   static zero(): Vec2 {
     return new Vec2(0, 0);
   }
+
+  static add(lhs: Vec2, rhs: Vec2): Vec2 {
+    return lhs.add(rhs);
+  }
+  static sub(lhs: Vec2, rhs: Vec2): Vec2 {
+    return lhs.sub(rhs);
+  }
+  static scale(scalar: number) {
+    return (vec: Vec2) => vec.scale(scalar);
+  }
+  static clamp(min: Vec2, max: Vec2) {
+    return (vec: Vec2) => vec.clamp(min, max);
+  }
+  static length(vec: Vec2): number {
+    return vec.length();
+  }
+  static normalize(vec: Vec2): Vec2 {
+    return vec.normalize();
+  }
+
+  static toArray(vec: Vec2): number[] {
+    return vec.toArray();
+  }
+  static toString(vec: Vec2): string {
+    return vec.toString();
+  }
 }
 
 export class Vec3 implements Vector<3> {

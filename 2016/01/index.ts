@@ -32,7 +32,7 @@ export const partOne = (input: AOCInput) => {
         return new Vec2(0, direction === Direction.North ? steps : -steps);
       return new Vec2(direction === Direction.East ? steps : -steps, 0);
     })
-    .reduce((acc, vec) => acc.add(vec));
+    .reduce(Vec2.add);
   return destination
     .toArray()
     .map(Math.abs)
