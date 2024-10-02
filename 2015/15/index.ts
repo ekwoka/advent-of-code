@@ -1,4 +1,5 @@
-import { RustIterator, range } from '@ekwoka/rust-ts';
+import '../../utils/prelude';
+import { range } from '@ekwoka/rust-ts';
 import type { AOCInput } from '../../utils';
 
 class Ingredient {
@@ -77,7 +78,7 @@ class Recipe {
 }
 
 export const partOne = (input: AOCInput) => {
-  let iter = new RustIterator([new Recipe()]);
+  let iter = [new Recipe()].iter();
   input
     .lines()
     .filter(Boolean)
@@ -93,7 +94,7 @@ export const partOne = (input: AOCInput) => {
   return iter.map((recipe) => recipe.calculateScore()).max();
 };
 export const partTwo = (input: AOCInput) => {
-  let iter = new RustIterator([new Recipe()]);
+  let iter = [new Recipe()].iter();
   input
     .lines()
     .filter(Boolean)

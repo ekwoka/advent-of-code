@@ -11,7 +11,7 @@ enum Direction {
   West = 'W',
 }
 export const partOne = (input: AOCInput) => {
-  const destination = input
+  return input
     .splitBy(',')
     .filter(Boolean)
     .map((instruction) => instruction.match(/\s?([RL])(\d+)/))
@@ -32,14 +32,13 @@ export const partOne = (input: AOCInput) => {
         return new Vec2(0, direction === Direction.North ? steps : -steps);
       return new Vec2(direction === Direction.East ? steps : -steps, 0);
     })
-    .reduce(Vec2.add);
-  return destination
-    .toArray()
+    .reduce(Vec2.add)
+    .toIter()
     .map(Math.abs)
-    .reduce((a, b) => a + b);
+    .sum();
 };
 export const partTwo = (input: AOCInput) => {
-  const destination = input
+  return input
     .splitBy(',')
     .filter(Boolean)
     .map((instruction) => instruction.match(/\s?([RL])(\d+)/))
@@ -73,9 +72,8 @@ export const partTwo = (input: AOCInput) => {
       return null;
     }, new Set<string>())
     .filter(Boolean)
-    .nth(0);
-  return destination
-    .toArray()
+    .nth(0)
+    .toIter()
     .map(Math.abs)
-    .reduce((a, b) => a + b);
+    .sum();
 };

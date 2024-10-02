@@ -1,4 +1,4 @@
-import { RustIterator } from '@ekwoka/rust-ts';
+import '../../utils/prelude';
 import type { AOCInput } from '../../utils';
 /**
  * As this problem, similar to the previous, is meant to emulate game decisions
@@ -9,16 +9,12 @@ import type { AOCInput } from '../../utils';
  * and because it's kind of fun
  */
 
-Set.prototype.innerValues = Set.prototype.values;
-Set.prototype.values = function () {
-  return new RustIterator(this.innerValues());
-};
 Set.prototype.clone = function (this: Set<Entity>) {
-  return new Set(this.values().map((entity) => entity.clone()));
+  return this.iter()
+    .map((entity) => entity.clone())
+    .into(Set);
 };
 interface Set<T> {
-  innerValues(): IterableIterator<T>;
-  values(): RustIterator<T>;
   clone(): Set<T>;
 }
 
@@ -53,7 +49,7 @@ class Player implements Character {
   }
   toString() {
     return `${this.health}-${this.mana}-${this.spentMana}-${this.effects
-      .values()
+      .iter()
       .fold((a, effect) => a | effect.valueOf(), 0)}`;
   }
 }
@@ -72,7 +68,7 @@ class Boss implements Character {
   }
   toString() {
     return `${this.health}-${this.effects
-      .values()
+      .iter()
       .reduce((a, effect) => a | effect.valueOf(), 0)}`;
   }
 }
@@ -173,7 +169,7 @@ const Shield = new Spell(
 const Poison = new Spell(
   'poison',
   ({ Player, Boss }) => {
-    if (Boss.effects.values().any((effect) => effect instanceof Poisoned))
+    if (Boss.effects.iter().any((effect) => effect instanceof Poisoned))
       Player.health -= Number.POSITIVE_INFINITY;
     Boss.effects.add(new Poisoned());
   },
@@ -183,7 +179,7 @@ const Poison = new Spell(
 const Recharge = new Spell(
   'recharge',
   ({ Player }) => {
-    if (Player.effects.values().any((effect) => effect instanceof Charging))
+    if (Player.effects.iter().any((effect) => effect instanceof Charging))
       Player.health -= Number.POSITIVE_INFINITY;
     Player.effects.add(new Charging());
   },

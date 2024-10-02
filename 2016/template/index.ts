@@ -1,3 +1,4 @@
+import '../../utils/prelude.ts';
 import type { AOCInput } from '../../utils';
 
 export const partOne = (_input: AOCInput) => {

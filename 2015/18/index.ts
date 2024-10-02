@@ -1,4 +1,4 @@
-import { RustIterator } from '@ekwoka/rust-ts';
+import '../../utils/prelude';
 import type { AOCInput } from '../../utils';
 import { Vec2 } from '../../utils/vec';
 
@@ -49,8 +49,9 @@ class LightGrid {
     const neighborCounts = this.lights.map((row) =>
       new Array(row.length).fill(0),
     );
-    new RustIterator(this.lights)
-      .flatMap((row) => new RustIterator(row))
+    this.lights
+      .iter()
+      .flatMap((row) => row.iter())
       .filter((light) => light.on)
       .forEach((light) =>
         offsets
@@ -64,16 +65,18 @@ class LightGrid {
           )
           .forEach((coord) => neighborCounts[coord.y][coord.x]++),
       );
-    new RustIterator(this.lights)
-      .flatMap((row) => new RustIterator(row))
+    this.lights
+      .iter()
+      .flatMap((row) => row.iter())
       .forEach((light) =>
         light.update(neighborCounts[light.location.y][light.location.x]),
       );
   }
 
   public count() {
-    return new RustIterator(this.lights)
-      .flatMap((row) => new RustIterator(row))
+    return this.lights
+      .iter()
+      .flatMap((row) => row.iter())
       .filter((light) => light.on)
       .count();
   }

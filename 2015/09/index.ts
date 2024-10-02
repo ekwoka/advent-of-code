@@ -1,4 +1,4 @@
-import { RustIterator } from '@ekwoka/rust-ts';
+import '../../utils/prelude';
 import type { AOCInput } from '../../utils';
 
 export const partOne = (input: AOCInput): number => {
@@ -14,7 +14,11 @@ export const partOne = (input: AOCInput): number => {
       return map;
     }, new Map<string, Map<string, number>>());
   const queue: [currentNode: string, visited: Set<string>, distance: number][] =
-    [...tree.keys()].map((start) => [start, new Set(), 0]);
+    tree
+      .keys()
+      .iter()
+      .map((start) => [start, new Set(), 0])
+      .collect();
   const addToQueue = (
     next: [currentNode: string, visited: Set<string>, distance: number],
   ) => {
@@ -28,7 +32,11 @@ export const partOne = (input: AOCInput): number => {
     if (visited.size + 1 === tree.size) return distance;
     tree.get(current).forEach((distanceTo, to) => {
       if (visited.has(to)) return;
-      addToQueue([to, new Set([...visited, current]), distance + distanceTo]);
+      addToQueue([
+        to,
+        visited.iter().chain([current]).into(Set),
+        distance + distanceTo,
+      ]);
     });
   }
 };
@@ -46,21 +54,26 @@ export const partTwo = (input: AOCInput): number => {
       return map;
     }, new Map<string, Map<string, number>>());
   const queue: [currentNode: string, visited: Set<string>, distance: number][] =
-    [...tree.keys()].map((start) => [start, new Set(), 0]);
-  return new RustIterator(
-    (function* () {
-      while (queue.length) {
-        const [current, visited, distance] = queue.shift();
-        if (visited.size + 1 === tree.size) yield distance;
-        tree.get(current).forEach((distanceTo, to) => {
-          if (visited.has(to)) return;
-          queue.push([
-            to,
-            new Set([...visited, current]),
-            distance + distanceTo,
-          ]);
-        });
-      }
-    })(),
-  ).max();
+    tree
+      .keys()
+      .iter()
+      .map((start) => [start, new Set(), 0])
+      .collect();
+
+  return (function* () {
+    while (queue.length) {
+      const [current, visited, distance] = queue.shift();
+      if (visited.size + 1 === tree.size) yield distance;
+      tree.get(current).forEach((distanceTo, to) => {
+        if (visited.has(to)) return;
+        queue.push([
+          to,
+          visited.iter().chain([current]).into(Set),
+          distance + distanceTo,
+        ]);
+      });
+    }
+  })()
+    .iter()
+    .max();
 };

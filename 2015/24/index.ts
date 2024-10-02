@@ -1,4 +1,4 @@
-import { RustIterator } from '@ekwoka/rust-ts';
+import '../../utils/prelude';
 import type { AOCInput } from '../../utils';
 
 export const partOne = (input: AOCInput, groups = 3) => {
@@ -8,7 +8,7 @@ export const partOne = (input: AOCInput, groups = 3) => {
     .map(Number)
     .sort((a, b) => b - a)
     .collect();
-  const targetWeight = new RustIterator(packages).sum() / groups;
+  const targetWeight = packages.iter().sum() / groups;
   function* getCombos() {
     const queue: [idx: number, sum: number, product: number, count: number][] =
       packages.map((pkg, i) => [i, pkg, pkg, 1]);
@@ -26,7 +26,7 @@ export const partOne = (input: AOCInput, groups = 3) => {
       });
     }
   }
-  return new RustIterator(getCombos()).min();
+  return getCombos().iter().min();
 };
 export const partTwo = (input: AOCInput) => {
   return partOne(input, 4);

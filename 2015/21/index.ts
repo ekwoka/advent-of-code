@@ -1,4 +1,4 @@
-import { RustIterator } from '@ekwoka/rust-ts';
+import '../../utils/prelude';
 import type { AOCInput } from '../../utils';
 
 const Shop = {
@@ -32,19 +32,23 @@ export const partOne = (input: AOCInput) => {
     .filter(Boolean)
     .map((line) => +line.split(': ')[1]);
   const Boss = { health, dmg, armor };
-  return new RustIterator(Object.values(Shop.Weapons))
+  return Object.values(Shop.Weapons)
+    .iter()
     .flatMap((weapon) =>
-      new RustIterator(Object.values(Shop.Armor))
+      Object.values(Shop.Armor)
+        .iter()
         .chain([[0, 0, 0]])
         .map((armor) => [weapon, armor]),
     )
     .flatMap(([weapon, armor]) =>
-      new RustIterator(Object.values(Shop.Rings))
+      Object.values(Shop.Rings)
+        .iter()
         .chain([[0, 0, 0]])
         .map((ring) => [weapon, armor, ring]),
     )
     .flatMap(([weapon, armor, ring1]) =>
-      new RustIterator(Object.values(Shop.Rings))
+      Object.values(Shop.Rings)
+        .iter()
         .chain([[0, 0, 0]])
         .filter((ring) => ring !== ring1)
         .map((ring) => [weapon, armor, ring1, ring]),
@@ -70,19 +74,23 @@ export const partTwo = (input: AOCInput) => {
     .filter(Boolean)
     .map((line) => +line.split(': ')[1]);
   const Boss = { health, dmg, armor };
-  return new RustIterator(Object.values(Shop.Weapons))
+  return Object.values(Shop.Weapons)
+    .iter()
     .flatMap((weapon) =>
-      new RustIterator(Object.values(Shop.Armor))
+      Object.values(Shop.Armor)
+        .iter()
         .chain([[0, 0, 0]])
         .map((armor) => [weapon, armor]),
     )
     .flatMap(([weapon, armor]) =>
-      new RustIterator(Object.values(Shop.Rings))
+      Object.values(Shop.Rings)
+        .iter()
         .chain([[0, 0, 0]])
         .map((ring) => [weapon, armor, ring]),
     )
     .flatMap(([weapon, armor, ring1]) =>
-      new RustIterator(Object.values(Shop.Rings))
+      Object.values(Shop.Rings)
+        .iter()
         .chain([[0, 0, 0]])
         .filter((ring) => ring !== ring1)
         .map((ring) => [weapon, armor, ring1, ring]),
