@@ -1,5 +1,6 @@
-import { RustIterator } from '@ekwoka/rust-ts';
+import '../../utils/prelude';
 import type { AOCInput } from '../../utils';
+
 class Replacement {
   get delta() {
     return this.to.length - this.from.length;
@@ -9,20 +10,26 @@ class Replacement {
     public to: string,
   ) {}
   public replace(molecule: string) {
-    return new RustIterator(molecule.matchAll(new RegExp(this.from, 'g'))).map(
-      ({ index }) =>
-        molecule.slice(0, index) +
-        this.to +
-        molecule.slice(index + this.from.length),
-    );
+    return molecule
+      .matchAll(new RegExp(this.from, 'g'))
+      .iter()
+      .map(
+        ({ index }) =>
+          molecule.slice(0, index) +
+          this.to +
+          molecule.slice(index + this.from.length),
+      );
   }
   public reverse(molecule: string) {
-    return new RustIterator(molecule.matchAll(new RegExp(this.to, 'g'))).map(
-      ({ index }) =>
-        molecule.slice(0, index) +
-        this.from +
-        molecule.slice(index + this.to.length),
-    );
+    return molecule
+      .matchAll(new RegExp(this.to, 'g'))
+      .iter()
+      .map(
+        ({ index }) =>
+          molecule.slice(0, index) +
+          this.from +
+          molecule.slice(index + this.to.length),
+      );
   }
   static From(str: AOCInput) {
     const [_, from, to] = str.match(/(\w+) => (\w+)/);
@@ -53,7 +60,8 @@ export const partTwo = (input: AOCInput) => {
   while (queue.length) {
     const [mol, count] = queue.pop();
     if (mol === 'e') return count;
-    new RustIterator(replacements)
+    replacements
+      .iter()
       .flatMap((change) =>
         change.reverse(mol).map((mol) => [mol, count + 1] as const),
       )

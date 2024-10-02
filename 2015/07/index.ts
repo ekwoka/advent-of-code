@@ -1,3 +1,4 @@
+import '../../utils/prelude';
 import type { AOCInput } from '../../utils';
 
 enum Instruction {
@@ -130,10 +131,7 @@ export const partOne = (input: AOCInput, output = 'a'): number => {
       const [instruction, name] = line.split(' -> ');
       return [name, gateFromInstruction(instruction)] as const;
     })
-    .fold(
-      (gates, gate) => (gates.set(...gate), gates),
-      new Map<string, Gate>(),
-    );
+    .into(Map);
   return gates.get(output).get(gates);
 };
 
@@ -146,10 +144,7 @@ export const partTwo = (input: AOCInput): number => {
       const [instruction, name] = line.split(' -> ');
       return [name, gateFromInstruction(instruction)] as const;
     })
-    .fold(
-      (gates, gate) => (gates.set(...gate), gates),
-      new Map<string, Gate>(),
-    );
+    .into(Map);
   (gates.get('b') as Assign).set(gates.get('a').get(gates).toString());
   gates.forEach((gate) => (gate.cache = null));
   return gates.get('a').get(gates);

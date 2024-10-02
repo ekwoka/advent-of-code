@@ -1,4 +1,4 @@
-import { RustIterator } from '@ekwoka/rust-ts';
+import '../../utils/prelude';
 import { AOCInput } from '../../utils';
 
 const chars = 'abcdefghijklmnopqrstuvwxyz'.split('');
@@ -22,7 +22,8 @@ const noRestrictedCharacter = (password: string) => !/i|l|o/.test(password);
 const hasDoubleDouble = (password: string) =>
   /(.)\1.*?(?!\1)(.)\2/.test(password);
 const hasSequence = (password: string) =>
-  new RustIterator(chars)
+  chars
+    .iter()
     .window(3)
     .map((seq) => seq.join(''))
     .any((seq) => password.includes(seq));

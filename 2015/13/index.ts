@@ -1,4 +1,5 @@
-import { RustIterator, range } from '@ekwoka/rust-ts';
+import '../../utils/prelude';
+import { range } from '@ekwoka/rust-ts';
 import type { AOCInput } from '../../utils';
 
 export const partOne = (input: AOCInput) => {
@@ -25,19 +26,19 @@ export const partOne = (input: AOCInput) => {
       {} as Record<string, Record<string, number>>,
     );
   const wholeTable = Object.keys(relations);
-  let iter: RustIterator<string[]> = new RustIterator(wholeTable).map(
-    (name) => [name],
-  );
+  let iter: RustIterator<string[]> = wholeTable.iter().map((name) => [name]);
   range(1, wholeTable.length - 1).forEach(() => {
     iter = iter.flatMap((names) =>
-      new RustIterator(wholeTable)
+      wholeTable
+        .iter()
         .filter((name) => !names.includes(name))
         .map((name) => [...names, name]),
     );
   });
   return iter
     .map((names) =>
-      new RustIterator(names)
+      names
+        .iter()
         .chain([names[0]])
         .window(2)
         .map(([a, b]) => relations[a][b])
@@ -73,19 +74,19 @@ export const partTwo = (input: AOCInput) => {
     Object.keys(relations).map((name) => [name, 0]),
   );
   const wholeTable = Object.keys(relations);
-  let iter: RustIterator<string[]> = new RustIterator(wholeTable).map(
-    (name) => [name],
-  );
+  let iter: RustIterator<string[]> = wholeTable.iter().map((name) => [name]);
   range(1, wholeTable.length - 1).forEach(() => {
     iter = iter.flatMap((names) =>
-      new RustIterator(wholeTable)
+      wholeTable
+        .iter()
         .filter((name) => !names.includes(name))
         .map((name) => [...names, name]),
     );
   });
   return iter
     .map((names) =>
-      new RustIterator(names)
+      names
+        .iter()
         .chain([names[0]])
         .window(2)
         .map(([a, b]) => relations[a][b])

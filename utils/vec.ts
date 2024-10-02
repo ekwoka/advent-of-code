@@ -1,3 +1,5 @@
+import { RustIterator } from '@ekwoka/rust-ts';
+
 interface Vector<N extends number> {
   add(v: Vector<N>): Vector<N>;
   sub(v: Vector<N>): Vector<N>;
@@ -9,6 +11,7 @@ interface Vector<N extends number> {
   between(v: Vector<N>): IterableIterator<Vector<N>>;
   toArray(): number[];
   toString(): string;
+  toIter(): RustIterator<number>;
 }
 
 export class Vec2 implements Vector<2> {
@@ -66,6 +69,10 @@ export class Vec2 implements Vector<2> {
     return this.toArray().join(',');
   }
 
+  toIter(): RustIterator<number> {
+    return new RustIterator(this.toArray());
+  }
+
   static from(str: string): Vec2;
   static from(arr: [string | number, string | number]): Vec2;
   static from(v: string | [string | number, string | number]): Vec2 {
@@ -102,6 +109,10 @@ export class Vec2 implements Vector<2> {
   }
   static toString(vec: Vec2): string {
     return vec.toString();
+  }
+
+  static toIter(vec: Vec2): RustIterator<number> {
+    return vec.toIter();
   }
 }
 
@@ -158,6 +169,10 @@ export class Vec3 implements Vector<3> {
   }
   toString(): string {
     return this.toArray().join(',');
+  }
+
+  toIter(): RustIterator<number> {
+    return new RustIterator(this.toArray());
   }
 
   static from(str: string): Vec3;
