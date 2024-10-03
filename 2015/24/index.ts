@@ -1,4 +1,4 @@
-import '../../utils/prelude';
+import '@ekwoka/rust-ts/prelude';
 import type { AOCInput } from '../../utils';
 
 export const partOne = (input: AOCInput, groups = 3) => {
@@ -14,7 +14,7 @@ export const partOne = (input: AOCInput, groups = 3) => {
       packages.map((pkg, i) => [i, pkg, pkg, 1]);
     let minCount = Number.POSITIVE_INFINITY;
     while (queue.length) {
-      const [idx, sum, product, count] = queue.shift();
+      const [idx, sum, product, count] = queue.shift()!;
       if (count > minCount) continue;
       if (sum === targetWeight) {
         yield product;

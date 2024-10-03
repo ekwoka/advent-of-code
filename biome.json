@@ -29,7 +29,8 @@
       },
       "style": {
         "noCommaOperator": "off",
-        "noParameterAssign": "off"
+        "noParameterAssign": "off",
+        "noNonNullAssertion": "off"
       }
     }
   },

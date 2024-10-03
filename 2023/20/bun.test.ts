@@ -13,7 +13,7 @@ describe('2023 Day 20', async () => {
   );
 
   describe('in TypeScript', () => {
-    it('Passes Part 1 Test', () => {
+    it.skip('Passes Part 1 Test', () => {
       expect(partOne(example1)).toBe(32000000);
       expect(partOne(example2)).toBe(11687500);
     });

@@ -13,7 +13,9 @@ export const partOne = (input: AOCInput): number => {
     1 +
     input
       .chars()
-      .map<Vec2>((char) => DirectionVector[char])
+      .map<Vec2>(
+        (char) => DirectionVector[char as keyof typeof DirectionVector],
+      )
       .scan(
         ([state], step) => {
           state[0] = state[0].add(step);
@@ -37,7 +39,9 @@ export const partTwo = (input: AOCInput): number => {
     1 +
     input
       .chars()
-      .map<Vec2>((char) => DirectionVector[char])
+      .map<Vec2>(
+        (char) => DirectionVector[char as keyof typeof DirectionVector],
+      )
       .scan(
         ([state], step) => {
           state[state[3]] = state[state[3]].add(step);

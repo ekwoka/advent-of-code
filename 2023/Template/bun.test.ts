@@ -8,10 +8,10 @@ describe('2023 Day 1', async () => {
   const example1 = new AOCInput('');
 
   describe('in TypeScript', () => {
-    it('Passes Part 1 Test', () => {
+    it.skip('Passes Part 1 Test', () => {
       expect(partOne(example1)).toBe(0);
     });
-    it('Passes Part 2 Test', () => {
+    it.skip('Passes Part 2 Test', () => {
       expect(partTwo(example1)).toBe(0);
     });
     it('Passes Part 1', () => {

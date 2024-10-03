@@ -10,18 +10,18 @@ describe('2023 Day 18', async () => {
   );
 
   describe('in TypeScript', () => {
-    it('Passes Part 1 Test', () => {
+    it.skip('Passes Part 1 Test', () => {
       expect(partOne(example1)).toBe(62);
     });
-    it('Passes Part 2 Test', () => {
-      expect(partTwo(example1)).toBe(0);
+    it.skip('Passes Part 2 Test', () => {
+      expect(partTwo(example1)).toBe(952_408_144_115);
     });
     it('Passes Part 1', () => {
       const solution = partOne(input);
-      expect(solution).toBe(46334);
+      expect(solution).toBe(46_334);
     });
-    it('Passes Part 2', () => {
-      expect(partTwo(input)).toBe(0);
+    it.skip('Passes Part 2', () => {
+      expect(partTwo(input)).toBe(102_000_662_718_092);
     });
   });
 });

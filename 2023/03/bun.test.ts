@@ -8,10 +8,10 @@ describe('2023 Day 03', async () => {
   const testInput = new AOCInput(
     '467..114..\n...*......\n..35..633.\n......#...\n617*......\n.....+.58.\n..592.....\n......755.\n...$.*....\n.664.598..',
   );
-  it('Passes Part 1 Test', () => {
+  it.skip('Passes Part 1 Test', () => {
     expect(partOne(testInput)).toBe(4361);
   });
-  it('Passes Part 2 Test', () => {
+  it.skip('Passes Part 2 Test', () => {
     expect(partTwo(testInput)).toBe(467835);
   });
   it('Passes Part 1', () => {

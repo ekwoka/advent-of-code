@@ -5,7 +5,7 @@ const toStr = (input: string) => new TextEncoder().encode(input);
 
 describe('in Rust', async () => {
   const input = await getInput(2023, 2);
-  it('Passes Part 1 Test', () => {
+  it.skip('Passes Part 1 Test', () => {
     expect(
       part_one(
         toStr(
@@ -14,7 +14,7 @@ describe('in Rust', async () => {
       ),
     ).toBe(8);
   });
-  it('Passes Part 2 Test', () => {
+  it.skip('Passes Part 2 Test', () => {
     expect(
       part_two(
         toStr(

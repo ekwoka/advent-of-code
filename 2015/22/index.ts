@@ -1,4 +1,4 @@
-import '../../utils/prelude';
+import '@ekwoka/rust-ts/prelude';
 import type { AOCInput } from '../../utils';
 /**
  * As this problem, similar to the previous, is meant to emulate game decisions
@@ -14,8 +14,10 @@ Set.prototype.clone = function (this: Set<Entity>) {
     .map((entity) => entity.clone())
     .into(Set);
 };
-interface Set<T> {
-  clone(): Set<T>;
+declare global {
+  interface Set<T> {
+    clone(): Set<T>;
+  }
 }
 
 interface Entity {
@@ -69,7 +71,7 @@ class Boss implements Character {
   toString() {
     return `${this.health}-${this.effects
       .iter()
-      .reduce((a, effect) => a | effect.valueOf(), 0)}`;
+      .fold((a, effect) => a | effect.valueOf(), 0)}`;
   }
 }
 
@@ -239,7 +241,7 @@ export const partOne = (
   const queue: [state: GameState, nextSpell: Spell][] = Spells.filter(
     (spell) => spell.cost <= startingState.Player.mana,
   ).map((spell) => [startingState.clone(), spell]);
-  const score = ({ Player, Boss }, nextSpell: Spell) =>
+  const score = ({ Player, Boss }: GameState, nextSpell: Spell) =>
     Boss.health + Player.spentMana + nextSpell.cost - Player.health;
   const visitedStates = new Set<string>();
   const addToQueue = (state: GameState, nextSpell: Spell) => {
@@ -254,7 +256,7 @@ export const partOne = (
     else queue.push([state.clone(), nextSpell]);
   };
   while (queue.length) {
-    const [state, nextSpell] = queue.shift();
+    const [state, nextSpell] = queue.shift()!;
     if (hardMode) state.Player.health -= 1;
     nextSpell.cast(state);
     if (state.done)

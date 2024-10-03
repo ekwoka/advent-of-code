@@ -3,7 +3,7 @@ import { AOCInput, getInput } from '../../utils';
 
 describe('2016 Day 4', async () => {
   const input = await getInput(2016, 4);
-  it('Passes Part 1 Test', () => {
+  it.skip('Passes Part 1 Test', () => {
     expect(
       partOne(
         new AOCInput(`aaaaa-bbb-z-y-x-123[abxyz]

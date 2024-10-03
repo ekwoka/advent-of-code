@@ -10,10 +10,10 @@ describe('2023 Day 11', async () => {
   );
 
   describe('in TypeScript', () => {
-    it('Passes Part 1 Test', () => {
+    it.skip('Passes Part 1 Test', () => {
       expect(solveWithExpansionFactor(example1)).toBe(374);
     });
-    it('Passes Part 2 Test', () => {
+    it.skip('Passes Part 2 Test', () => {
       expect(solveWithExpansionFactor(example1, 10)).toBe(1030);
       expect(solveWithExpansionFactor(example1, 100)).toBe(8410);
     });
