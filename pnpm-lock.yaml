@@ -13,8 +13,8 @@ importers:
   .:
     dependencies:
       '@ekwoka/rust-ts':
-        specifier: 0.4.1
-        version: 0.4.1
+        specifier: file:../rust-ts
+        version: file:../rust-ts
       hyperimport:
         specifier: 0.2.0
         version: 0.2.0
@@ -111,8 +111,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@ekwoka/rust-ts@0.4.1':
-    resolution: {integrity: sha512-KDweFVPTrbfzdcuCiiBJi+N7fKOVUWAc8k/sR+uxJaOSX7aYccPgpaiXyl6cHOu24VmewbFEHwcCjbUmsIQ21A==}
+  '@ekwoka/rust-ts@file:../rust-ts':
+    resolution: {directory: ../rust-ts, type: directory}
 
   '@esbuild/aix-ppc64@0.21.4':
     resolution: {integrity: sha512-Zrm+B33R4LWPLjDEVnEqt2+SLTATlru1q/xYKVn8oVTbiRBGmK2VIMoIYGJDGyftnGaC788IuzGFAlb7IQ0Y8A==}
@@ -905,7 +905,7 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.2':
     optional: true
 
-  '@ekwoka/rust-ts@0.4.1': {}
+  '@ekwoka/rust-ts@file:../rust-ts': {}
 
   '@esbuild/aix-ppc64@0.21.4':
     optional: true

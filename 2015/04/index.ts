@@ -10,7 +10,7 @@ export const partOne = (input: AOCInput): number => {
   return (
     range(1, Number.POSITIVE_INFINITY)
       .map((i) => md5(`${key}${i}`))
-      .findIndex((hash) => hash.startsWith('00000')) + 1
+      .findIndex((hash) => hash.startsWith('00000'))! + 1
   );
 };
 export const partTwo = (input: AOCInput): number => {
@@ -18,6 +18,6 @@ export const partTwo = (input: AOCInput): number => {
   return (
     range(1, Number.POSITIVE_INFINITY)
       .map((i) => md5(`${key}${i}`))
-      .findIndex((hash) => hash.startsWith('000000')) + 1
+      .findIndex((hash) => hash.startsWith('000000'))! + 1
   );
 };

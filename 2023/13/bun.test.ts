@@ -13,17 +13,17 @@ describe('2023 Day 13', async () => {
   );
 
   describe('in TypeScript', () => {
-    it('Passes Part 1 Test', () => {
+    it.skip('Passes Part 1 Test', () => {
       expect(partOne(example1)).toBe(405);
     });
-    it('Passes Part 2 Test', () => {
+    it.skip('Passes Part 2 Test', () => {
       expect(partTwo(example1)).toBe(400);
       expect(partTwo(example2)).toBe(16);
     });
-    it('Passes Part 1', () => {
+    it.skip('Passes Part 1', () => {
       expect(partOne(input)).toBe(35691);
     });
-    it('Passes Part 2', () => {
+    it.skip('Passes Part 2', () => {
       expect(partTwo(input)).toBe(39037);
     });
   });

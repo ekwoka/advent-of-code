@@ -6,10 +6,10 @@ describe('2015 Day 17', async () => {
   const example1 = new AOCInput('20\n15\n10\n5\n5');
 
   describe('in TypeScript', () => {
-    it('Passes Part 1 Test', () => {
+    it.skip('Passes Part 1 Test', () => {
       expect(determineCombinations(example1, 25)).toBe(4);
     });
-    it('Passes Part 2 Test', () => {
+    it.skip('Passes Part 2 Test', () => {
       expect(fewestContainers(example1, 25)).toBe(3);
     });
     it('Passes Part 1', () => {

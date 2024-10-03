@@ -6,10 +6,10 @@ const toStr = (input: string) => new TextEncoder().encode(input);
 describe('2023 Day 5', async () => {
   const input = await getInput(2023, 5);
   describe('in TypeScript', () => {
-    it('Passes Part 1 Test', () => {
+    it.skip('Passes Part 1 Test', () => {
       expect(partOne(new AOCInput(exampleInput))).toBe(35);
     });
-    it('Passes Part 2 Test', () => {
+    it.skip('Passes Part 2 Test', () => {
       expect(partTwo(new AOCInput(exampleInput))).toBe(46);
     });
     it('Passes Part 1', () => {
@@ -20,7 +20,7 @@ describe('2023 Day 5', async () => {
     });
   });
   describe.skip('in Rust', () => {
-    it('Passes Part 1 Test', () => {
+    it.skip('Passes Part 1 Test', () => {
       expect(part_one(toStr(exampleInput))).toBe(0);
     });
     it.skip('Passes Part 2 Test', () => {

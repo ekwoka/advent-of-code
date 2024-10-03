@@ -1,4 +1,4 @@
-import '../../utils/prelude.ts';
+import '@ekwoka/rust-ts/prelude';
 import type { AOCInput } from '../../utils';
 
 const calculateChecksum = (str: string) =>
@@ -9,16 +9,16 @@ const calculateChecksum = (str: string) =>
     ),
   )
     .iter()
-    .map(([ch, chs]) => [ch, chs.length])
+    .map(([ch, chs]) => [ch, chs!.length] as const)
     .sort(([cha, a], [chb, b]) => (b === a ? cha.localeCompare(chb) : b - a))
-    .map(([ch]) => ch)
+    .map<string>(([ch]) => ch)
     .take(5)
     .sum();
 export const partOne = (input: AOCInput) => {
   return input
     .lines()
     .filter(Boolean)
-    .map((line) => line.match(/(.*)-(\d+)\[(\w+)\]/).slice(1))
+    .map((line) => line.match(/(.*)-(\d+)\[(\w+)\]/)!.slice(1))
     .filter(([name, _, check]) => calculateChecksum(name) === check)
     .map<number>((line) => Number(line[1]))
     .sum();
@@ -41,9 +41,9 @@ export const partTwo = (input: AOCInput) => {
   return input
     .lines()
     .filter(Boolean)
-    .map((line) => line.match(/(.*)-(\d+)\[(\w+)\]/).slice(1))
+    .map((line) => line.match(/(.*)-(\d+)\[(\w+)\]/)!.slice(1))
     .filter(([name, _, check]) => calculateChecksum(name) === check)
-    .map(([name, id]) => [moveForward(name, Number(id)), Number(id)])
+    .map(([name, id]) => [moveForward(name, Number(id)), Number(id)] as const)
     .filter(([name]) => name.includes('north') && name.includes('pole'))
     .map(([_, id]) => id)
     .nth(0);

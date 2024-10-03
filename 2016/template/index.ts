@@ -1,4 +1,4 @@
-import '../../utils/prelude.ts';
+import '@ekwoka/rust-ts/prelude';
 import type { AOCInput } from '../../utils';
 
 export const partOne = (_input: AOCInput) => {

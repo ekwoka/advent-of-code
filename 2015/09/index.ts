@@ -1,24 +1,27 @@
-import '../../utils/prelude';
+import '@ekwoka/rust-ts/prelude';
 import type { AOCInput } from '../../utils';
 
 export const partOne = (input: AOCInput): number => {
   const tree = input
     .lines()
     .filter(Boolean)
-    .map((line) => line.match(/(\S+) to (\S+) = (\d+)/).slice(1))
+    .map((line) => line.match(/(\S+) to (\S+) = (\d+)/)!.slice(1))
     .fold((map, [start, end, distance]) => {
       if (!map.has(start)) map.set(start, new Map<string, number>());
       if (!map.has(end)) map.set(end, new Map<string, number>());
-      map.get(start).set(end, Number(distance));
-      map.get(end).set(start, Number(distance));
+      map.get(start)!.set(end, Number(distance));
+      map.get(end)!.set(start, Number(distance));
       return map;
     }, new Map<string, Map<string, number>>());
-  const queue: [currentNode: string, visited: Set<string>, distance: number][] =
-    tree
-      .keys()
-      .iter()
-      .map((start) => [start, new Set(), 0])
-      .collect();
+  const queue: (readonly [
+    currentNode: string,
+    visited: Set<string>,
+    distance: number,
+  ])[] = tree
+    .keys()
+    .iter()
+    .map((start) => [start, new Set<string>(), 0] as const)
+    .collect();
   const addToQueue = (
     next: [currentNode: string, visited: Set<string>, distance: number],
   ) => {
@@ -28,9 +31,9 @@ export const partOne = (input: AOCInput): number => {
   };
 
   while (queue.length) {
-    const [current, visited, distance] = queue.shift();
+    const [current, visited, distance] = queue.shift()!;
     if (visited.size + 1 === tree.size) return distance;
-    tree.get(current).forEach((distanceTo, to) => {
+    tree.get(current)!.forEach((distanceTo, to) => {
       if (visited.has(to)) return;
       addToQueue([
         to,
@@ -39,41 +42,47 @@ export const partOne = (input: AOCInput): number => {
       ]);
     });
   }
+  return 0;
 };
 
 export const partTwo = (input: AOCInput): number => {
   const tree = input
     .lines()
     .filter(Boolean)
-    .map((line) => line.match(/(\S+) to (\S+) = (\d+)/).slice(1))
+    .map((line) => line.match(/(\S+) to (\S+) = (\d+)/)!.slice(1))
     .fold((map, [start, end, distance]) => {
       if (!map.has(start)) map.set(start, new Map<string, number>());
       if (!map.has(end)) map.set(end, new Map<string, number>());
-      map.get(start).set(end, Number(distance));
-      map.get(end).set(start, Number(distance));
+      map.get(start)!.set(end, Number(distance));
+      map.get(end)!.set(start, Number(distance));
       return map;
     }, new Map<string, Map<string, number>>());
-  const queue: [currentNode: string, visited: Set<string>, distance: number][] =
-    tree
-      .keys()
-      .iter()
-      .map((start) => [start, new Set(), 0])
-      .collect();
-
-  return (function* () {
-    while (queue.length) {
-      const [current, visited, distance] = queue.shift();
-      if (visited.size + 1 === tree.size) yield distance;
-      tree.get(current).forEach((distanceTo, to) => {
-        if (visited.has(to)) return;
-        queue.push([
-          to,
-          visited.iter().chain([current]).into(Set),
-          distance + distanceTo,
-        ]);
-      });
-    }
-  })()
+  const queue: (readonly [
+    currentNode: string,
+    visited: Set<string>,
+    distance: number,
+  ])[] = tree
+    .keys()
     .iter()
-    .max();
+    .map((start) => [start, new Set<string>(), 0] as const)
+    .collect();
+
+  return (
+    (function* () {
+      while (queue.length) {
+        const [current, visited, distance] = queue.shift()!;
+        if (visited.size + 1 === tree.size) yield distance;
+        tree.get(current)!.forEach((distanceTo, to) => {
+          if (visited.has(to)) return;
+          queue.push([
+            to,
+            visited.iter().chain([current]).into(Set),
+            distance + distanceTo,
+          ]);
+        });
+      }
+    })()
+      .iter()
+      .max() ?? 0
+  );
 };

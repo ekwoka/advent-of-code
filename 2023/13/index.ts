@@ -1,4 +1,5 @@
-import { RustIterator, range } from '@ekwoka/rust-ts';
+import '@ekwoka/rust-ts/prelude';
+import { type RustIterator, range } from '@ekwoka/rust-ts';
 import { AOCInput } from '../../utils';
 
 /**
@@ -7,18 +8,19 @@ import { AOCInput } from '../../utils';
 export const partOne = (input: AOCInput): number => {
   return input
     .split('\n\n')
-    .toIter()
+    .iter()
     .map((mirror) => new AOCInput(mirror))
     .map(toRowsAndColumns)
-    .map(([rows, cols]) =>
-      range(1, rows.length - 1)
-        .map((i) => [i, rows] as const)
-        .chain(range(1, cols.length - 1).map((i) => [i, cols]))
-        .filter(([i, group]) =>
-          hasExactlyNChanges(0)(splitZipAt<string>(i, group)),
-        )
-        .map(([i, group]) => (group === rows ? i * 100 : i))
-        .nth(0),
+    .map(
+      ([rows, cols]) =>
+        range(1, rows.length - 1)
+          .map((i) => [i, rows] as const)
+          .chain(range(1, cols.length - 1).map((i) => [i, cols]))
+          .filter(([i, group]) =>
+            hasExactlyNChanges(0)(splitZipAt<string>(i, group)),
+          )
+          .map(([i, group]) => (group === rows ? i * 100 : i))
+          .nth(0)!,
     )
     .sum();
 };
@@ -26,36 +28,36 @@ export const partOne = (input: AOCInput): number => {
 export const partTwo = (input: AOCInput): number => {
   return input
     .split('\n\n')
-    .toIter()
+    .iter()
     .map((mirror) => new AOCInput(mirror))
     .map(toRowsAndColumns)
-    .map(([rows, cols]) =>
-      range(1, rows.length - 1)
-        .map((i) => [i, rows] as const)
-        .chain(range(1, cols.length - 1).map((i) => [i, cols]))
-        .filter(([i, group]) =>
-          hasExactlyNChanges(1)(
-            splitZipAt<string>(i, group).flatMap<
-              RustIterator<[string, string]>
-            >(zip<string>),
-          ),
-        )
-        .map(([i, group]) => (group === rows ? i * 100 : i))
-        .nth(0),
+    .map(
+      ([rows, cols]) =>
+        range(1, rows.length - 1)
+          .map((i) => [i, rows] as const)
+          .chain(range(1, cols.length - 1).map((i) => [i, cols]))
+          .filter(([i, group]) =>
+            hasExactlyNChanges(1)(
+              splitZipAt<string>(i, group).flatMap(zip<string>),
+            ),
+          )
+          .map(([i, group]) => (group === rows ? i * 100 : i))
+          .nth(0)!,
     )
     .sum();
 };
 
 const splitZipAt = <T>(
   position: number,
-  list: Iterable<T>,
+  list: Array<T>,
 ): RustIterator<[T, T]> => {
-  const iter = new RustIterator(list);
-  return iter.take(position).reverse().zip<T>(iter) as RustIterator<[T, T]>;
+  const iter = list.iter();
+  return iter.take(position).reverse().zip<T>(iter);
 };
 
-const zip = <T>([a, b]: [Iterable<T>, Iterable<T>]): RustIterator<[T, T]> =>
-  new RustIterator(a).zip<T>(new RustIterator(b)) as RustIterator<[T, T]>;
+const zip = <T extends Array<string> | string>([a, b]: [T, T]): RustIterator<
+  [string, string]
+> => a.iter().zip<string>(b);
 
 const different = <T>([a, b]: [T, T]): boolean => a !== b;
 
@@ -68,7 +70,7 @@ const hasExactlyNChanges =
       .scan(toInlineIndex, 0)
       .take(n + 1)
       .collect();
-    return (n === 0 || changes.at(-2)) && !changes.at(-1);
+    return n === changes.length;
   };
 
 const toRowsAndColumns = (chunk: AOCInput): [string[], string[]] => {

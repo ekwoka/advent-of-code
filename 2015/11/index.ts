@@ -1,4 +1,4 @@
-import '../../utils/prelude';
+import '@ekwoka/rust-ts/prelude';
 import { AOCInput } from '../../utils';
 
 const chars = 'abcdefghijklmnopqrstuvwxyz'.split('');

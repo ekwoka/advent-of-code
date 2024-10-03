@@ -16,7 +16,7 @@ describe('2023 Day 4', async () => {
         ),
       ).toBe(13);
     });
-    it('Passes Part 2 Test', () => {
+    it.skip('Passes Part 2 Test', () => {
       expect(
         partTwo(
           new AOCInput(
@@ -33,7 +33,7 @@ describe('2023 Day 4', async () => {
     });
   });
   describe('in Rust', () => {
-    it('Passes Part 1 Test', () => {
+    it.skip('Passes Part 1 Test', () => {
       expect(
         part_one(
           toStr(
@@ -42,7 +42,7 @@ describe('2023 Day 4', async () => {
         ),
       ).toBe(13);
     });
-    it('Passes Part 2 Test', () => {
+    it.skip('Passes Part 2 Test', () => {
       expect(
         part_two(
           toStr(

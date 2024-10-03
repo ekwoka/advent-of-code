@@ -13,7 +13,7 @@ export const partOne = (input: AOCInput): number => {
     .lines()
     .map((line) => {
       const [instruction, start, end] = line
-        .match(/(turn on|turn off|toggle) (\d+,\d+) through (\d+,\d+)/)
+        .match(/(turn on|turn off|toggle) (\d+,\d+) through (\d+,\d+)/)!
         .slice(1);
       return [
         instruction === 'turn off'
@@ -52,7 +52,7 @@ export const partTwo = (input: AOCInput): number => {
     .lines()
     .map((line) => {
       const [instruction, start, end] = line
-        .match(/(turn on|turn off|toggle) (\d+,\d+) through (\d+,\d+)/)
+        .match(/(turn on|turn off|toggle) (\d+,\d+) through (\d+,\d+)/)!
         .slice(1);
       return [
         instruction === 'turn off'

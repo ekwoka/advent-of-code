@@ -1,4 +1,4 @@
-import '../../utils/prelude';
+import '@ekwoka/rust-ts/prelude';
 import { range } from '@ekwoka/rust-ts';
 import type { AOCInput } from '../../utils';
 
