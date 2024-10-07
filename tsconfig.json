@@ -1,12 +1,7 @@
 {
   "exclude": ["**/node_modules"],
   "compilerOptions": {
-    "types": [
-      "vitest/importMeta",
-      "vitest/globals",
-      "bun-types",
-      "@ekwoka/rust-ts/prelude"
-    ],
+    "types": ["vitest/globals", "bun-types", "@ekwoka/rust-ts/prelude"],
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
