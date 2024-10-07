@@ -1,3 +1,4 @@
-[hyperimport]
-loaders = ["rs"]
-debug = true
+preload = ["./loaders/rs.ts"]
+
+[test]
+preload = ["./loaders/rs.ts"]

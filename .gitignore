@@ -6,3 +6,4 @@ Cargo.lock
 build
 lastModified
 *.wasm
+*.rs.d.ts

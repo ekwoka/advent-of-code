@@ -5,8 +5,12 @@ import { Err, Ok, type Result, RustIterator } from '@ekwoka/rust-ts';
 await mkdir(new URL('./.cache', import.meta.url), { recursive: true });
 
 export const getInput = async (year: Year, day: Day) => {
-  const input = await getFromCache(year, day);
+  const input = await getInputRaw(year, day);
   return new AOCInput(input);
+};
+
+export const getInputRaw = (year: Year, day: Day) => {
+  return getFromCache(year, day);
 };
 
 export const submitAnswer = async (
