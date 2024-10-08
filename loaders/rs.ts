@@ -11,7 +11,16 @@ class RustLoader {
   async shouldRebuild() {
     if (!(await exists(this.cargoDir)))
       return `Cache for module ${this.libName} does not exist`;
-    if (!(await exists(resolve(this.cargoDir, 'pkg', 'package.json'))))
+    if (
+      !(await exists(
+        resolve(
+          this.cargoDir,
+          'target',
+          'wasm32-unknown-unknown',
+          process.env.RS_DEV ? 'debug' : 'release',
+        ),
+      ))
+    )
       return `pkg for module ${this.libName} does not exist`;
     const lmin = lastModified(this.path);
     const lmout = lastModified(
