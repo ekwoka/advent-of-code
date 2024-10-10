@@ -31,8 +31,8 @@ const stateToString = (position: number, floors: Floor[]) => {
             const pair = items
               .iter()
               .find(([e, t]) => e === item[0] && t !== item[1]);
-            if (pair) return `${item[0].slice(0, 2).toUpperCase()}P`;
-            return `${item[0].slice(0, 2).toUpperCase()}${item[1][0].toUpperCase()}`;
+            if (pair) return `${item[0].slice(0, 2)}P`;
+            return `${item[0].slice(0, 2)}${item[1][0]}`;
           })
           .into(Set)
           .iter()
@@ -59,7 +59,6 @@ export const partOne = (input: AOCInput) => {
           .matchAll(/(\w+)(?:-compatible)? (microchip|generator)/g)
           .iter()
           .map((m) => m.slice(1) as Item)
-          .iter()
           .collect() as Floor,
     )
     .reverse()
