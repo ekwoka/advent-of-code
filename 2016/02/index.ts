@@ -2,10 +2,10 @@ import type { AOCInput } from '../../utils';
 import { Vec2 } from '../../utils/vec';
 
 const Direction = {
-  U: new Vec2(0, -1),
-  D: new Vec2(0, 1),
-  L: new Vec2(-1, 0),
-  R: new Vec2(1, 0),
+  U: Vec2.NEG_Y,
+  D: Vec2.Y,
+  L: Vec2.NEG_X,
+  R: Vec2.X,
 };
 export const partOne = (input: AOCInput) => {
   return input
@@ -17,14 +17,14 @@ export const partOne = (input: AOCInput) => {
           .chars()
           .map((char) => Direction[char])
           .reduce(
-            (pos, dir) => pos.add(dir).clamp(Vec2.zero(), new Vec2(2, 2)),
+            (pos, dir) => pos.add(dir).clamp(Vec2.ZERO, Vec2.splat(2)),
             position,
           ),
     )
     .scan((state, steps) => {
       state[0] = steps(state[0]);
       return state[0];
-    }, new Vec2(1, 1))
+    }, Vec2.ONE)
     .map((pos) => pos.y * 3 + pos.x + 1)
     .collect()
     .join('');

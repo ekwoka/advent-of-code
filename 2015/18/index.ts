@@ -5,7 +5,7 @@ import { Vec2 } from '../../utils/vec';
 class Light {
   constructor(
     public on: boolean,
-    public location: Vec2 = Vec2.zero(),
+    public location: Vec2 = Vec2.ZERO,
   ) {}
 
   update(neighborStates: number) {
@@ -27,7 +27,7 @@ class BrokenLight implements Light {
   on = true;
   constructor(
     _: boolean,
-    public location: Vec2 = Vec2.zero(),
+    public location: Vec2 = Vec2.ZERO,
   ) {}
   update() {}
   break() {
@@ -38,9 +38,16 @@ class BrokenLight implements Light {
   }
 }
 
-const offsets = [-1, 0, 1]
-  .flatMap((x) => [-1, 0, 1].map((y) => new Vec2(x, y)))
-  .filter((coord) => coord.x !== 0 || coord.y !== 0);
+const offsets = [
+  Vec2.ONE,
+  Vec2.NEG_ONE,
+  Vec2.X,
+  Vec2.Y,
+  Vec2.NEG_X,
+  Vec2.NEG_Y,
+  Vec2.Y.add(Vec2.NEG_X),
+  Vec2.X.add(Vec2.NEG_Y),
+];
 
 class LightGrid {
   constructor(public lights: Light[][]) {}

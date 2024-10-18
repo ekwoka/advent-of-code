@@ -29,8 +29,10 @@ export const partOne = (input: AOCInput) => {
     }, Direction.North)
     .map(([direction, steps]) => {
       if ([Direction.North, Direction.South].includes(direction))
-        return new Vec2(0, direction === Direction.North ? steps : -steps);
-      return new Vec2(direction === Direction.East ? steps : -steps, 0);
+        return (direction === Direction.North ? Vec2.Y : Vec2.NEG_Y).scale(
+          steps,
+        );
+      return (direction === Direction.East ? Vec2.X : Vec2.NEG_X).scale(steps);
     })
     .reduce(Vec2.add)
     .toIter()
@@ -56,15 +58,17 @@ export const partTwo = (input: AOCInput) => {
     }, Direction.North)
     .map(([direction, steps]) => {
       if ([Direction.North, Direction.South].includes(direction))
-        return new Vec2(0, direction === Direction.North ? steps : -steps);
-      return new Vec2(direction === Direction.East ? steps : -steps, 0);
+        return (direction === Direction.North ? Vec2.Y : Vec2.NEG_Y).scale(
+          steps,
+        );
+      return (direction === Direction.East ? Vec2.X : Vec2.NEG_X).scale(steps);
     })
     .scan((state, vec) => {
       const start = state[0];
       const target = state[0].add(vec);
       state[0] = target;
       return start.between(target, true);
-    }, Vec2.zero())
+    }, Vec2.ZERO)
     .flat()
     .scan(([visited], vec) => {
       if (visited.has(vec.toString())) return vec;

@@ -2,10 +2,10 @@ import type { AOCInput } from '../../utils';
 import { Vec2 } from '../../utils/vec';
 
 const DirectionVector = {
-  '^': new Vec2(0, 1),
-  '>': new Vec2(1, 0),
-  v: new Vec2(0, -1),
-  '<': new Vec2(-1, 0),
+  '^': Vec2.Y,
+  '>': Vec2.X,
+  v: Vec2.NEG_Y,
+  '<': Vec2.NEG_X,
 };
 
 export const partOne = (input: AOCInput): number => {
@@ -24,7 +24,7 @@ export const partOne = (input: AOCInput): number => {
           visited.add(pos.toString());
           return true;
         },
-        [Vec2.zero(), new Set<string>([Vec2.zero().toString()])] as [
+        [Vec2.ZERO, new Set<string>([Vec2.ZERO.toString()])] as [
           Vec2,
           Set<string>,
         ],
@@ -52,12 +52,12 @@ export const partTwo = (input: AOCInput): number => {
           visited.add(pos.toString());
           return pos;
         },
-        [
-          Vec2.zero(),
-          Vec2.zero(),
-          new Set<string>([Vec2.zero().toString()]),
-          0,
-        ] as [santa: Vec2, robosanta: Vec2, Set<string>, step: 0 | 1],
+        [Vec2.ZERO, Vec2.ZERO, new Set<string>([Vec2.ZERO.toString()]), 0] as [
+          santa: Vec2,
+          robosanta: Vec2,
+          Set<string>,
+          step: 0 | 1,
+        ],
       )
       .filter(Boolean)
       .count()

@@ -27,9 +27,9 @@ export const partOne = (input: AOCInput): number => {
     })
     .fold((acc: number[], [instruction, start, end]) => {
       range(start.y, end.y)
-        .flatMap((y) => range(start.x, end.x).map((x) => [x, y]))
-        .forEach(([x, y]) => {
-          const index = y * 1000 + x;
+        .flatMap((y) => range(start.x, end.x).map((x) => new Vec2(x, y)))
+        .map(Vec2.dotApply(new Vec2(1, 1000)))
+        .forEach((index) => {
           switch (instruction) {
             case Instruction.On:
               acc[index] = 1;
@@ -67,8 +67,8 @@ export const partTwo = (input: AOCInput): number => {
     .fold((acc: number[], [instruction, start, end]) => {
       range(start.y, end.y)
         .flatMap((y) => range(start.x, end.x).map((x) => new Vec2(x, y)))
-        .forEach((light) => {
-          const index = light.y * 1000 + light.x;
+        .map(Vec2.dotApply(new Vec2(1, 1000)))
+        .forEach((index) => {
           switch (instruction) {
             case Instruction.On:
               acc[index] += 1;
