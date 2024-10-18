@@ -245,6 +245,10 @@ export class Vec2 implements Vector<2> {
   static dot(lhs: Vec2, rhs: Vec2): number {
     return lhs.dot(rhs);
   }
+  static dotApply(lhs: Vec2): (rhs: Vec2) => number {
+    return (rhs: Vec2) => lhs.dot(rhs);
+  }
+
   static length(vec: Vec2): number {
     return vec.length();
   }
