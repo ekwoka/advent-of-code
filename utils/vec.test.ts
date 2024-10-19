@@ -1,4 +1,4 @@
-import { Vec2 } from './vec';
+import { Vec2, Vec3 } from './vec';
 describe('Vec2', () => {
   describe('static methods', () => {
     it.each([
@@ -231,5 +231,247 @@ describe('Vec2', () => {
   });
 });
 
+describe('Vec3', () => {
+  describe('static methods', () => {
+    it.each([
+      ['5,7,9', 5, 7, 9],
+      [[42, 69, 180], 42, 69, 180],
+      [['7', '8', '9'], 7, 8, 9],
+      [
+        {
+          'this is': 'an iterable',
+          [Symbol.iterator]: () => [11, 12, 13][Symbol.iterator](),
+        },
+        11,
+        12,
+        13,
+      ],
+    ])('Vec3.from(%o) is a Vec3(%d, %d)', (input, x, y, z) => {
+      expect(Vec3.from(input as string)).toEqual(new Vec3(x, y, z));
+    });
+    it.each([
+      ['ZERO', 0, 0, 0],
+      ['ONE', 1, 1, 1],
+      ['NEG_ONE', -1, -1, -1],
+      [
+        'MIN',
+        Number.MIN_SAFE_INTEGER,
+        Number.MIN_SAFE_INTEGER,
+        Number.MIN_SAFE_INTEGER,
+      ],
+      [
+        'MAX',
+        Number.MAX_SAFE_INTEGER,
+        Number.MAX_SAFE_INTEGER,
+        Number.MAX_SAFE_INTEGER,
+      ],
+      [
+        'INFINITY',
+        Number.POSITIVE_INFINITY,
+        Number.POSITIVE_INFINITY,
+        Number.POSITIVE_INFINITY,
+      ],
+      [
+        'NEG_INFINITY',
+        Number.NEGATIVE_INFINITY,
+        Number.NEGATIVE_INFINITY,
+        Number.NEGATIVE_INFINITY,
+      ],
+      ['NaN', Number.NaN, Number.NaN, Number.NaN],
+      ['X', 1, 0, 0],
+      ['Y', 0, 1, 0],
+      ['Z', 0, 0, 1],
+      ['NEG_X', -1, 0, 0],
+      ['NEG_Y', 0, -1, 0],
+      ['NEG_Z', 0, 0, -1],
+    ] as const)('Vec3.%s is a Vec3 with %d, %d', (method, x, y, z) => {
+      expect(Vec3[method as keyof Vec3]).toEqual(new Vec3(x, y, z));
+    });
+
+    it.each([(Math.random() * 200) | 0])(
+      'splat %d as n to Vec3(n, n))',
+      (n) => {
+        expect(Vec3.splat(n)).toEqual(new Vec3(n, n, n));
+      },
+    );
+
+    it('Selects new Vec3 from multiple Vecs with Mask', () => {
+      expect(Vec3.select(Vec3.Y, Vec3.splat(55), Vec3.splat(99))).toEqual(
+        new Vec3(99, 55, 99),
+      );
+    });
+  });
+  describe('instance methods', () => {
+    describe('Math operations', () => {
+      it('Vec3#add', () => {
+        expect(Vec3.X.add(Vec3.Y).add(Vec3.Z)).toEqual(Vec3.ONE);
+      });
+      it('Vec3#sub', () => {
+        expect(Vec3.ONE.sub(Vec3.Y).sub(Vec3.Z)).toEqual(Vec3.X);
+      });
+      it('Vec3#mult', () => {
+        expect(Vec3.NEG_ONE.mult(Vec3.Y)).toEqual(new Vec3(-0, -1, -0));
+      });
+      it('Vec3#div', () => {
+        expect(Vec3.splat(42).div(new Vec3(6, 2, 1))).toEqual(
+          new Vec3(7, 21, 42),
+        );
+      });
+      it('Vec3#min', () => {
+        expect(Vec3.splat(42).min(new Vec3(69, 32, 42))).toEqual(
+          new Vec3(42, 32, 42),
+        );
+      });
+      it('Vec3#max', () => {
+        expect(Vec3.splat(42).max(new Vec3(69, 32, 42))).toEqual(
+          new Vec3(69, 42, 42),
+        );
+      });
+      it('Vec3#clamp', () => {
+        expect(new Vec3(42, 69, -10).clamp(Vec3.ZERO, Vec3.splat(50))).toEqual(
+          new Vec3(42, 50, 0),
+        );
+      });
+      it('Vec3#abs', () => {
+        expect(new Vec3(-42, 69, -0).abs()).toEqual(new Vec3(42, 69, 0));
+      });
+      it('Vec3#ceil', () => {
+        expect(new Vec3(42.1, 69.9, 42.5).ceil()).toEqual(new Vec3(43, 70, 43));
+      });
+      it('Vec3#floor', () => {
+        expect(new Vec3(42.1, 69.9, 42.5).floor()).toEqual(
+          new Vec3(42, 69, 42),
+        );
+      });
+      it('Vec3#round', () => {
+        expect(new Vec3(42.1, 69.9, 42.5).round()).toEqual(
+          new Vec3(42, 70, 43),
+        );
+      });
+    });
+    describe('Vector operations', () => {
+      it('Vec3#scale', () => {
+        expect(Vec3.ONE.scale(5)).toEqual(Vec3.splat(5));
+      });
+      it('Vec3#dot', () => {
+        expect(Vec3.splat(2).dot(Vec3.splat(5))).toBe(30);
+      });
+      it('Vec3#length', () => {
+        expect(new Vec3(42, 69, 100).length()).toBeCloseTo(128.549);
+      });
+      it('Vec3#normalize', () => {
+        expect(new Vec3(42, 69, 100).normalize()).toEqual(
+          new Vec3(0.32672213346545387, 0.5367577906932456, 0.777909841584414),
+        );
+        expect(new Vec3(42, 69, 100).normalize().length()).toBeCloseTo(1);
+      });
+      it('Vec3#projectOnto', () => {
+        expect(
+          toFixed3(new Vec3(4, 7, 5).projectOnto(new Vec3(5, 10, 15)), 3),
+        ).toEqual(new Vec3(2.357, 4.714, 7.071));
+      });
+      it('Vec3#rejectFrom', () => {
+        expect(
+          toFixed3(new Vec3(4, 7, 5).rejectFrom(new Vec3(5, 10, 15)), 3),
+        ).toEqual(new Vec3(1.643, 2.286, -2.071));
+      });
+      it('Vec3#distance', () => {
+        expect(
+          Number(new Vec3(3, 4, 5).distance(Vec3.NEG_X).toFixed(3)),
+        ).toBeCloseTo(7.55);
+      });
+      it('Vec3#midPoint', () => {
+        expect(new Vec3(39, 60, 10).midPoint(new Vec3(45, 78, 0))).toEqual(
+          new Vec3(42, 69, 5),
+        );
+      });
+      it('Vec3#moveTowards', () => {
+        expect(new Vec3(50, 100, -100).moveTowards(Vec3.ZERO, 10)).toEqual(
+          new Vec3(45, 90, -90),
+        );
+        expect(new Vec3(50, 100, -100).moveTowards(Vec3.ZERO, 110)).toEqual(
+          Vec3.ZERO,
+        );
+        expect(new Vec3(50, 100, -100).moveTowards(Vec3.ZERO, -10)).toEqual(
+          new Vec3(50, 100, -100),
+        );
+      });
+      it('Vec3#lerp', () => {
+        expect(new Vec3(50, 100, -100).lerp(Vec3.ZERO, 10)).toEqual(
+          new Vec3(45, 90, -90),
+        );
+        expect(new Vec3(50, 100, -100).lerp(Vec3.ZERO, 110)).toEqual(
+          new Vec3(-5, -10, 10),
+        );
+        expect(new Vec3(50, 100, -100).lerp(Vec3.ZERO, -10)).toEqual(
+          new Vec3(55, 110, -110),
+        );
+      });
+    });
+    describe('Vec3#to*', () => {
+      it('Array', () => {
+        expect(Vec3.X.toArray()).toEqual([1, 0, 0]);
+      });
+      it('String', () => {
+        expect(Vec3.X.toString()).toEqual('1,0,0');
+      });
+      it('Iter', () => {
+        expect([...Vec3.X.toIter()]).toEqual([1, 0, 0]);
+      });
+    });
+  });
+
+  describe('Trait calling methods', () => {
+    describe('Math operations', () => {
+      it('Vec3#add', () => {
+        expect(Vec3.add(Vec3.X, Vec3.Y)).toEqual(new Vec3(1, 1, 0));
+      });
+      it('Vec3#sub', () => {
+        expect(Vec3.sub(Vec3.ONE, Vec3.Y)).toEqual(new Vec3(1, 0, 1));
+      });
+    });
+    describe('Vector operations', () => {
+      it('Vec3#scale', () => {
+        expect(Vec3.scale(5)(Vec3.ONE)).toEqual(Vec3.splat(5));
+      });
+      it('Vec3#dot', () => {
+        expect(Vec3.dot(Vec3.splat(2), Vec3.splat(5))).toBe(30);
+      });
+      it('Vec3#length', () => {
+        expect(Vec3.length(new Vec3(42, 69, 100))).toBeCloseTo(128.549);
+      });
+      it('Vec3#normalize', () => {
+        expect(Vec3.normalize(new Vec3(42, 69, 100))).toEqual(
+          new Vec3(0.32672213346545387, 0.5367577906932456, 0.777909841584414),
+        );
+        expect(Vec3.normalize(new Vec3(42, 69, 100)).length()).toBeCloseTo(1);
+      });
+      it('Vec3#clamp', () => {
+        expect(
+          Vec3.clamp(Vec3.ZERO, Vec3.splat(50))(new Vec3(42, 69, -50)),
+        ).toEqual(new Vec3(42, 50, 0));
+      });
+    });
+    describe('Vec3#to*', () => {
+      it('Array', () => {
+        expect(Vec3.toArray(Vec3.X)).toEqual([1, 0, 0]);
+      });
+      it('String', () => {
+        expect(Vec3.toString(Vec3.X)).toEqual('1,0,0');
+      });
+      it('Iter', () => {
+        expect([...Vec3.toIter(Vec3.X)]).toEqual([1, 0, 0]);
+      });
+    });
+  });
+});
+
 const toFixed = (vec: Vec2, n: number) =>
   new Vec2(Number(vec.x.toFixed(n)), Number(vec.y.toFixed(n)));
+
+const toFixed3 = (vec: Vec3, n: number) =>
+  new Vec3(
+    Number(vec.x.toFixed(n)),
+    Number(vec.y.toFixed(n)),
+    Number(vec.z.toFixed(n)),
+  );

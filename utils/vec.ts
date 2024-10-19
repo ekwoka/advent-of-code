@@ -32,7 +32,6 @@ interface Vector<N extends number> {
   toArray(): number[];
   toString(): string;
   toIter(): RustIterator<number>;
-  toAngle(): number;
 }
 
 export class Vec2 implements Vector<2> {
@@ -290,8 +289,28 @@ export class Vec3 implements Vector<3> {
     return new Vec3(this.x - v.x, this.y - v.y, this.z - v.z);
   }
 
-  scale(scalar: number): Vec3 {
-    return new Vec3(this.x * scalar, this.y * scalar, this.z * scalar);
+  mult(v: Vec3): Vec3 {
+    return new Vec3(this.x * v.x, this.y * v.y, this.z * v.z);
+  }
+
+  div(v: Vec3): Vec3 {
+    return new Vec3(this.x / v.x, this.y / v.y, this.z / v.z);
+  }
+
+  min(v: Vec3): Vec3 {
+    return new Vec3(
+      Math.min(this.x, v.x),
+      Math.min(this.y, v.y),
+      Math.min(this.z, v.z),
+    );
+  }
+
+  max(v: Vec3): Vec3 {
+    return new Vec3(
+      Math.max(this.x, v.x),
+      Math.max(this.y, v.y),
+      Math.max(this.z, v.z),
+    );
   }
 
   clamp(min: Vec3, max: Vec3): Vec3 {
@@ -300,6 +319,26 @@ export class Vec3 implements Vector<3> {
       Math.min(max.y, Math.max(min.y, this.y)),
       Math.min(max.z, Math.max(min.z, this.z)),
     );
+  }
+
+  abs(): Vec3 {
+    return new Vec3(Math.abs(this.x), Math.abs(this.y), Math.abs(this.z));
+  }
+
+  ceil(): Vec3 {
+    return new Vec3(Math.ceil(this.x), Math.ceil(this.y), Math.ceil(this.z));
+  }
+
+  floor(): Vec3 {
+    return new Vec3(Math.floor(this.x), Math.floor(this.y), Math.floor(this.z));
+  }
+
+  round(): Vec3 {
+    return new Vec3(Math.round(this.x), Math.round(this.y), Math.round(this.z));
+  }
+
+  scale(scalar: number): Vec3 {
+    return new Vec3(this.x * scalar, this.y * scalar, this.z * scalar);
   }
 
   dot(v: Vec3): number {
@@ -314,8 +353,43 @@ export class Vec3 implements Vector<3> {
     const length = this.length();
     return new Vec3(this.x / length, this.y / length, this.z / length);
   }
-  *between(v: Vec3): IterableIterator<Vec3> {
-    const diff = v.sub(this);
+
+  projectOnto(rhs: Vec3): Vec3 {
+    const normalized = rhs.normalize();
+    return normalized.scale(this.dot(normalized));
+  }
+
+  rejectFrom(rhs: Vec3): Vec3 {
+    return this.sub(this.projectOnto(rhs));
+  }
+
+  distance(v: Vec3): number {
+    return this.sub(v).length();
+  }
+
+  midPoint(v: Vec3): Vec3 {
+    return this.add(v).scale(0.5);
+  }
+
+  moveTowards(rhs: Vec3, distance: number): Vec3 {
+    if (distance === 0) return new Vec3(this.x, this.y, this.z);
+    if (distance === 100) return new Vec3(rhs.x, rhs.y, rhs.z);
+    const diff = rhs.sub(this);
+    const length = diff.length();
+    const percentage = Math.max(Math.min(100, distance), 0) / 100;
+    return this.add(diff.normalize().scale(length * percentage));
+  }
+
+  lerp(rhs: Vec3, t: number): Vec3 {
+    if (t === 0) return new Vec3(this.x, this.y, this.z);
+    if (t === 100) return new Vec3(rhs.x, rhs.y, rhs.z);
+    const diff = rhs.sub(this);
+    const length = diff.length();
+    return this.add(diff.normalize().scale((t / 100) * length));
+  }
+
+  *between(rhs: Vec3): IterableIterator<Vec3> {
+    const diff = rhs.sub(this);
     const length = diff.length();
     const step = diff.scale(1 / length);
     for (let i = 1; i < length; i++) {
@@ -335,17 +409,138 @@ export class Vec3 implements Vector<3> {
   }
 
   static from(str: string): Vec3;
-  static from(arr: [string | number, string | number, string | number]): Vec3;
-  static from(
-    v: string | [string | number, string | number, string | number],
-  ): Vec3 {
-    if (Array.isArray(v))
-      return new Vec3(Number(v[0]), Number(v[1]), Number(v[2]));
-    const [x, y, z] = v.split(',').map(Number);
-    return new Vec3(x, y, z);
+  static from(iter: Iterable<number>): Vec3;
+  static from(iter: Iterable<string>): Vec3;
+  static from(v: string | Iterable<string> | Iterable<number>): Vec3 {
+    if (typeof v === 'string') {
+      const [x, y, z] = v.split(',').map(Number);
+      return new Vec3(x, y, z);
+    }
+    const [x, y, z] = v;
+    return new Vec3(Number(x), Number(y), Number(z));
   }
 
-  static zero() {
+  static get ZERO(): Vec3 {
     return new Vec3(0, 0, 0);
+  }
+
+  static get ONE(): Vec3 {
+    return new Vec3(1, 1, 1);
+  }
+
+  static get NEG_ONE(): Vec3 {
+    return new Vec3(-1, -1, -1);
+  }
+
+  static get MIN(): Vec3 {
+    return new Vec3(
+      Number.MIN_SAFE_INTEGER,
+      Number.MIN_SAFE_INTEGER,
+      Number.MIN_SAFE_INTEGER,
+    );
+  }
+
+  static get MAX(): Vec3 {
+    return new Vec3(
+      Number.MAX_SAFE_INTEGER,
+      Number.MAX_SAFE_INTEGER,
+      Number.MAX_SAFE_INTEGER,
+    );
+  }
+
+  static get INFINITY(): Vec3 {
+    return new Vec3(
+      Number.POSITIVE_INFINITY,
+      Number.POSITIVE_INFINITY,
+      Number.POSITIVE_INFINITY,
+    );
+  }
+
+  static get NEG_INFINITY(): Vec3 {
+    return new Vec3(
+      Number.NEGATIVE_INFINITY,
+      Number.NEGATIVE_INFINITY,
+      Number.NEGATIVE_INFINITY,
+    );
+  }
+
+  static get NaN(): Vec3 {
+    return new Vec3(Number.NaN, Number.NaN, Number.NaN);
+  }
+
+  static get X(): Vec3 {
+    return new Vec3(1, 0, 0);
+  }
+
+  static get Y(): Vec3 {
+    return new Vec3(0, 1, 0);
+  }
+
+  static get Z(): Vec3 {
+    return new Vec3(0, 0, 1);
+  }
+
+  static get NEG_X(): Vec3 {
+    return new Vec3(-1, 0, 0);
+  }
+
+  static get NEG_Y(): Vec3 {
+    return new Vec3(0, -1, 0);
+  }
+
+  static get NEG_Z(): Vec3 {
+    return new Vec3(0, 0, -1);
+  }
+
+  static splat(n: number): Vec3 {
+    return new Vec3(n, n, n);
+  }
+
+  static select(mask: Vec3, a: Vec3, b: Vec3): Vec3 {
+    return new Vec3(
+      mask.x === 1 ? a.x : b.x,
+      mask.y === 1 ? a.y : b.y,
+      mask.z === 1 ? a.z : b.z,
+    );
+  }
+
+  static add(lhs: Vec3, rhs: Vec3): Vec3 {
+    return lhs.add(rhs);
+  }
+
+  static sub(lhs: Vec3, rhs: Vec3): Vec3 {
+    return lhs.sub(rhs);
+  }
+
+  static scale(scalar: number) {
+    return (vec: Vec3) => vec.scale(scalar);
+  }
+
+  static dot(lhs: Vec3, rhs: Vec3): number {
+    return lhs.dot(rhs);
+  }
+
+  static length(vec: Vec3): number {
+    return vec.length();
+  }
+
+  static normalize(vec: Vec3): Vec3 {
+    return vec.normalize();
+  }
+
+  static clamp(min: Vec3, max: Vec3) {
+    return (vec: Vec3) => vec.clamp(min, max);
+  }
+
+  static toArray(vec: Vec3): number[] {
+    return vec.toArray();
+  }
+
+  static toString(vec: Vec3): string {
+    return vec.toString();
+  }
+
+  static toIter(vec: Vec3): RustIterator<number> {
+    return vec.toIter();
   }
 }
