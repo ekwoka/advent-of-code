@@ -155,19 +155,27 @@ export class Vec2 implements Vector<2> {
     return new RustIterator(this.toArray());
   }
 
+  [Symbol.iterator](): Iterator<number> {
+    return this.toIter();
+  }
+
   toAngle(): number {
     return (Math.atan2(this.y, this.x) * 180) / Math.PI;
   }
 
-  static from(str: string): Vec2;
+  eq(rhs: Vec2): boolean {
+    return this.x === rhs.x && this.y === rhs.y;
+  }
+
+  // biome-ignore lint/complexity/noBannedTypes: <explanation>
+  static from(str: string | String): Vec2;
   static from(iter: Iterable<number>): Vec2;
   static from(iter: Iterable<string>): Vec2;
   static from(v: string | Iterable<string> | Iterable<number>): Vec2 {
-    if (typeof v === 'string') {
-      const [x, y] = v.split(',').map(Number);
-      return new Vec2(x, y);
-    }
-    const [x, y] = v;
+    const [x = 0, y = 0] =
+      typeof v === 'string' || v instanceof String
+        ? v.split(',').map(Number)
+        : v;
     return new Vec2(Number(x), Number(y));
   }
 
@@ -400,6 +408,7 @@ export class Vec3 implements Vector<3> {
   toArray(): number[] {
     return [this.x, this.y, this.z];
   }
+
   toString(): string {
     return this.toArray().join(',');
   }
@@ -408,15 +417,19 @@ export class Vec3 implements Vector<3> {
     return new RustIterator(this.toArray());
   }
 
-  static from(str: string): Vec3;
+  [Symbol.iterator](): Iterator<number> {
+    return this.toIter();
+  }
+
+  // biome-ignore lint/complexity/noBannedTypes: <explanation>
+  static from(str: string | String): Vec3;
   static from(iter: Iterable<number>): Vec3;
   static from(iter: Iterable<string>): Vec3;
   static from(v: string | Iterable<string> | Iterable<number>): Vec3 {
-    if (typeof v === 'string') {
-      const [x, y, z] = v.split(',').map(Number);
-      return new Vec3(x, y, z);
-    }
-    const [x, y, z] = v;
+    const [x = 0, y = 0, z = 0] =
+      typeof v === 'string' || v instanceof String
+        ? v.split(',').map(Number)
+        : v;
     return new Vec3(Number(x), Number(y), Number(z));
   }
 

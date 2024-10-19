@@ -466,6 +466,15 @@ describe('Vec3', () => {
   });
 });
 
+describe('conversion between', () => {
+  it('Vec2.from(Vec3)', () => {
+    expect(Vec2.from(new Vec3(42, 69, 100))).toEqual(new Vec2(42, 69));
+  });
+  it('Vec3.from(Vec2)', () => {
+    expect(Vec3.from(new Vec2(42, 69))).toEqual(new Vec3(42, 69, 0));
+  });
+});
+
 const toFixed = (vec: Vec2, n: number) =>
   new Vec2(Number(vec.x.toFixed(n)), Number(vec.y.toFixed(n)));
 

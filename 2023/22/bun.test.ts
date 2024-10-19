@@ -13,10 +13,10 @@ describe('2023 Day 22', async () => {
     it.skip('Passes Part 1 Test', () => {
       expect(partOne(example1)).toBe(5);
     });
-    it.skip('Passes Part 2 Test', () => {
+    it('Passes Part 2 Test', () => {
       expect(partTwo(example1)).toBe(7);
     });
-    it('Passes Part 1', () => {
+    it.skip('Passes Part 1', () => {
       const solution = partOne(input);
       expect(solution).toBe(389);
     });
