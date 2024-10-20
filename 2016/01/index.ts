@@ -67,7 +67,7 @@ export const partTwo = (input: AOCInput) => {
       const start = state[0];
       const target = state[0].add(vec);
       state[0] = target;
-      return start.between(target, true);
+      return start.between(target, false, true);
     }, Vec2.ZERO)
     .flat()
     .scan(([visited], vec) => {

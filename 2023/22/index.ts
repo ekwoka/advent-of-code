@@ -1,4 +1,6 @@
 import type { AOCInput } from '../../utils';
+import { Vec2, Vec3 } from '../../utils/vec';
+import '@ekwoka/rust-ts/prelude';
 
 /**
  * --- Day 22: Sand Slabs ---
@@ -11,25 +13,13 @@ export const partOne = (input: AOCInput): number => {
     .map(
       (line) =>
         new Tetrino(
-          ...(line
-            .splitBy('~')
-            .map(
-              (location) =>
-                new Vec3(
-                  ...(location.splitBy(',').map(Number).collect() as [
-                    number,
-                    number,
-                    number,
-                  ]),
-                ),
-            )
-            .collect() as [Vec3, Vec3]),
+          ...(line.splitBy('~').map(Vec3.from).collect() as [Vec3, Vec3]),
         ),
     )
     .sort((a, b) => a.start.z - b.start.z)
     .fold((tower, tetrino) => tower.addTetrino(tetrino), new GravityMatrix());
   const required = restedTower.tetrinos
-    .toIter()
+    .iter()
     .map((one) =>
       restedTower.tetrinos
         .toIter()
@@ -48,19 +38,7 @@ export const partTwo = (input: AOCInput): number => {
     .map(
       (line) =>
         new Tetrino(
-          ...(line
-            .splitBy('~')
-            .map(
-              (location) =>
-                new Vec3(
-                  ...(location.splitBy(',').map(Number).collect() as [
-                    number,
-                    number,
-                    number,
-                  ]),
-                ),
-            )
-            .collect() as [Vec3, Vec3]),
+          ...(line.splitBy('~').map(Vec3.from).collect() as [Vec3, Vec3]),
         ),
     )
     .sort((a, b) => a.start.z - b.start.z)
@@ -89,7 +67,7 @@ const walkDisintegration = (tetrino: Tetrino): number => {
   const disintegrated = new Set<Tetrino>([tetrino]);
   const queue = tetrino.supports.slice();
   while (queue.length) {
-    const next = queue.shift();
+    const next = queue.shift()!;
     if (next.supportedBy.some((t) => !disintegrated.has(t))) continue;
     disintegrated.add(next);
     queue.push(...next.supports.filter((t) => !disintegrated.has(t)));
@@ -111,21 +89,22 @@ class GravityMatrix {
       height = vec.z;
       vec = Vec2.from(vec);
     }
-    this.heightMap.set(vec.toString(), height);
+    this.heightMap.set(vec.toString(), height as number);
     return this;
   }
   addTetrino(tetrino: Tetrino): this {
     const restingPoint =
       tetrino
         .path()
-        .toIter()
+        .iter()
         .map(Vec2.from)
         .map((vec) => this.getHeight(vec))
-        .max() + 1;
+        .max()! + 1;
     const fallenTetrino = tetrino.fallTo(restingPoint);
     this.tetrinos.push(fallenTetrino);
     fallenTetrino
       .path()
+      .iter()
       .forEach(
         (vec) => (this.setHeight(vec), this.matrix.set(vec, fallenTetrino)),
       );
@@ -140,7 +119,7 @@ class Matrix<T> {
   }
   set(vec: Vec3, value: T): this {
     ((this.matrix[vec.z] ??= Array.from({ length: 10 }, () =>
-      Array.from({ length: 10 }, () => null),
+      Array.from({ length: 10 }, () => null as T),
     ))[vec.y] ??= [])[vec.x] = value;
     return this;
   }
@@ -164,7 +143,7 @@ export class Tetrino {
     public end: Vec3,
   ) {}
   path() {
-    return this.start.between(this.end);
+    return this.start.between(this.end, true);
   }
   fallTo(height: number) {
     const distance = new Vec3(0, 0, this.start.z - height);
@@ -172,83 +151,13 @@ export class Tetrino {
   }
   restingOn(other: Tetrino): boolean {
     if (other.end.z !== this.start.z - 1) return false;
-    const otherPath = other.path().toIter().map(Vec2.from).collect();
+    const otherPath = other.path().iter().map(Vec2.from).collect();
     return this.path()
-      .toIter()
+      .iter()
       .map(Vec2.from)
-      .any((vec) => otherPath.toIter().any((otherVec) => vec.equals(otherVec)));
+      .any((vec) => otherPath.toIter().any((otherVec) => vec.eq(otherVec)));
   }
   toString() {
     return `${this.start} -> ${this.end}`;
-  }
-}
-
-class Vec2 {
-  constructor(
-    public x: number,
-    public y: number,
-  ) {}
-  add(other: Vec2) {
-    return new Vec2(this.x + other.x, this.y + other.y);
-  }
-  sub(other: Vec2) {
-    return new Vec2(this.x - other.x, this.y - other.y);
-  }
-  equals(other: Vec2) {
-    return this.x === other.x && this.y === other.y;
-  }
-  between(other: Vec2) {
-    const diff = new Vec2(
-      Math.sign(this.x - other.x),
-      Math.sign(this.y - other.y),
-    );
-    const steps = Math.max(
-      Math.abs(this.x - other.x),
-      Math.abs(this.y - other.y),
-    );
-    const path: Vec2[] = [this];
-    for (let i = 0; i < steps; i++) path.push(path[path.length - 1].add(diff));
-    return path;
-  }
-  toString() {
-    return `${this.x},${this.y}`;
-  }
-  static from(other: Vec3) {
-    return new Vec2(other.x, other.y);
-  }
-}
-
-export class Vec3 {
-  constructor(
-    public x: number,
-    public y: number,
-    public z: number,
-  ) {}
-  add(other: Vec3) {
-    return new Vec3(this.x + other.x, this.y + other.y, this.z + other.z);
-  }
-  sub(other: Vec3) {
-    return new Vec3(this.x - other.x, this.y - other.y, this.z - other.z);
-  }
-  equals(other: Vec3) {
-    return this.x === other.x && this.y === other.y && this.z === other.z;
-  }
-  between(other: Vec3) {
-    const diff = new Vec3(
-      Math.sign(other.x - this.x),
-      Math.sign(other.y - this.y),
-      Math.sign(other.z - this.z),
-    );
-    const steps = Math.max(
-      Math.abs(this.x - other.x),
-      Math.abs(this.y - other.y),
-      Math.abs(this.z - other.z),
-    );
-    const path: Vec3[] = [this];
-    for (let i = 0; i < steps; i++) path.push(path[path.length - 1].add(diff));
-    return path;
-  }
-  toString() {
-    return `${this.x},${this.y},${this.z}`;
   }
 }

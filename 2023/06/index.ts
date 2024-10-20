@@ -1,4 +1,5 @@
 import type { AOCInput } from '../../utils';
+import '@ekwoka/rust-ts/prelude';
 /**
  * --- Day 6: Wait For It ---
  */
@@ -21,7 +22,7 @@ export const partOne = (input: AOCInput): number => {
 export const partTwo = (input: AOCInput): number => {
   return input
     .lines()
-    .map((line) => line.splitBy(/\s+/).filter(testRegexp(/^\d+$/)).sum())
+    .map((line) => line.split(/\s+/).iter().filter(testRegexp(/^\d+$/)).sum())
     .map(Number)
     .window(2)
     .map(
