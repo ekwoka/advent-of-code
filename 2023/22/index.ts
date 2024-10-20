@@ -143,10 +143,7 @@ export class Tetrino {
     public end: Vec3,
   ) {}
   path() {
-    return [this.start]
-      .iter()
-      .chain(this.start.between(this.end))
-      .chain([this.end]);
+    return this.start.between(this.end, true);
   }
   fallTo(height: number) {
     const distance = new Vec3(0, 0, this.start.z - height);

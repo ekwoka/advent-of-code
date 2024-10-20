@@ -28,7 +28,11 @@ interface Vector<N extends number> {
   moveTowards(rhs: Vector<N>, distance: number): Vector<N>;
   lerp(rhs: Vector<N>, t: number): Vector<N>;
 
-  between(rhs: Vector<N>): IterableIterator<Vector<N>>;
+  between(
+    rhs: Vector<N>,
+    incStart: boolean,
+    incEnd: boolean,
+  ): IterableIterator<Vector<N>>;
   toArray(): number[];
   toString(): string;
   toIter(): RustIterator<number>;
@@ -133,14 +137,17 @@ export class Vec2 implements Vector<2> {
     return this.add(diff.normalize().scale((t / 100) * length));
   }
 
-  *between(v: Vec2, inclusive = false): IterableIterator<Vec2> {
-    const diff = v.sub(this);
+  *between(
+    rhs: Vec2,
+    incStart = false,
+    incEnd = incStart,
+  ): IterableIterator<Vec2> {
+    if (incStart) yield this;
+    const diff = rhs.sub(this);
     const length = diff.length();
-    const step = diff.scale(1 / length);
-    for (let i = 1; i < length; i++) {
-      yield this.add(step.scale(i));
-    }
-    if (inclusive) yield v;
+    const step = diff.normalize();
+    for (let i = 1; i < length; i++) yield this.add(step.scale(i));
+    if (incEnd) yield rhs;
   }
 
   toArray(): number[] {
@@ -396,13 +403,17 @@ export class Vec3 implements Vector<3> {
     return this.add(diff.normalize().scale((t / 100) * length));
   }
 
-  *between(rhs: Vec3): IterableIterator<Vec3> {
+  *between(
+    rhs: Vec3,
+    incStart = false,
+    incEnd = incStart,
+  ): IterableIterator<Vec3> {
+    if (incStart) yield this;
     const diff = rhs.sub(this);
     const length = diff.length();
-    const step = diff.scale(1 / length);
-    for (let i = 1; i < length; i++) {
-      yield this.add(step.scale(i));
-    }
+    const step = diff.normalize();
+    for (let i = 1; i < length; i++) yield this.add(step.scale(i));
+    if (incEnd) yield rhs;
   }
 
   toArray(): number[] {
