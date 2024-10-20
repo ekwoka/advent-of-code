@@ -18,7 +18,6 @@ export const partOne = (input: AOCInput): number => {
     )
     .sort((a, b) => a.start.z - b.start.z)
     .fold((tower, tetrino) => tower.addTetrino(tetrino), new GravityMatrix());
-  console.log(restedTower.matrix.toString());
   const required = restedTower.tetrinos
     .iter()
     .map((one) =>
@@ -144,7 +143,10 @@ export class Tetrino {
     public end: Vec3,
   ) {}
   path() {
-    return this.start.between(this.end);
+    return [this.start]
+      .iter()
+      .chain(this.start.between(this.end))
+      .chain([this.end]);
   }
   fallTo(height: number) {
     const distance = new Vec3(0, 0, this.start.z - height);
