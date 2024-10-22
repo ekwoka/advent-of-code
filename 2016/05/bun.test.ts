@@ -42,7 +42,7 @@ describe.skip('2016 Day 5 Naive Strings', () => {
   it('Passes Part 2 Test Naive', () => {
     expect(partTwoNaive(new AOCInput('abc'))).toBe('05ace8e3');
   }, 15_000);
-  it.skip('Passes Part 2 Naive', () => {
+  it('Passes Part 2 Naive', () => {
     expect(partTwoNaive(input)).toBe('f2c730e5');
   }, 15_000);
 });

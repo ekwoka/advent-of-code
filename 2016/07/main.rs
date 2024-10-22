@@ -1,3 +1,8 @@
+//! ```cargo
+//! [dependencies]
+//! fancy-regex = "0.13.0"
+//! ```
+
 use wasm_bindgen::prelude::*;
 use fancy_regex::Regex;
 
