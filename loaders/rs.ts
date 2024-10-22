@@ -1,7 +1,7 @@
-import { watch } from 'node:fs';
 import { exists, mkdir } from 'node:fs/promises';
 import { basename, relative, resolve } from 'node:path';
 import { type PluginBuilder, plugin } from 'bun';
+import { AOCInput } from '../utils';
 
 const cacheDir = resolve(process.cwd(), 'node_modules/.bun-cache');
 
@@ -37,9 +37,11 @@ class RustLoader {
 
   async makeCargo() {
     await mkdir(this.cargoDir, { recursive: true });
+    const contents = await Bun.file(this.path).text();
     const cargoToml = makeCargoToml(
       this.libName,
       relative(this.cargoDir, this.path),
+      contents,
     );
     await Bun.write(resolve(this.cargoDir, 'Cargo.toml'), cargoToml);
   }
@@ -117,17 +119,31 @@ export const lastModified = (path: string) => Bun.file(path).lastModified;
 export default RustLoader;
 plugin(RustLoader);
 
-const makeCargoToml = (name: string, relativePath: string) => `
+const isDocComment = (line: string | string) => line.startsWith('//!');
+const makeCargoToml = (
+  name: string,
+  relativePath: string,
+  contents: string,
+) => {
+  const commentLines = new AOCInput(contents).lines().filter(isDocComment);
+  commentLines.takeWhile((line) => !line.includes('```cargo')).collect();
+  let dependencies = `[dependencies]
+wasm-bindgen = "0.2.95"
+console_error_panic_hook = "0.1.7"
+`;
+  if (commentLines.next().value?.includes('[dependencies]'))
+    dependencies += commentLines
+      .takeWhile((line) => !(line.trim() === '//!' || line.includes('```')))
+      .map((line) => line.slice(3).trim())
+      .collect()
+      .join('\n');
+  return `
 [package]
 name = "wasm-${name}"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies]
-fancy-regex = "0.13.0"
-wasm-bindgen = "0.2.93"
-js-sys = "0.3"
-console_error_panic_hook = "0.1.7"
+${dependencies}
 
 [lib]
 crate-type = ["cdylib","rlib"]
@@ -140,3 +156,4 @@ opt-level = 3
 codegen-units = 1
 strip = "debuginfo"
 `;
+};
