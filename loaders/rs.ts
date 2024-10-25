@@ -17,7 +17,7 @@ class RustLoader {
           this.cargoDir,
           'target',
           'wasm32-unknown-unknown',
-          process.env.RS_DEV ? 'debug' : 'release',
+          process.env.RS_DEV === 'true' ? 'debug' : 'release',
         ),
       ))
     )
@@ -28,7 +28,7 @@ class RustLoader {
         this.cargoDir,
         'target',
         'wasm32-unknown-unknown',
-        process.env.RS_DEV ? 'debug' : 'release',
+        process.env.RS_DEV === 'true' ? 'debug' : 'release',
       ),
     );
     if (lmin > lmout) return `Module ${this.libName} is newer than its cache`;
@@ -49,11 +49,14 @@ class RustLoader {
   async build() {
     await Bun.spawn(
       [
+        'rustup',
+        'run',
+        'nightly',
         'wasm-pack',
         'build',
         '--target',
         'web',
-        ...(process.env.RS_DEV ? ['--dev', '--no-opt'] : ['--release']),
+        ...(process.env.RS_DEV === 'true' ? ['--dev'] : ['--release']),
         this.cargoDir,
       ],
       {
@@ -119,7 +122,8 @@ export const lastModified = (path: string) => Bun.file(path).lastModified;
 export default RustLoader;
 plugin(RustLoader);
 
-const isDocComment = (line: string | string) => line.startsWith('//!');
+// biome-ignore lint/complexity/noBannedTypes: Needed to accept subclasses of String
+const isDocComment = (line: string | String) => line.startsWith('//!');
 const makeCargoToml = (
   name: string,
   relativePath: string,
@@ -155,5 +159,17 @@ panic = "abort"
 opt-level = 3
 codegen-units = 1
 strip = "debuginfo"
+
+[package.metadata.wasm-pack.profile.release.wasm-bindgen]
+debug-js-glue = false
+demangle-name-section = false
+dwarf-debug-info = false
+omit-default-module-path = false
+
+[package.metadata.wasm-pack.profile.dev]
+wasm-opt = false
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = ['-O4','--precompute','-n','--vacuum']
 `;
 };

@@ -3,7 +3,7 @@ import { AOCInput, getInput, getInputRaw } from '../../utils';
 
 describe('2016 Day 11', async () => {
   const input = await getInput(2016, 11);
-  it.skip('Passes Part 1 Test', () => {
+  it('Passes Part 1 Test', () => {
     expect(
       partOne(
         new AOCInput(`The first floor contains a hydrogen-compatible microchip and a lithium-compatible microchip.
@@ -13,10 +13,10 @@ The fourth floor contains nothing relevant.`),
       ),
     ).toBe(11);
   }, 15_000);
-  it('Passes Part 1', () => {
+  it.skip('Passes Part 1', () => {
     expect(partOne(input)).toBe(31);
   }, 15_000);
-  it('Passes Part 2', () => {
+  it.skip('Passes Part 2', () => {
     expect(partTwo(input)).toBe(55);
   }, 15_000);
 });

@@ -6,10 +6,10 @@ const input = await getInput(2016, 5);
  * directly on the md5 buffer. Part 2 takes 22 seconds
  */
 describe('2016 Day 5 Bitwise', async () => {
-  it.skip('Passes Part 1 Test', () => {
+  it('Passes Part 1 Test', () => {
     expect(partOne(new AOCInput('abc'))).toBe('18f47a30');
   }, 15_000);
-  it('Passes Part 1', () => {
+  it.skip('Passes Part 1', () => {
     expect(partOne(input)).toBe('d4cd2ee1');
   }, 15_000);
   it.skip('Passes Part 2 Test', () => {
@@ -26,10 +26,10 @@ describe('2016 Day 5 Bitwise', async () => {
  * Part 2 takes 16 seconds
  */
 describe('2016 Day 5 Optimized', async () => {
-  it.skip('Passes Part 2 Test', () => {
+  it('Passes Part 2 Test', () => {
     expect(partTwoOptimized(new AOCInput('abc'))).toBe('05ace8e3');
   }, 15_000);
-  it('Passes Part 2', () => {
+  it.skip('Passes Part 2', () => {
     expect(partTwoOptimized(input)).toBe('f2c730e5');
   }, 15_000);
 });

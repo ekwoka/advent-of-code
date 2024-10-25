@@ -1,7 +1,7 @@
 //! ```cargo
 //! [dependencies]
 //! ```
-
+#![feature(iter_array_chunks)]
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -39,9 +39,7 @@ pub fn part_one_stream(input: String, size: usize) -> String {
   let mut data: Box<dyn Iterator<Item=usize>> = Box::new(generate_data_stream(input,size));
   let mut collapsed = size;
   while collapsed % 2 == 0 {
-    data = Box::new((0..collapsed/2).map(move |_| {
-      data.by_ref().take(2).collect::<Vec<usize>>()
-    }).map(|chs| chs.first().unwrap() ^ chs.last().unwrap() ^ 1));
+    data = Box::new(data.array_chunks::<2>().map(|chs| chs[0] ^ chs[1] ^ 1));
     collapsed /= 2;
   }
   data.map(|n| n.to_string()).collect()

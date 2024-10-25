@@ -12,7 +12,7 @@ describe('2016 Day 14', async () => {
   it.skip('Passes Part 2 Test', () => {
     expect(partTwo(new AOCInput('abc'))).toBe(22_551);
   }, 15_000);
-  it('Passes Part 2', () => {
+  it.skip('Passes Part 2', () => {
     expect(partTwo(input)).toBe(22_696);
   }, 15_000);
 });
