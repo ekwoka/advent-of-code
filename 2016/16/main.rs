@@ -33,3 +33,47 @@ pub fn part_one(input: String, size: usize) -> String {
   }
   data.iter().collect()
 }
+
+#[wasm_bindgen]
+pub fn part_one_stream(input: String, size: usize) -> String {
+  let mut data: Box<dyn Iterator<Item=usize>> = Box::new(generate_data_stream(input,size));
+  let mut collapsed = size;
+  while collapsed % 2 == 0 {
+    data = Box::new((0..collapsed/2).map(move |_| {
+      data.by_ref().take(2).collect::<Vec<usize>>()
+    }).map(|chs| chs.first().unwrap() ^ chs.last().unwrap() ^ 1));
+    collapsed /= 2;
+  }
+  data.map(|n| n.to_string()).collect()
+}
+
+fn generate_data_stream(input: String, size: usize) -> impl Iterator<Item=usize> {
+  let input_len = input.len();
+  let data = (0..size).map(move |n| {
+    let iteration = (n / (input_len + 1)) | 0;
+    let char_pos = n % (input_len + 1);
+    if iteration % 2 == 0 {
+      if char_pos == input_len {
+        (iteration / 2) % 2
+      } else {
+        input[char_pos..char_pos+1].parse().unwrap()
+      }
+    } else {
+      if char_pos == input_len {
+        let mut steps = 0;
+        let mut m = iteration + 1;
+        while m.ilog2() as f32 != (m as f32).log2() && m > 2 {
+          m = (2 as usize).pow(m.ilog2() as u32) - (m - (2 as usize).pow(m.ilog2()));
+          steps+=1;
+        }
+        steps % 2
+      } else {
+        match input.chars().nth(input_len-char_pos-1).unwrap() {
+          '1' => 0,
+          _ => 1,
+        }
+      }
+    }
+  });
+  data
+}
