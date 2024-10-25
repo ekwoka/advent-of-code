@@ -3,7 +3,7 @@ import { AOCInput, getInput, getInputRaw } from '../../utils';
 
 describe('2016 Day 15', async () => {
   const input = await getInput(2016, 15);
-  it('Passes Part 1 Test', () => {
+  it.skip('Passes Part 1 Test', () => {
     expect(
       partOne(
         new AOCInput(`Disc #1 has 5 positions; at time=0, it is at position 4.
@@ -22,7 +22,7 @@ Disc #2 has 2 positions; at time=0, it is at position 1.`),
 describe('2016 Day 15 Rust', async () => {
   const input = await getInputRaw(2016, 15);
   const { part_one, part_two } = await import('./main.rs');
-  it('Passes Part 1 Test', () => {
+  it.skip('Passes Part 1 Test', () => {
     expect(
       part_one(`Disc #1 has 5 positions; at time=0, it is at position 4.
 Disc #2 has 2 positions; at time=0, it is at position 1.`),

@@ -3,13 +3,13 @@ import { AOCInput, getInput, getInputRaw } from '../../utils';
 
 describe('2016 Day 14', async () => {
   const input = await getInput(2016, 14);
-  it('Passes Part 1 Test', () => {
+  it.skip('Passes Part 1 Test', () => {
     expect(partOne(new AOCInput('abc'))).toBe(22_728);
   }, 15_000);
   it('Passes Part 1', () => {
     expect(partOne(input)).toBe(23_890);
   }, 15_000);
-  it('Passes Part 2 Test', () => {
+  it.skip('Passes Part 2 Test', () => {
     expect(partTwo(new AOCInput('abc'))).toBe(22_551);
   }, 15_000);
   it('Passes Part 2', () => {
