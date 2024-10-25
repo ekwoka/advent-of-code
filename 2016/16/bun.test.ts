@@ -8,8 +8,8 @@ import {
 } from '.';
 import { getInputRaw } from '../../utils';
 
-describe.skip('2016 Day 16', async () => {
-  const input = await getInputRaw(2016, 16);
+const input = await getInputRaw(2016, 16);
+describe('2016 Day 16', async () => {
   it('Passes Part 1 Test', () => {
     expect(Day16('10000', 20)).toBe('01100');
   }, 15_000);
@@ -22,10 +22,6 @@ describe.skip('2016 Day 16', async () => {
 });
 
 describe('2016 Day 16 Streaming', async () => {
-  const input = (await getInputRaw(2016, 16))
-    .iter()
-    .filter((ch) => ['1', '0'].includes(ch))
-    .sum();
   it.skip('generates same data', () => {
     expect(generateDataStream('10000', 20).map(String).sum()).toBe(
       generateData('10000', 20),
@@ -67,7 +63,6 @@ describe('2016 Day 16 Streaming', async () => {
 });
 
 describe('2016 Day 16 Rust', async () => {
-  const input = await getInputRaw(2016, 16);
   const { part_one } = await import('./main.rs');
   it.skip('Passes Part 1 Test', () => {
     expect(part_one('10000', 20)).toBe('01100');
@@ -80,10 +75,6 @@ describe('2016 Day 16 Rust', async () => {
   }, 15_000);
 });
 describe.skip('2016 Day 16 Rust Stream', async () => {
-  const input = (await getInputRaw(2016, 16))
-    .iter()
-    .filter((ch) => ['1', '0'].includes(ch))
-    .sum();
   const { part_one_stream } = await import('./main.rs');
   it('Passes Part 1 Test', () => {
     expect(part_one_stream('10000', 20)).toBe('01100');

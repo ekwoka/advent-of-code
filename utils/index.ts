@@ -1,5 +1,4 @@
 import { mkdir } from 'node:fs/promises';
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Err, Ok, type Result, RustIterator } from '@ekwoka/rust-ts';
 
 await mkdir(new URL('./.cache', import.meta.url), { recursive: true });
@@ -117,7 +116,11 @@ export const getFromCache = async (year: Year, day: Day): Promise<string> => {
     const input = await fetchInput(year, day);
     await Bun.write(cacheFile, input);
   }
-  return cacheFile.text();
+  return stripFinalNewLine(await cacheFile.text());
+};
+
+const stripFinalNewLine = (text: string) => {
+  return text.at(-1) === '\n' ? text.slice(0, -1) : text;
 };
 
 export class AOCInput extends String {
