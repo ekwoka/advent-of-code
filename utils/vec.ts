@@ -174,6 +174,10 @@ export class Vec2 implements Vector<2> {
     return this.x === rhs.x && this.y === rhs.y;
   }
 
+  clone() {
+    return new Vec2(this.x, this.y);
+  }
+
   // biome-ignore lint/complexity/noBannedTypes: <explanation>
   static from(str: string | String): Vec2;
   static from(iter: Iterable<number>): Vec2;
