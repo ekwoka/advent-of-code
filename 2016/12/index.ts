@@ -2,7 +2,7 @@ import '@ekwoka/rust-ts/prelude';
 import type { AOCInput } from '../../utils';
 
 interface Instruction {
-  run(registers: [number, number, number, number]): number;
+  run(registers: Int32Array): number;
 }
 
 const registerIndex = {
@@ -12,15 +12,14 @@ const registerIndex = {
   d: 3,
 };
 class Copy implements Instruction {
-  private target: number;
   constructor(
     private source: string | number,
-    private target: string,
+    private target: string | number,
   ) {}
   run(registers: Int32Array): number {
-    registers[registerIndex[this.target]] =
+    registers[registerIndex[this.target as keyof typeof registerIndex]] =
       typeof this.source === 'string'
-        ? registers[registerIndex[this.source]]
+        ? registers[registerIndex[this.source as keyof typeof registerIndex]]
         : this.source;
     return 1;
   }
@@ -29,7 +28,7 @@ class Copy implements Instruction {
 class Inc implements Instruction {
   private target: number;
   constructor(target: string) {
-    this.target = registerIndex[target];
+    this.target = registerIndex[target as keyof typeof registerIndex];
   }
   run(registers: Int32Array): number {
     registers[this.target]++;
@@ -40,7 +39,7 @@ class Inc implements Instruction {
 class Dec implements Instruction {
   private target: number;
   constructor(target: string) {
-    this.target = registerIndex[target];
+    this.target = registerIndex[target as keyof typeof registerIndex];
   }
   run(registers: Int32Array): number {
     registers[this.target]--;
@@ -58,7 +57,7 @@ class Jnz implements Instruction {
   }
   run(registers: Int32Array): number {
     return (typeof this.check === 'string'
-      ? registers[registerIndex[this.check]]
+      ? registers[registerIndex[this.check as keyof typeof registerIndex]]
       : this.check) !== 0
       ? this.value
       : 1;
