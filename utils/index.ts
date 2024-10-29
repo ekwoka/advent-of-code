@@ -116,7 +116,11 @@ export const getFromCache = async (year: Year, day: Day): Promise<string> => {
     const input = await fetchInput(year, day);
     await Bun.write(cacheFile, input);
   }
-  return stripFinalNewLine(await cacheFile.text());
+  return stripFinalNewLine(
+    await Bun.file(
+      new URL(`./.cache/${year}-${day}.txt`, import.meta.url),
+    ).text(),
+  );
 };
 
 const stripFinalNewLine = (text: string) => {
