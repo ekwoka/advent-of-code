@@ -1,5 +1,7 @@
 {
   "scripts": {
+    "create": "bun run scripts/createProblem.ts",
+    "open": "bun run scripts/openProblem.ts",
     "lint": "biome check"
   },
   "devDependencies": {
