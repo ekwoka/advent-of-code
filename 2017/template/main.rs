@@ -9,11 +9,11 @@ pub fn main() {
   console_error_panic_hook::set_once();
 }
 #[wasm_bindgen]
-pub fn part_one(_input: String) -> f64 {
-  0.0
+pub fn part_one(input: String) -> usize {
+  0
 }
 
 #[wasm_bindgen]
-pub fn part_two(_input: String) -> f64 {
-  0.0
+pub fn part_two(input: String) -> usize {
+  0
 }
