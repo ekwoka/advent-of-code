@@ -12,12 +12,15 @@ aa bb cc dd aaa`),
     ).toBe(2);
   }, 15_000);
   it('Passes Part 1', () => {
-    expect(part_one(input)).toBe(0);
+    expect(part_one(input)).toBe(455);
   }, 15_000);
-  it.skip('Passes Part 2 Test', () => {
-    expect(part_two('')).toBe(0);
+  it('Passes Part 2 Test', () => {
+    expect(
+      part_two(`abcde xyz ecdab
+a ab abc abd abf abj`),
+    ).toBe(1);
   }, 15_000);
-  it.skip('Passes Part 2', () => {
-    expect(part_two(input)).toBe(0);
+  it('Passes Part 2', () => {
+    expect(part_two(input)).toBe(186);
   }, 15_000);
 });
