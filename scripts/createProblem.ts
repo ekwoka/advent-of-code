@@ -88,7 +88,7 @@ if (!existsSync(testPath)) {
   ).toString();
   await writeFile(
     testPath,
-    initialContent.replace('2015, 1', `${year}, ${day}`),
+    initialContent.replace('2015, 1', `${year}, ${Number(day)}`),
   );
 }
 const initialContent = (await readFile(testPath)).toString();
@@ -99,7 +99,7 @@ if (options.typescript) {
     ).toString();
     await appendFile(
       testPath,
-      tsContent.replace('2015 Day 1', `${year} Day ${day}`),
+      tsContent.replace('2015 Day 1', `${year} Day ${Number(day)}`),
     );
   }
   if (!existsSync(resolve(dayPath, 'index.ts'))) {
@@ -117,7 +117,7 @@ if (options.rust) {
     ).toString();
     await appendFile(
       testPath,
-      rsContent.replace('2015 Day 1', `${year} Day ${day}`),
+      rsContent.replace('2015 Day 1', `${year} Day ${Number(day)}`),
     );
   }
   if (!existsSync(resolve(dayPath, 'main.rs'))) {
