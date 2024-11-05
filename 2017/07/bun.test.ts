@@ -20,7 +20,7 @@ gyxo (61)
 cntj (57)`),
     ).toBe('tknk');
   }, 15_000);
-  it.skip('Passes Part 1', () => {
+  it('Passes Part 1', () => {
     expect(part_one(input)).toBe('airlri');
   }, 15_000);
   it('Passes Part 2 Test', () => {
@@ -38,9 +38,9 @@ jptl (61)
 ugml (68) -> gyxo, ebii, jptl
 gyxo (61)
 cntj (57)`),
-    ).toBe(243);
+    ).toBe(60);
   }, 15_000);
   it('Passes Part 2', () => {
-    expect(part_two(input)).toBe(0);
+    expect(part_two(input)).toBe(1_206);
   }, 15_000);
 });
