@@ -15,13 +15,14 @@ pub fn part_one(input: String) -> usize {
   let mut depth = 0;
   let mut in_garbage = false;
   while let Some(ch) = chars.next() {
+    if ch == '!' {
+      chars.next();
+      continue;
+    }
     if in_garbage {
       match ch {
         '>' => {
           in_garbage = false;
-        },
-        '!' => {
-          chars.next();
         },
         _ => ()
       }
@@ -33,9 +34,6 @@ pub fn part_one(input: String) -> usize {
         '}' => {
           score += depth;
           depth -= 1;
-        },
-        '!' => {
-          chars.next();
         },
         '<' => {
           in_garbage = true;
