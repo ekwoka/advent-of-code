@@ -1,6 +1,7 @@
 //! ```cargo
 //! [dependencies]
 //! ```
+
 #![feature(ascii_char)]
 use wasm_bindgen::prelude::*;
 
