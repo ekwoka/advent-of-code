@@ -171,5 +171,8 @@ wasm-opt = false
 
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = ['-O4','--precompute','-n','--vacuum']
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }
 `;
 };
