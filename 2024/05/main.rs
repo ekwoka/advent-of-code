@@ -1,54 +1,52 @@
 //! ```cargo
 //! [dependencies]
 //! ```
+//! --- Day 5: Print Queue ---
+//! Part    Time       Rank
+//!   1     00:18:38   3673
+//!   2     00:25:19   2338
+//!
+//! We check for the Cheif Historian in the Printing Department
+//! Unfortunately we, being computer people, are recruited to fix a printer
+//! ....
 
 use wasm_bindgen::prelude::*;
-use std::cmp::Ordering;
 
 #[wasm_bindgen(start)]
 pub fn main() {
   console_error_panic_hook::set_once();
 }
+
+/// First we need to find, using strange printing rules
+/// Which sets of updates are correct
 #[wasm_bindgen]
 pub fn part_one(input: String) -> usize {
-  let rules = input.lines()
-    .take_while(|line| line.len() > 1)
-    .map(|line| line.split("|")
-      .filter_map(|n| n.parse::<usize>().ok())
-      .collect::<Vec<_>>())
-    .map(|pages| (pages[0],pages[1]))
+  let (rules_lines, update_lines) = input.split_once("\n\n").unwrap();
+  let rules = rules_lines.lines()
+    .map(|line| line.split_once("|").unwrap())
+    .map(|(page1, page2)| (page1.parse::<usize>().unwrap(), page2.parse::<usize>().unwrap()))
     .collect::<std::collections::HashSet<_>>();
-  input.lines().skip(rules.len()+1)
+  update_lines.lines()
     .map(|update| update.split(",").filter_map(|n| n.parse::<usize>().ok()).collect::<Vec<_>>())
     .filter(|update| update.is_sorted_by(|a,b| !rules.contains(&(*b,*a))))
     .map(|update| update[update.len()/2])
     .sum()
 }
 
+/// Next we need to find the incorrect ones, and make them correct
 #[wasm_bindgen]
 pub fn part_two(input: String) -> usize {
-  let rules = input.lines()
-    .take_while(|line| line.len() > 1)
-    .map(|line| line.split("|")
-      .filter_map(|n| n.parse::<usize>().ok())
-      .collect::<Vec<_>>())
-    .map(|pages| (pages[0],pages[1]))
+  let (rules_lines, update_lines) = input.split_once("\n\n").unwrap();
+  let rules = rules_lines.lines()
+    .map(|line| line.split_once("|").unwrap())
+    .map(|(page1, page2)| (page1.parse::<usize>().unwrap(), page2.parse::<usize>().unwrap()))
     .collect::<std::collections::HashSet<_>>();
-  input.lines().skip(rules.len()+1)
+  update_lines.lines()
     .map(|update| update.split(",").filter_map(|n| n.parse::<usize>().ok()).collect::<Vec<_>>())
     .filter(|update| !update.is_sorted_by(|a,b| !rules.contains(&(*b,*a))))
     .map(|mut update| {
-      update.sort_by(|a,b| {
-        if rules.contains(&(*a,*b)) {
-          Ordering::Less
-        } else if rules.contains(&(*b,*a)) {
-          Ordering::Greater
-        } else {
-          Ordering::Equal
-        }
-      });
-      update
+      update.sort_by(|a,b| rules.contains(&(*a,*b)).cmp(&true));
+      update[update.len()/2]
     })
-    .map(|update| update[update.len()/2])
     .sum()
 }

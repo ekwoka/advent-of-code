@@ -1,6 +1,13 @@
 //! ```cargo
 //! [dependencies]
 //! ```
+//! --- Day 4: Ceres Search ---
+//! Part    Time       Rank
+//!   1     00:28:04   5804
+//!   2     00:35:46   4323
+//!
+//! We check the monitoring station for the Chief Historian
+//! but a young Elf needs help with her word search!
 
 use wasm_bindgen::prelude::*;
 
@@ -26,6 +33,9 @@ impl std::hash::Hash for Vec2 {
   }
 }
 
+/// Part one consists of just finding XMAS arranged forwards and backwards
+/// in all the cardinal directions
+/// Here we search for either X or S and then only look in forward facing directions
 #[wasm_bindgen]
 pub fn part_one(input: String) -> usize {
   let mut letter_grid: std::collections::HashMap<Vec2,char> = std::collections::HashMap::new();
@@ -53,6 +63,8 @@ pub fn part_one(input: String) -> usize {
     .count()
 }
 
+/// We realize it's not looking for XMAS, but for MAS in an X shape!
+/// So we now look for A and check the corresponding diagonals for a correct MAS
 #[wasm_bindgen]
 pub fn part_two(input: String) -> usize {
     let mut letter_grid: std::collections::HashMap<Vec2,char> = std::collections::HashMap::new();

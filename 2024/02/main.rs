@@ -1,6 +1,13 @@
 //! ```cargo
 //! [dependencies]
 //! ```
+//! --- Day 2: Red-Nosed Reports ---
+//! Part    Time       Rank
+//!   1     08:04:44   56936
+//!   2     08:14:26   39859
+//!
+//! We get stuck needing to help check the safety reports for the nuclear reactor!
+//! We need identify reports that indicate something might be wrong
 #![feature(iter_map_windows)]
 use wasm_bindgen::prelude::*;
 
@@ -8,6 +15,8 @@ use wasm_bindgen::prelude::*;
 pub fn main() {
   console_error_panic_hook::set_once();
 }
+
+/// For Part one we identify all reports that don't follow the safety rules
 #[wasm_bindgen]
 pub fn part_one(input: String) -> usize {
   input.lines()
@@ -46,6 +55,8 @@ pub fn part_one(input: String) -> usize {
     ).count()
 }
 
+/// For Part 2 we need to also count reports that only have ONE problem
+/// I just brute forced it so I could keep abusing iterators
 #[wasm_bindgen]
 pub fn part_two(input: String) -> usize {
   input.lines()

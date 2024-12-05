@@ -1,6 +1,7 @@
 //! ```cargo
 //! [dependencies]
 //! ```
+
 #![feature(iter_array_chunks)]
 use wasm_bindgen::prelude::*;
 
