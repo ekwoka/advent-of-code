@@ -56,7 +56,7 @@ pub fn part_one(input: String) -> usize {
       break
     }
     steps.insert(guard.clone());
-    if obstacles.contains(&(guard + dir)) {
+    while obstacles.contains(&(guard + dir)) {
       dir = dir.rotate();
     }
   }
@@ -70,7 +70,22 @@ pub fn part_two(input: String) -> usize {
   let obstacles = collect_obstacles(&input);
   let guard_start = find_guard(&input).unwrap();
 
-  (0..width).flat_map(|x| (0..height).map(move |y| Vec2(x,y)))
+  let mut guard = find_guard(&input).unwrap();
+  let mut dir = Vec2(0,-1);
+  let mut steps = HashSet::<Vec2>::new();
+  steps.insert(guard.clone());
+  let steps = std::iter::from_fn(|| {
+      guard = guard + dir;
+      if is_outside(guard, &width, &height) {
+        return None;
+      }
+      while obstacles.contains(&(guard + dir)) {
+        dir = dir.rotate();
+      }
+      Some(guard.clone())
+  });
+
+  steps
     .filter(|added_obstacle| !(*added_obstacle == guard_start || obstacles.contains(added_obstacle)))
     .filter(|added_obstacle| {
       let mut known_steps = HashSet::<(Vec2, Vec2)>::new();
@@ -90,12 +105,14 @@ pub fn part_two(input: String) -> usize {
 
         if let Some(next) = get_nearest_obstacle(&obstacles, &guard, &dir) {
           guard = next;
-          dir = dir.rotate();
+          while obstacles.contains(&(guard + dir)) {
+            dir = dir.rotate();
+          }
         } else {
           return false;
         }
       }
-    }).count()
+    }).collect::<HashSet<_>>().len()
 }
 
 fn collect_obstacles(input: &str) -> HashSet<Vec2> {
