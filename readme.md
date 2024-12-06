@@ -4,7 +4,7 @@
 
 Scores:
 
-![](https://img.shields.io/badge/2024-blue?style=for-the-badge&logo=googlecalendar&logoColor=white&color=blue) ![](https://img.shields.io/badge/stars-10-yellow?style=for-the-badge&logo=adventofcode&logoColor=white&color=FFFF66) ![](https://img.shields.io/badge/rust-000000?style=for-the-badge&logo=rust&logoColor=white)
+![](https://img.shields.io/badge/2024-blue?style=for-the-badge&logo=googlecalendar&logoColor=white&color=blue) ![](https://img.shields.io/badge/stars-11-yellow?style=for-the-badge&logo=adventofcode&logoColor=white&color=FFFF66) ![](https://img.shields.io/badge/rust-000000?style=for-the-badge&logo=rust&logoColor=white)
 
 ![](https://img.shields.io/badge/2023-blue?style=for-the-badge&logo=googlecalendar&logoColor=white&color=blue) ![](https://img.shields.io/badge/stars-50-yellow?style=for-the-badge&logo=adventofcode&logoColor=white&color=FFFF66) ![](https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![](https://img.shields.io/badge/rust-000000?style=for-the-badge&logo=rust&logoColor=white) ![](https://img.shields.io/badge/WAT-654FF0?style=for-the-badge&logo=webassembly&logoColor=white)
 
