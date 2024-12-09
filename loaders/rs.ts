@@ -14,10 +14,11 @@ class RustLoader {
     if (
       !(await exists(
         resolve(
-          this.cargoDir,
+          cacheDir,
           'target',
           'wasm32-unknown-unknown',
           process.env.RS_DEV === 'true' ? 'debug' : 'release',
+          `wasm_${this.libName.replaceAll('-', '_')}.wasm`,
         ),
       ))
     )
@@ -25,10 +26,11 @@ class RustLoader {
     const lmin = lastModified(this.path);
     const lmout = lastModified(
       resolve(
-        this.cargoDir,
+        cacheDir,
         'target',
         'wasm32-unknown-unknown',
         process.env.RS_DEV === 'true' ? 'debug' : 'release',
+        `wasm_${this.libName.replaceAll('-', '_')}.wasm`,
       ),
     );
     if (lmin > lmout) return `Module ${this.libName} is newer than its cache`;
@@ -44,6 +46,13 @@ class RustLoader {
       contents,
     );
     await Bun.write(resolve(this.cargoDir, 'Cargo.toml'), cargoToml);
+    const workspace = (
+      await Bun.file(resolve(cacheDir, 'Cargo.toml')).text()
+    ).split('\n');
+    if (!workspace.some((line) => line.includes(this.libName))) {
+      workspace.splice(workspace.length - 2, 0, `"${this.libName}",`);
+      await Bun.write(resolve(cacheDir, 'Cargo.toml'), workspace.join('\n'));
+    }
   }
 
   async build() {
@@ -95,7 +104,26 @@ class RustLoader {
 
   static name = 'Rust WASM Loader';
   static extension: 'rs';
-  static setup(build: PluginBuilder) {
+  static async setup(build: PluginBuilder) {
+    if (!(await exists(resolve(cacheDir, 'cargo.toml')))) {
+      await mkdir(cacheDir, { recursive: true });
+      await Bun.write(
+        resolve(cacheDir, 'Cargo.toml'),
+        `
+[profile.release]
+lto = "fat"
+panic = "abort"
+opt-level = 3
+codegen-units = 1
+strip = "debuginfo"
+
+[workspace]
+resolver = "2"
+members = [
+]
+`,
+      );
+    }
     build.onLoad({ filter: /\.rs$/ }, async (args) => {
       const module = new RustLoader(args.path);
       const shouldRebuild = await module.shouldRebuild();
@@ -152,13 +180,6 @@ ${dependencies}
 [lib]
 crate-type = ["cdylib","rlib"]
 path = "${relativePath}"
-
-[profile.release]
-lto = "fat"
-panic = "abort"
-opt-level = 3
-codegen-units = 1
-strip = "debuginfo"
 
 [package.metadata.wasm-pack.profile.release.wasm-bindgen]
 debug-js-glue = false
