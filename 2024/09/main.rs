@@ -2,6 +2,7 @@
 //! [dependencies]
 //! ```
 #![feature(let_chains)]
+#![feature(test)]
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -9,7 +10,7 @@ pub fn main() {
   console_error_panic_hook::set_once();
 }
 #[wasm_bindgen]
-pub fn part_one(input: String) -> u64 {
+pub fn part_one(input: &str) -> u64 {
   let mut blocks = input.chars().enumerate().flat_map(|(idx,length)| {
     let content = match idx % 2 {
       0 => Some(idx/2),
@@ -32,7 +33,7 @@ pub fn part_one(input: String) -> u64 {
 }
 
 #[wasm_bindgen]
-pub fn part_two(input: String) -> /* Vec<String> */ u64 {
+pub fn part_two(input: &str) -> u64 {
   let filesystem = input.chars().enumerate().map(|(idx,length)| {
     let content = match idx % 2 {
       0 => Some(idx/2),
@@ -78,6 +79,23 @@ pub fn part_two(input: String) -> /* Vec<String> */ u64 {
     }
     marker = marker.checked_sub(1).unwrap_or(0);
   }
-  /* blocks.iter().map(|id| id.map_or(".".to_string(), |id| format!("{id}") )).collect() */
   blocks.iter().enumerate().map(|(idx,id)| (idx * id.unwrap_or(0)) as u64).sum()
+}
+
+
+#[cfg(test)]
+mod tests {
+  extern crate test;
+  use super::*;
+  use test::Bencher;
+    #[bench]
+    fn part_one_bench(b: &mut Bencher) {
+        let input = include_str!("../../utils/.cache/2024-9.txt").trim();
+        b.iter(move || part_one(input));
+    }
+    #[bench]
+    fn part_two_bench(b: &mut Bencher) {
+        let input = include_str!("../../utils/.cache/2024-9.txt").trim();
+        b.iter(move || part_two(input));
+    }
 }
