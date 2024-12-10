@@ -9,7 +9,7 @@
 //! We check for the Cheif Historian in the Printing Department
 //! Unfortunately we, being computer people, are recruited to fix a printer
 //! ....
-
+#![feature(test)]
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -20,7 +20,7 @@ pub fn main() {
 /// First we need to find, using strange printing rules
 /// Which sets of updates are correct
 #[wasm_bindgen]
-pub fn part_one(input: String) -> usize {
+pub fn part_one(input: &str) -> usize {
   let (rules_lines, update_lines) = input.split_once("\n\n").unwrap();
   let rules = rules_lines.lines()
     .map(|line| line.split_once("|").unwrap())
@@ -35,7 +35,7 @@ pub fn part_one(input: String) -> usize {
 
 /// Next we need to find the incorrect ones, and make them correct
 #[wasm_bindgen]
-pub fn part_two(input: String) -> usize {
+pub fn part_two(input: &str) -> usize {
   let (rules_lines, update_lines) = input.split_once("\n\n").unwrap();
   let rules = rules_lines.lines()
     .map(|line| line.split_once("|").unwrap())
@@ -49,4 +49,21 @@ pub fn part_two(input: String) -> usize {
       update[update.len()/2]
     })
     .sum()
+}
+
+#[cfg(test)]
+mod tests {
+  extern crate test;
+  use super::*;
+  use test::Bencher;
+    #[bench]
+    fn part_one_bench(b: &mut Bencher) {
+        let input = include_str!("../../utils/.cache/2024-05.txt").trim();
+        b.iter(move || part_one(input));
+    }
+    #[bench]
+    fn part_two_bench(b: &mut Bencher) {
+        let input = include_str!("../../utils/.cache/2024-05.txt").trim();
+        b.iter(move || part_two(input));
+    }
 }

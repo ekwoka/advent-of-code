@@ -28,7 +28,10 @@ export const submitAnswer = async (
 
 const checkAnswerCache = async (year: Year, day: Day, part: 1 | 2) => {
   const cachedAnswers = Bun.file(
-    new URL(`./.cache/${year}-${day}.answers.txt`, import.meta.url),
+    new URL(
+      `./.cache/${year}-${day.toString().padStart(2, '0')}.answers.txt`,
+      import.meta.url,
+    ),
   );
   if (!(await cachedAnswers.exists())) {
     await Bun.write(cachedAnswers, JSON.stringify({ [1]: [], [2]: [] }));
@@ -110,7 +113,10 @@ export const fetchInput = async (year: Year, day: Day): Promise<Response> => {
 
 export const getFromCache = async (year: Year, day: Day): Promise<string> => {
   const cacheFile = Bun.file(
-    new URL(`./.cache/${year}-${day}.txt`, import.meta.url),
+    new URL(
+      `./.cache/${year}-${day.toString().padStart(2, '0')}.txt`,
+      import.meta.url,
+    ),
   );
   if (!(await cacheFile.exists())) {
     const input = await fetchInput(year, day);
@@ -118,7 +124,10 @@ export const getFromCache = async (year: Year, day: Day): Promise<string> => {
   }
   return stripFinalNewLine(
     await Bun.file(
-      new URL(`./.cache/${year}-${day}.txt`, import.meta.url),
+      new URL(
+        `./.cache/${year}-${day.toString().padStart(2, '0')}.txt`,
+        import.meta.url,
+      ),
     ).text(),
   );
 };

@@ -9,6 +9,7 @@
 //! We get stuck needing to help check the safety reports for the nuclear reactor!
 //! We need identify reports that indicate something might be wrong
 #![feature(iter_map_windows)]
+#![feature(test)]
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -18,7 +19,7 @@ pub fn main() {
 
 /// For Part one we identify all reports that don't follow the safety rules
 #[wasm_bindgen]
-pub fn part_one(input: String) -> usize {
+pub fn part_one(input: &str) -> usize {
   input.lines()
     .filter(|line|
       line.split_whitespace()
@@ -58,7 +59,7 @@ pub fn part_one(input: String) -> usize {
 /// For Part 2 we need to also count reports that only have ONE problem
 /// I just brute forced it so I could keep abusing iterators
 #[wasm_bindgen]
-pub fn part_two(input: String) -> usize {
+pub fn part_two(input: &str) -> usize {
   input.lines()
     .map(|line|
       line.split_whitespace()
@@ -129,4 +130,21 @@ pub fn part_two(input: String) -> usize {
       ).take(1).count() != 0
     }
     ).count()
+}
+
+#[cfg(test)]
+mod tests {
+  extern crate test;
+  use super::*;
+  use test::Bencher;
+    #[bench]
+    fn part_one_bench(b: &mut Bencher) {
+        let input = include_str!("../../utils/.cache/2024-02.txt").trim();
+        b.iter(move || part_one(input));
+    }
+    #[bench]
+    fn part_two_bench(b: &mut Bencher) {
+        let input = include_str!("../../utils/.cache/2024-02.txt").trim();
+        b.iter(move || part_two(input));
+    }
 }

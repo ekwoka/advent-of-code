@@ -8,7 +8,7 @@
 //!
 //! To find places the Chief Historian might be, we need to look for places
 //! that show up often on both lists
-
+#![feature(test)]
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -19,7 +19,7 @@ pub fn main() {
 /// For Part One we find the absolute difference between pairs
 /// from list one and list two after they are sorted
 #[wasm_bindgen]
-pub fn part_one(input: String) -> usize {
+pub fn part_one(input: &str) -> usize {
   let (mut list_one, mut list_two) = input.lines()
     .map(|line| line.split_whitespace()
       .filter_map(|n| n.parse::<usize>().ok())
@@ -39,7 +39,7 @@ pub fn part_one(input: String) -> usize {
 
 /// Part Two just wants the total times a number from list one appears in list two
 #[wasm_bindgen]
-pub fn part_two(input: String) -> usize {
+pub fn part_two(input: &str) -> usize {
 
   let (list_one, list_two) = input.lines()
     .map(|line| line.split_whitespace()
@@ -53,4 +53,21 @@ pub fn part_two(input: String) -> usize {
   list_one.iter()
     .map(|num| num * list_two.iter().filter(|num2| *num2 == num).count())
     .sum()
+}
+
+#[cfg(test)]
+mod tests {
+  extern crate test;
+  use super::*;
+  use test::Bencher;
+    #[bench]
+    fn part_one_bench(b: &mut Bencher) {
+        let input = include_str!("../../utils/.cache/2024-01.txt").trim();
+        b.iter(move || part_one(input));
+    }
+    #[bench]
+    fn part_two_bench(b: &mut Bencher) {
+        let input = include_str!("../../utils/.cache/2024-01.txt").trim();
+        b.iter(move || part_two(input));
+    }
 }

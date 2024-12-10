@@ -8,7 +8,7 @@
 //!
 //! We check the monitoring station for the Chief Historian
 //! but a young Elf needs help with her word search!
-
+#![feature(test)]
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -37,7 +37,7 @@ impl std::hash::Hash for Vec2 {
 /// in all the cardinal directions
 /// Here we search for either X or S and then only look in forward facing directions
 #[wasm_bindgen]
-pub fn part_one(input: String) -> usize {
+pub fn part_one(input: &str) -> usize {
   let mut letter_grid: std::collections::HashMap<Vec2,char> = std::collections::HashMap::new();
   input.lines()
     .enumerate()
@@ -66,7 +66,7 @@ pub fn part_one(input: String) -> usize {
 /// We realize it's not looking for XMAS, but for MAS in an X shape!
 /// So we now look for A and check the corresponding diagonals for a correct MAS
 #[wasm_bindgen]
-pub fn part_two(input: String) -> usize {
+pub fn part_two(input: &str) -> usize {
     let mut letter_grid: std::collections::HashMap<Vec2,char> = std::collections::HashMap::new();
   input.lines()
     .enumerate()
@@ -88,4 +88,21 @@ pub fn part_two(input: String) -> usize {
       }
     })
     .count()
+}
+
+#[cfg(test)]
+mod tests {
+  extern crate test;
+  use super::*;
+  use test::Bencher;
+    #[bench]
+    fn part_one_bench(b: &mut Bencher) {
+        let input = include_str!("../../utils/.cache/2024-04.txt").trim();
+        b.iter(move || part_one(input));
+    }
+    #[bench]
+    fn part_two_bench(b: &mut Bencher) {
+        let input = include_str!("../../utils/.cache/2024-04.txt").trim();
+        b.iter(move || part_two(input));
+    }
 }

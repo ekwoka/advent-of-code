@@ -1,7 +1,7 @@
 //! ```cargo
 //! [dependencies]
 //! ```
-
+#![feature(test)]
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -9,7 +9,7 @@ pub fn main() {
   console_error_panic_hook::set_once();
 }
 #[wasm_bindgen]
-pub fn part_one(input: String) -> u64 {
+pub fn part_one(input: &str) -> u64 {
   input.lines()
     .filter_map(|lines| lines.split_once(": "))
     .filter(|(test,values)| {
@@ -35,7 +35,7 @@ pub fn part_one(input: String) -> u64 {
 }
 
 #[wasm_bindgen]
-pub fn part_two(input: String) -> u64 {
+pub fn part_two(input: &str) -> u64 {
   let mut output = 0;
   for (test, values) in input.lines()
     .filter_map(|lines| lines.split_once(": ")) {
@@ -60,4 +60,21 @@ pub fn part_two(input: String) -> u64 {
       }
     }
     output
+}
+
+#[cfg(test)]
+mod tests {
+  extern crate test;
+  use super::*;
+  use test::Bencher;
+    #[bench]
+    fn part_one_bench(b: &mut Bencher) {
+        let input = include_str!("../../utils/.cache/2024-07.txt").trim();
+        b.iter(move || part_one(input));
+    }
+    #[bench]
+    fn part_two_bench(b: &mut Bencher) {
+        let input = include_str!("../../utils/.cache/2024-07.txt").trim();
+        b.iter(move || part_two(input));
+    }
 }

@@ -1,7 +1,7 @@
 //! ```cargo
 //! [dependencies]
 //! ```
-
+#![feature(test)]
 use wasm_bindgen::prelude::*;
 use std::collections::HashSet;
 #[derive(Eq, PartialEq, Clone,Copy,Debug)]
@@ -42,7 +42,7 @@ pub fn main() {
   console_error_panic_hook::set_once();
 }
 #[wasm_bindgen]
-pub fn part_one(input: String) -> usize {
+pub fn part_one(input: &str) -> usize {
   let height = input.lines().count() as i32;
   let width = input.lines().nth(0).unwrap().len() as i32;
   let obstacles = collect_obstacles(&input);
@@ -64,7 +64,7 @@ pub fn part_one(input: String) -> usize {
 }
 
 #[wasm_bindgen]
-pub fn part_two(input: String) -> usize {
+pub fn part_two(input: &str) -> usize {
   let height = input.lines().count() as i32;
   let width = input.lines().nth(0).unwrap().len() as i32;
   let obstacles = collect_obstacles(&input);
@@ -149,4 +149,21 @@ fn get_nearest_obstacle(obstacles: &HashSet<Vec2>, current: &Vec2, direction: &V
   forward_obstacles.sort_by(|(_,a),(_,b)| (a.0.abs()+a.1.abs()).cmp(&(b.0.abs()+b.1.abs())));
 
   forward_obstacles.get(0).map(|(pos,_)| pos).copied()
+}
+
+#[cfg(test)]
+mod tests {
+  extern crate test;
+  use super::*;
+  use test::Bencher;
+    #[bench]
+    fn part_one_bench(b: &mut Bencher) {
+        let input = include_str!("../../utils/.cache/2024-06.txt").trim();
+        b.iter(move || part_one(input));
+    }
+    #[bench]
+    fn part_two_bench(b: &mut Bencher) {
+        let input = include_str!("../../utils/.cache/2024-06.txt").trim();
+        b.iter(move || part_two(input));
+    }
 }
