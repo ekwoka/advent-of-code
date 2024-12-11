@@ -1,6 +1,15 @@
 //! ```cargo
 //! [dependencies]
 //! ```
+//! --- Day 11: Plutonian Pebbles ---
+//! Part    Time       Rank
+//!   1     00:11:24   2787
+//!   2     00:36:36   3000
+//!
+//! One Pluto we need to count some crazy plutonian stones
+//! They have numbers and every time we blink they change
+//! Under some cases, they duplicate into more stones
+//! We need to predict the number of stones
 #![feature(test)]
 use wasm_bindgen::prelude::*;
 
@@ -9,6 +18,8 @@ pub fn main() {
   console_error_panic_hook::set_once();
 }
 
+/// Here we take a stone as input, handle any splits or number changes, and recurse
+/// This memoizes values, since many will repeat a lot (especially 0)
 fn expand(stone: &str, blinks: usize, map: &mut std::collections::HashMap<String,u64>) -> u64 {
   let key = format!("{stone}-{blinks}");
   if map.contains_key(&key) {
@@ -30,6 +41,10 @@ fn expand(stone: &str, blinks: usize, map: &mut std::collections::HashMap<String
   map.insert(key, count);
   count
 }
+
+/// There is only 1 Part in the code, as Part one and Part two are the same
+/// But with Part 2's blink count being much much higher.
+/// That is what necessitated a recursive memoized approach.
 #[wasm_bindgen]
 pub fn part_one(input: &str, blinks: usize) -> /* Vec<u64> */ u64 {
   let mut memoized = std::collections::HashMap::<String, u64>::new();
