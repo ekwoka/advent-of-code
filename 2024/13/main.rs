@@ -74,12 +74,12 @@ mod tests {
   use test::Bencher;
     #[bench]
     fn part_one_bench(b: &mut Bencher) {
-        let input = include_str!("../../utils/.cache/{}-{}.txt").trim();
+        let input = include_str!("../../utils/.cache/2024-13.txt").trim();
         b.iter(move || part_one(input));
     }
     #[bench]
     fn part_two_bench(b: &mut Bencher) {
-        let input = include_str!("../../utils/.cache/{}-{}.txt").trim();
+        let input = include_str!("../../utils/.cache/2024-13.txt").trim();
         b.iter(move || part_two(input));
     }
 }

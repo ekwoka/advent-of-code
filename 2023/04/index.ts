@@ -1,11 +1,7 @@
-import type { AOCInput } from '../../utils';
+import { AOCInput } from '../../utils';
 
-export const partOne = (_input: AOCInput): number => {
-  return 0;
-};
-
-export const partTwo = (input: AOCInput): number => {
-  return input
+export const partTwo = (input: string): number => {
+  return new AOCInput(input)
     .lines()
     .filter((line) => line.length > 0)
     .map((line) =>
@@ -21,7 +17,7 @@ export const partTwo = (input: AOCInput): number => {
       state[0] = (state[0] ?? 0) + 1;
       for (let i = 1; i <= wins; i++) state[i] = (state[i] ?? 0) + state[0];
       return state;
-    }, [])
+    }, 0)
     .map((state) => state.shift() ?? 1)
     .sum();
 };

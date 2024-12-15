@@ -1,15 +1,19 @@
-/**
- * --- Day 4:  ---
- * Part 1:
- * Part 2:
- */
+//! ```cargo
+//! [dependencies]
+//! regex = "1.11.1"
+//! ```
+
+#![feature(test)]
 use regex::Regex;
 use std::collections::VecDeque;
-use std::os::raw::c_char;
+use wasm_bindgen::prelude::*;
 
-#[no_mangle]
-pub extern "C" fn part_one(cstring: *const c_char) -> i32 {
-    let input: &str = unsafe { std::ffi::CStr::from_ptr(cstring).to_str().unwrap() };
+#[wasm_bindgen(start)]
+pub fn main() {
+  console_error_panic_hook::set_once();
+}
+#[wasm_bindgen]
+pub fn part_one(input: &str) -> i32 {
     input
         .lines()
         .map(|line| {
@@ -34,9 +38,8 @@ pub extern "C" fn part_one(cstring: *const c_char) -> i32 {
         .sum()
 }
 
-#[no_mangle]
-pub extern "C" fn part_two(cstring: *const c_char) -> i32 {
-    let input: &str = unsafe { std::ffi::CStr::from_ptr(cstring).to_str().unwrap() };
+#[wasm_bindgen]
+pub fn part_two(input: &str) -> i32 {
     input
         .lines()
         .map(|line| {
