@@ -23,27 +23,9 @@ describe('2024 Day 13 Rust', async () => {
     expect(part_one(sample)).toBe(480);
   }, 15_000);
   it('Passes Part 1', () => {
-    expect(part_one(input)).toBe(0);
+    expect(part_one(input)).toBe(31_761);
   }, 15_000);
-  it.skip('Passes Part 2 Test', () => {
-    expect(part_two(sample)).toBe(0);
-  }, 15_000);
-  it.skip('Passes Part 2', () => {
-    expect(part_two(input)).toBe(0);
-  }, 15_000);
-});
-describe('2024 Day 13', async () => {
-  const { partOne, partTwo } = await import('./index');
-  it('Passes Part 1 Test', () => {
-    expect(partOne(sample)).toBe(480);
-  }, 15_000);
-  it.skip('Passes Part 1', () => {
-    expect(partOne(input)).toBe(0);
-  }, 15_000);
-  it.skip('Passes Part 2 Test', () => {
-    expect(partTwo(sample)).toBe(0);
-  });
-  it.skip('Passes Part 2', () => {
-    expect(partTwo(input)).toBe(0);
+  it('Passes Part 2', () => {
+    expect(part_two(input)).toBe(90_798_500_745_591n);
   }, 15_000);
 });

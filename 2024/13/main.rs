@@ -12,7 +12,7 @@ pub fn main() {
 #[wasm_bindgen]
 pub fn part_one(input: &str) -> usize {
   let digits = regex::Regex::new(r"\d+").unwrap();
-  input.split("\n\n").map(|machine| {
+  input.split("\n\n").filter_map(|machine| {
     let mut attributes = machine.lines().map(|line| {
       let coords = digits.captures_iter(line).map(|digit| digit.get(0).unwrap().as_str().parse::<usize>().unwrap()).collect::<Vec<_>>();
       Vec2(coords[0],coords[1])
@@ -20,45 +20,50 @@ pub fn part_one(input: &str) -> usize {
     let button_a = attributes.next().unwrap();
     let button_b = attributes.next().unwrap();
     let prize = attributes.next().unwrap();
-    let ratio = prize.0 as f32 / prize.1 as f32;
-    let a_shallow = (button_a.0 as f32 / button_a.1 as f32) > (button_b.0 as f32 / button_b.1 as f32);
-    let mut location = Vec2(0,0);
-    let mut button_presses = (0,0);
-    while location != prize && location.0 < prize.0 && location.1 < prize.1 {
-      let loc_ratio = location.0 as f32 / location.1 as f32;
-      if loc_ratio < ratio {
-        if a_shallow {
-          location = location + button_b;
-          button_presses.1 += 1
-        } else {
-          location = location + button_a;
-          button_presses.0 += 1
-        }
-      } else {
-        if a_shallow {
-          location = location + button_a;
-          button_presses.0 += 1
-        } else {
-          location = location + button_b;
-          button_presses.1 += 1
-        }
-      }
-    }
-    if location == prize {
-      button_presses.0 * 3 + button_presses.1
-    } else {
-      0
-    }
-  }).sum()
+    (0..101).flat_map(|a| (0..101).map(move |b| (a,b)))
+      .find(|(a,b)| button_a.scale(a) + button_b.scale(b) == prize)
+  })
+  .map(|(a,b)| a * 3 + b)
+  .sum()
 }
 
 #[wasm_bindgen]
-pub fn part_two(input: &str) -> usize {
-  0
+pub fn part_two(input: &str) -> u64 {
+  let digits = regex::Regex::new(r"\d+").unwrap();
+  input.split("\n\n").filter_map(|machine| {
+    let mut attributes = machine.lines().flat_map(|line|
+      digits.captures_iter(line).map(|digit| digit.get(0).unwrap().as_str().parse::<f64>().unwrap())
+    );
+
+    let a1 = attributes.next().unwrap();
+    let a2 = attributes.next().unwrap();
+    let b1 = attributes.next().unwrap();
+    let b2 = attributes.next().unwrap();
+    let c1 = attributes.next().unwrap() + 10000000000000f64;
+    let c2 = attributes.next().unwrap() + 10000000000000f64;
+    let d = a1 * b2 - a2 * b1;
+    let dx = c1 * b2 - c2 * b1;
+    let dy = a1 * c2 - a2 * c1;
+    let x = dx / d;
+    let y = dy / d;
+    if x == x.round() && y == y.round() {
+      Some((x as u64,y as u64))
+    } else {
+      None
+    }
+  })
+  .map(|(a,b)| a * 3 + b)
+  .sum()
 }
 
 #[derive(Eq, PartialEq, Clone,Copy,Debug)]
 struct Vec2(usize,usize);
+
+impl Vec2 {
+  fn scale(&self, scalar: &usize) -> Vec2 {
+    Vec2(self.0 * scalar, self.1 * scalar)
+  }
+}
 
 impl std::ops::Add for Vec2 {
   type Output = Self;
@@ -66,6 +71,8 @@ impl std::ops::Add for Vec2 {
     Vec2(self.0 + rhs.0, self.1 + rhs.1)
   }
 }
+
+
 
 #[cfg(test)]
 mod tests {
@@ -75,11 +82,11 @@ mod tests {
     #[bench]
     fn part_one_bench(b: &mut Bencher) {
         let input = include_str!("../../utils/.cache/2024-13.txt").trim();
-        b.iter(move || part_one(input));
+        b.iter(move || assert_eq!(part_one(input), 31_761));
     }
     #[bench]
     fn part_two_bench(b: &mut Bencher) {
         let input = include_str!("../../utils/.cache/2024-13.txt").trim();
-        b.iter(move || part_two(input));
+        b.iter(move || assert_eq!(part_two(input),90_798_500_745_591));
     }
 }
