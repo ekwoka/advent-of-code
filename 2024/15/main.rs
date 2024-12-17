@@ -69,7 +69,65 @@ pub fn part_one(input: &str) -> usize {
 
 #[wasm_bindgen]
 pub fn part_two(input: &str) -> usize {
-  0
+  let (grid, instructions) = input.split_once("\n\n").unwrap();
+  let mut map = grid.lines().map(|line| line.chars().flat_map(|ch| match ch {
+    '#' => ['#', '#'],
+    'O' => ['[',']'],
+    ch => [ch, '.']
+  }).collect::<Vec<_>>()).collect::<Vec<_>>();
+  let mut robot = map.iter().enumerate()
+    .flat_map(|(y, line)| line.iter()
+      .enumerate()
+      .filter(|(_,ch)| *ch == &'@')
+      .map(move |(x, _)| (x as i32,y as i32))
+    )
+    .nth(0).unwrap();
+  map[robot.1 as usize][robot.0 as usize] = '.';
+  for movement in instructions.chars()
+    .map(|ch| match ch {
+      '<' => (-1, 0),
+      '^' => (0, -1),
+      '>' => (1, 0),
+      'v' => (0, 1),
+      _ => (0,0)
+    }) {
+
+    match map[(robot.1 + movement.1) as usize][(robot.0 + movement.0) as usize] {
+      '#' => continue,
+      '.' => {
+        robot.0 += movement.0;
+        robot.1 += movement.1;
+      },
+      'O' => {
+        let mut marker = robot.clone();
+        'inner: loop {
+          marker.0 += movement.0;
+          marker.1 += movement.1;
+          if map[marker.1 as usize][marker.0 as usize] != 'O' {
+            break 'inner;
+          }
+        }
+        match map[marker.1 as usize][marker.0 as usize] {
+          '#' => continue,
+          '.' => {
+            map[marker.1 as usize][marker.0 as usize] = 'O';
+            robot.0 += movement.0;
+            robot.1 += movement.1;
+            map[robot.1 as usize][robot.0 as usize] = '.';
+          },
+          _ => ()
+        }
+      },
+      _ => ()
+    }
+  }
+  map.iter()
+    .enumerate()
+    .flat_map(|(y,row)| row.iter()
+      .enumerate()
+      .filter(|(_, ch)| ch == &&'[')
+      .map(move |(x,_)| y * 100 + x))
+    .sum()
 }
 
 #[cfg(test)]
