@@ -29,7 +29,7 @@ describe('2024 Day 15 Rust', async () => {
     expect(part_one(sample)).toBe(10_092);
   }, 15_000);
   it('Passes Part 1', () => {
-    expect(part_one(input)).toBe(0);
+    expect(part_one(input)).toBe(1_514_353);
   }, 15_000);
   it.skip('Passes Part 2 Test', () => {
     expect(part_two(sample)).toBe(0);

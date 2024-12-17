@@ -11,20 +11,7 @@ pub fn main() {
 #[wasm_bindgen]
 pub fn part_one(input: &str) -> usize {
   let (grid, instructions) = input.split_once("\n\n").unwrap();
-  let walls = grid.lines().enumerate()
-    .flat_map(|(y, line)| line.chars()
-      .enumerate()
-      .filter(|(_,ch)| ch == &'#')
-      .map(move |(x, _)| (x as i32,y as i32))
-    )
-    .collect::<std::collections::HashSet<_>>();
-  let mut rocks = grid.lines().enumerate()
-    .flat_map(|(y, line)| line.chars()
-      .enumerate()
-      .filter(|(_,ch)| ch == &'O')
-      .map(move |(x, _)| (x as i32,y as i32))
-    )
-    .collect::<std::collections::HashSet<_>>();
+  let mut map = grid.lines().map(|line| line.chars().collect::<Vec<_>>()).collect::<Vec<_>>();
   let mut robot = grid.lines().enumerate()
     .flat_map(|(y, line)| line.chars()
       .enumerate()
@@ -32,24 +19,52 @@ pub fn part_one(input: &str) -> usize {
       .map(move |(x, _)| (x as i32,y as i32))
     )
     .nth(0).unwrap();
+  map[robot.1 as usize][robot.0 as usize] = '.';
   for movement in instructions.chars()
     .map(|ch| match ch {
       '<' => (-1, 0),
       '^' => (0, -1),
       '>' => (1, 0),
-      'v' => (0, -1),
+      'v' => (0, 1),
       _ => (0,0)
     }) {
-      if walls.contains(&(robot.0 + movement.0, robot.1 + movement.1)) {
-        continue;
-      }
-      if !rocks.contains(&(robot.0 + movement.0, robot.1 + movement.1)) {
+
+    match map[(robot.1 + movement.1) as usize][(robot.0 + movement.0) as usize] {
+      '#' => continue,
+      '.' => {
         robot.0 += movement.0;
         robot.1 += movement.1;
-        continue
-      }
+      },
+      'O' => {
+        let mut marker = robot.clone();
+        'inner: loop {
+          marker.0 += movement.0;
+          marker.1 += movement.1;
+          if map[marker.1 as usize][marker.0 as usize] != 'O' {
+            break 'inner;
+          }
+        }
+        match map[marker.1 as usize][marker.0 as usize] {
+          '#' => continue,
+          '.' => {
+            map[marker.1 as usize][marker.0 as usize] = 'O';
+            robot.0 += movement.0;
+            robot.1 += movement.1;
+            map[robot.1 as usize][robot.0 as usize] = '.';
+          },
+          _ => ()
+        }
+      },
+      _ => ()
     }
-    0
+  }
+  map.iter()
+    .enumerate()
+    .flat_map(|(y,row)| row.iter()
+      .enumerate()
+      .filter(|(_, ch)| ch == &&'O')
+      .map(move |(x,_)| y * 100 + x))
+    .sum()
 }
 
 #[wasm_bindgen]
