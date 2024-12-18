@@ -91,33 +91,41 @@ pub fn part_two(input: &str) -> usize {
       'v' => (0, 1),
       _ => (0,0)
     }) {
-
     match map[(robot.1 + movement.1) as usize][(robot.0 + movement.0) as usize] {
       '#' => continue,
       '.' => {
         robot.0 += movement.0;
         robot.1 += movement.1;
       },
-      'O' => {
-        let mut marker = robot.clone();
-        'inner: loop {
-          marker.0 += movement.0;
-          marker.1 += movement.1;
-          if map[marker.1 as usize][marker.0 as usize] != 'O' {
-            break 'inner;
-          }
-        }
-        match map[marker.1 as usize][marker.0 as usize] {
-          '#' => continue,
-          '.' => {
-            map[marker.1 as usize][marker.0 as usize] = 'O';
-            robot.0 += movement.0;
-            robot.1 += movement.1;
-            map[robot.1 as usize][robot.0 as usize] = '.';
-          },
-          _ => ()
-        }
+      '[' => {
+          block_search((robot.0 + movement.0, robot.1 + movement.1), movement.clone(), &map).map(|positions| {
+          let mut visited = std::collections::HashSet::<(i32,i32)>::new();
+          positions.into_iter().for_each(|pos| {
+            if visited.contains(&pos) {
+              return;
+            }
+            visited.insert(pos.clone());
+            map[(pos.1 + movement.1) as usize][(pos.0 + movement.0) as usize] = map[pos.1 as usize][pos.0 as usize];
+            map[pos.1 as usize][pos.0 as usize] = '.';
+          });
+          robot.0 += movement.0;
+          robot.1 += movement.1;
+        });
       },
+      ']' => {
+        block_search((robot.0 + movement.0, robot.1 + movement.1), movement.clone(), &map).map(|positions| {
+          let mut visited = std::collections::HashSet::<(i32,i32)>::new();
+        positions.into_iter().for_each(|pos| {
+          if visited.contains(&pos) {
+              return;
+            }
+            visited.insert(pos.clone());
+          map[(pos.1 + movement.1) as usize][(pos.0 + movement.0) as usize] = map[pos.1 as usize][pos.0 as usize];
+          map[pos.1 as usize][pos.0 as usize] = '.';
+        });
+        robot.0 += movement.0;
+        robot.1 += movement.1;
+      });},
       _ => ()
     }
   }
@@ -130,6 +138,50 @@ pub fn part_two(input: &str) -> usize {
     .sum()
 }
 
+fn block_search(position: (i32, i32), movement: (i32, i32), map: &Vec<Vec<char>>) -> Option<Vec<(i32, i32)>> {
+  match map[position.1 as usize][position.0 as usize] {
+    '[' => if movement.1 == 0 {
+        if let Some(aside) = block_search((position.0 + movement.0, position.1 + movement.1), movement.clone(), map) {
+          Some(aside.into_iter().chain(vec![position].into_iter()).collect())
+        } else {
+          None
+        }
+      } else {
+        if let Some(next) =
+          block_search((position.0, position.1 + movement.1), movement.clone(), map) {
+            if let Some(beyond) = block_search((position.0 + 1, position.1 + movement.1), movement.clone(), map) {
+              Some(next.into_iter().chain(beyond.into_iter()).chain(vec![position, (position.0 + 1, position.1)].into_iter()).collect())
+            } else {
+              None
+            }
+          } else {
+            None
+          }
+      },
+    ']' => if movement.1 == 0 {
+        if let Some(aside) = block_search((position.0 + movement.0, position.1 + movement.1), movement.clone(), map) {
+          Some(aside.into_iter().chain(vec![position].into_iter()).collect())
+        } else {
+          None
+        }
+      } else {
+        if let Some(next) =
+          block_search((position.0, position.1 + movement.1), movement.clone(), map) {
+            if let Some(beyond) = block_search((position.0 - 1, position.1 + movement.1), movement.clone(), map) {
+              Some(next.into_iter().chain(beyond.into_iter()).chain(vec![position, (position.0 - 1, position.1)].into_iter()).collect())
+            } else {
+              None
+            }
+          } else {
+            None
+          }
+      },
+    '#' => None,
+    '.' => Some(vec![]),
+    _ => None
+  }
+}
+
 #[cfg(test)]
 mod tests {
   extern crate test;
@@ -137,12 +189,12 @@ mod tests {
   use test::Bencher;
     #[bench]
     fn part_one_bench(b: &mut Bencher) {
-        let input = include_str!("../../utils/.cache/{}-{}.txt").trim();
+        let input = include_str!("../../utils/.cache/2024-15.txt").trim();
         b.iter(move || part_one(input));
     }
     #[bench]
     fn part_two_bench(b: &mut Bencher) {
-        let input = include_str!("../../utils/.cache/{}-{}.txt").trim();
+        let input = include_str!("../../utils/.cache/2024-15.txt").trim();
         b.iter(move || part_two(input));
     }
 }
