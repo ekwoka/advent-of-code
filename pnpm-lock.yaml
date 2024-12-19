@@ -23,8 +23,8 @@ importers:
         specifier: 22.10.2
         version: 22.10.2
       bun-types:
-        specifier: 1.1.39
-        version: 1.1.39
+        specifier: 1.1.40
+        version: 1.1.40
       husky:
         specifier: 9.1.7
         version: 9.1.7
@@ -384,8 +384,8 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
-  bun-types@1.1.39:
-    resolution: {integrity: sha512-8enJ1uad+v5ZRzmSMU2S4/CiF0AerRoVoQlEvYIt9xSbR6p8cjeYj9GAgxZumHWoarIu+WcqZ6NklGCfl9PAkw==}
+  bun-types@1.1.40:
+    resolution: {integrity: sha512-yVXBZ1/ATZJD5FvfhDydw45ED8DlmTflumPKj56p5/GLjYiHBZkirzad6MU6MSZKgZ4o1/Ks5lL/Jgg/fRXBSQ==}
 
   cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
@@ -1023,7 +1023,7 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  bun-types@1.1.39:
+  bun-types@1.1.40:
     dependencies:
       '@types/node': 20.12.12
       '@types/ws': 8.5.10
