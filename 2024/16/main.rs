@@ -71,8 +71,72 @@ pub fn part_one(input: &str) -> usize {
 }
 
 #[wasm_bindgen]
-pub fn part_two(input: &str) -> usize {
-  0
+pub fn part_two(input: &str, best_score: usize) -> usize {
+  let map = input.lines().map(|line| line.chars().collect::<Vec<_>>()).collect::<Vec<_>>();
+  let mut queue: VecDeque<(usize, (usize, usize), u8, HashSet<((usize,usize), u8)>)> = VecDeque::new();
+  queue.push_back((0, (1, map.len()-2), 1, HashSet::new()));
+
+  let mut best_path: HashSet<(usize, usize)> = HashSet::new();
+
+  while let Some((score, location, direction, mut path)) = queue.pop_back() {
+    if score > best_score {
+      continue;
+    }
+    if path.contains(&(location, direction)) || path.contains(&(location, match direction {
+      0 => 2,
+      1 => 3,
+      2 => 0,
+      _ => 1
+    })) {
+      continue;
+    } else {
+      path.insert((location, direction));
+    }
+    if location == (map[0].len() - 2, 1) {
+      path.into_iter().for_each(|(space, _)| {
+        best_path.insert(space);
+      });
+      continue;
+    }
+    let forward = match direction {
+      0 => (location.0, location.1 - 1),
+      1 => (location.0 + 1, location.1),
+      2 => (location.0, location.1 + 1),
+      _ => (location.0 - 1, location.1)
+    };
+    if map[forward.1][forward.0] != '#' {
+        queue.push_back((score+1, forward, direction, path.clone()));
+    }
+    let right = match direction {
+      0 => (location.0 + 1, location.1),
+      1 => (location.0, location.1 + 1),
+      2 => (location.0 - 1, location.1),
+      _ => (location.0, location.1 - 1)
+    };
+    if map[right.1][right.0] != '#' {
+      queue.push_back((score+1000, location, match direction {
+        0 => 1,
+        1 => 2,
+        2 => 3,
+        _ => 0
+      }, path.clone()));
+    }
+     let left = match direction {
+       0 => (location.0 - 1, location.1),
+      1 => (location.0, location.1 - 1),
+      2 => (location.0 + 1, location.1),
+      _ => (location.0, location.1 + 1),
+    };
+    if map[left.1][left.0] != '#' {
+      queue.push_back((score+1000, location, match direction {
+        0 => 3,
+        1 => 0,
+        2 => 1,
+        _ => 2
+      }, path.clone()));
+    }
+  }
+  best_path.len()
 }
 
 #[cfg(test)]
