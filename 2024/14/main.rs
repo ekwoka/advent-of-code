@@ -2,6 +2,11 @@
 //! [dependencies]
 //! regex = "1.11.1"
 //! ```
+//! --- Day 14: Restroom Redoubt ---
+//! Not done live. Recovering from flying
+//!
+//! We are given information about robots moving on a 2d grid
+//! and need to simulate them into the future to see where they will be
 #![feature(test)]
 #![feature(int_roundings)]
 use wasm_bindgen::prelude::*;
@@ -10,6 +15,11 @@ use wasm_bindgen::prelude::*;
 pub fn main() {
   console_error_panic_hook::set_once();
 }
+
+/// Part 1 mainly involves with stepping them a fixed amount of times
+/// and counting them by which quadrant of the map area they fall in.
+/// This just maths all the steps at once to stream the input,
+/// instead of individually stepping them hundreds of times
 #[wasm_bindgen]
 pub fn part_one(input: &str, width: i32, height: i32) -> usize {
   let digits = regex::Regex::new(r"-?\d+").unwrap();
@@ -42,6 +52,10 @@ pub fn part_one(input: &str, width: i32, height: i32) -> usize {
   }).iter().product()
 }
 
+/// Part 2 consists of finding at which step in the future they form a
+/// christmas tree. Since a christmas tree could look many ways,
+/// I found that the heuristic of a frame in which a robot has 8 neighbors
+/// was satisfactory for identifying the christmas tree
 #[wasm_bindgen]
 pub fn part_two(input: &str) -> usize {
   let digits = regex::Regex::new(r"-?\d+").unwrap();

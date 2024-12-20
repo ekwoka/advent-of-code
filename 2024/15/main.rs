@@ -1,6 +1,12 @@
 //! ```cargo
 //! [dependencies]
 //! ```
+//! --- Day 15: Warehouse Woes ---
+//! Not done live. Holiday family time.
+//!
+//! A food storage warehouse robot has gone wild, and is moving around
+//! however it wants! We need to identify how it's movements impact the
+//! items in the warehouse
 #![feature(test)]
 use wasm_bindgen::prelude::*;
 
@@ -8,6 +14,9 @@ use wasm_bindgen::prelude::*;
 pub fn main() {
   console_error_panic_hook::set_once();
 }
+
+/// Part 1 is a pretty simple simulation. We see how the robot will try to move
+/// and scan forward to move the blocks in its path (if possible).
 #[wasm_bindgen]
 pub fn part_one(input: &str) -> usize {
   let (grid, instructions) = input.split_once("\n\n").unwrap();
@@ -67,6 +76,9 @@ pub fn part_one(input: &str) -> usize {
     .sum()
 }
 
+/// Part 2 is a bit trickier, where the blocks are actually two spaces wide
+/// Meaning you can't just do a forward scan, but a forward branching fill
+/// to identify if there are any walls, and then update all the blocks.
 #[wasm_bindgen]
 pub fn part_two(input: &str) -> usize {
   let (grid, instructions) = input.split_once("\n\n").unwrap();
@@ -138,6 +150,9 @@ pub fn part_two(input: &str) -> usize {
     .sum()
 }
 
+/// This is the recursive forward search for part 2
+/// We return None if we hit a wall, and otherwise accumulate all the blocks on that branch
+/// If a recursive call returns None, then so does this, propogating the None
 fn block_search(position: (i32, i32), movement: (i32, i32), map: &Vec<Vec<char>>) -> Option<Vec<(i32, i32)>> {
   match map[position.1 as usize][position.0 as usize] {
     '[' => if movement.1 == 0 {
