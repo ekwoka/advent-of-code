@@ -2,6 +2,14 @@
 //! [dependencies]
 //! regex = "1.11.1"
 //! ```
+//! --- Day 13: Claw Contraption ---
+//! Not completed live, was flying for 24 hours.
+//!
+//! We have to help win the claw machines as cheaply as possible.
+//! By combining A and B presses to hit the target prize.
+//! This mostly boils down to vector math, like matrix encryption.
+//! I was not familar enough with this kind of math to solve this
+//! efficiently without doing a lot of reading on how this stuff works.
 #![feature(test)]
 use wasm_bindgen::prelude::*;
 
@@ -27,6 +35,8 @@ pub fn part_one(input: &str) -> usize {
   .sum()
 }
 
+/// Part 2 requires making the target location MUCH MUCH further away
+/// which effectively breaks any chance of a brute force approach working
 #[wasm_bindgen]
 pub fn part_two(input: &str) -> u64 {
   let digits = regex::Regex::new(r"\d+").unwrap();

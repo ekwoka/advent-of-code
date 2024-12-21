@@ -1,6 +1,13 @@
 //! ```cargo
 //! [dependencies]
 //! ```
+//! --- Day 12: Garden Groups ---
+//! Part    Time       Rank
+//!   1     00:26:53   3041
+//!   2     01:19:05   2738
+//!
+//! We need to help the elves order fencing to separate their crops!
+//! They want to estimate the fence cost before making the order.
 #![feature(test)]
 use wasm_bindgen::prelude::*;
 
@@ -8,6 +15,10 @@ use wasm_bindgen::prelude::*;
 pub fn main() {
   console_error_panic_hook::set_once();
 }
+
+/// Part 1 requires getting all the edges of the different plant areas
+/// So we do a simple flood fill from the first spot we hit of a new crop
+/// As we fill, we update the fence count by how that space impacts borders
 #[wasm_bindgen]
 pub fn part_one(input: &str) -> usize {
   let plots = input.lines().map(|line| line.chars().collect::<Vec<_>>()).collect::<Vec<_>>();
@@ -64,6 +75,9 @@ pub fn part_one(input: &str) -> usize {
     .sum()
 }
 
+/// Part 2 requires only counting each straight line of fences, not every unit of fencing
+/// Here we do the flood fill, and then move through it counting just the vertical faces
+/// Then merge them when possible into longer lengths, count the remaining, and double it (to account for horizontal faces)
 #[wasm_bindgen]
 pub fn part_two(input: &str) -> usize {
     let plots = input.lines().map(|line| line.chars().collect::<Vec<_>>()).collect::<Vec<_>>();
