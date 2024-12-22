@@ -7,6 +7,11 @@ Register B: 0
 Register C: 0
 
 Program: 0,1,5,4,3,0`;
+const sample2 = `Register A: 2024
+Register B: 0
+Register C: 0
+
+Program: 0,3,5,4,3,0`;
 describe('2024 Day 17 Rust', async () => {
   const { part_one, part_two } = await import('./main.rs');
   it('Passes Part 1 Test', () => {
@@ -15,10 +20,10 @@ describe('2024 Day 17 Rust', async () => {
   it('Passes Part 1', () => {
     expect(part_one(input)).toBe('7,3,5,7,5,7,4,3,0');
   }, 15_000);
-  it.skip('Passes Part 2 Test', () => {
-    expect(part_two(sample)).toBe(0);
+  it('Passes Part 2 Test', () => {
+    expect(part_two(sample2)).toBe(117_440n);
   }, 15_000);
-  it.skip('Passes Part 2', () => {
-    expect(part_two(input)).toBe(0);
+  it('Passes Part 2', () => {
+    expect(part_two(input)).toBe(105_734_774_294_938n);
   }, 15_000);
 });
