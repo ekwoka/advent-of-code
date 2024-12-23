@@ -36,9 +36,9 @@ describe('2024 Day 18 Rust', async () => {
     expect(part_one(input, 70, 1024)).toBe(306);
   }, 15_000);
   it('Passes Part 2 Test', () => {
-    expect(part_two(sample, 6)).toBe('6,1');
+    expect(part_two(sample, 6, 12)).toBe('6,1');
   }, 15_000);
   it('Passes Part 2', () => {
-    expect(part_two(input, 70)).toBe('38,63');
+    expect(part_two(input, 70, 1024)).toBe('38,63');
   }, 15_000);
 });
