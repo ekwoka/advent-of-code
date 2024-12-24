@@ -38,21 +38,12 @@ pub fn part_one(input: &str, limit: usize) -> usize {
   }
 
   let mut shortcuts = 0;
-  let mut queue = vec![(0, start.clone())];
-  while let Some((picos, coords)) = queue.pop() {
-    if grid[coords.1][coords.0] == 'E' {
-      break;
-    }
+  for (coords, picos) in times.clone().iter() {
     shortcuts += vec![Vec2::X(), Vec2::Y()].into_iter()
-      .flat_map(|offset| vec![coords + offset + offset, coords - offset - offset].into_iter())
+      .flat_map(|offset| vec![*coords + offset + offset, *coords - offset - offset].into_iter())
       .filter(|target| times.contains_key(target))
       .filter(|target| times.get(target).unwrap() >= &(picos + 2 + limit))
       .count();
-    vec![Vec2::X(), Vec2::Y()].into_iter()
-      .flat_map(|offset| vec![coords + offset, coords - offset].into_iter())
-      .filter(|target| times.contains_key(target))
-      .filter(|target| times.get(target).unwrap() == &(picos + 1))
-      .for_each(|coord| queue.push((picos + 1, coord)));
   }
   shortcuts
 }
@@ -146,11 +137,11 @@ mod tests {
     #[bench]
     fn part_one_bench(b: &mut Bencher) {
         let input = include_str!("../../utils/.cache/2024-20.txt").trim();
-        b.iter(move || part_one(input));
+        b.iter(move || assert_eq!(part_one(input, 100), 1_332));
     }
     #[bench]
     fn part_two_bench(b: &mut Bencher) {
         let input = include_str!("../../utils/.cache/2024-20.txt").trim();
-        b.iter(move || part_two(input));
+        b.iter(move || assert_eq!(part_two(input, 100), 987_695));
     }
 }
