@@ -2,10 +2,11 @@
 //! [dependencies]
 //! ```
 #![feature(test)]
-#[path = "vec.rs"]
-mod vec;
+
+#[path = "../../utils/main.rs"]
+mod utils;
+use utils::*;
 use wasm_bindgen::prelude::*;
-use vec::*;
 
 #[wasm_bindgen(start)]
 pub fn main() {
@@ -20,7 +21,7 @@ pub fn part_one(input: &str, limit: usize) -> usize {
       .enumerate()
       .map(move |(x, ch)| ((x,y), ch))
     ).filter(|(_,ch)| *ch == &'S')
-    .map(|((x, y), _)| Vec2(x, y))
+    .map(|((x, y), _)| Vec2::new(x as i32, y as i32))
     .nth(0).unwrap();
   let mut times = std::collections::HashMap::<Vec2, usize>::new();
 
@@ -31,19 +32,16 @@ pub fn part_one(input: &str, limit: usize) -> usize {
     } else {
       times.insert(coords.clone(), picos);
     }
-    if grid[coords.1][coords.0] == 'E' {
-      break;
-    }
-    vec![Vec2::X(), Vec2::Y()].into_iter()
-      .flat_map(|offset| vec![coords + offset, coords - offset].into_iter())
-      .filter(|target| grid[target.1][target.0] != '#')
+    Vec2::NEIGHBORS_CARDINAL.into_iter()
+      .map(|offset| coords + offset)
+      .filter(|target| grid[target.y as usize][target.x as usize] != '#')
       .for_each(|coord| queue.push((picos + 1, coord)));
   }
 
   let mut shortcuts = 0;
   for (coords, picos) in times.clone().iter() {
-    shortcuts += vec![Vec2::X(), Vec2::Y()].into_iter()
-      .flat_map(|offset| vec![*coords + offset + offset, *coords - offset - offset].into_iter())
+    shortcuts += Vec2::NEIGHBORS_CARDINAL.into_iter()
+      .map(|offset| *coords + offset + offset)
       .filter(|target| times.contains_key(target))
       .filter(|target| times.get(target).unwrap() >= &(picos + 2 + limit))
       .count();
@@ -60,7 +58,7 @@ pub fn part_two(input: &str, limit: usize) -> usize {
       .enumerate()
       .map(move |(x, ch)| ((x,y), ch))
     ).filter(|(_,ch)| *ch == &'S')
-    .map(|((x, y), _)| Vec2(x, y))
+    .map(|((x, y), _)| Vec2::new(x as i32, y as i32))
     .nth(0).unwrap();
   let mut times = std::collections::HashMap::<Vec2, usize>::new();
 
@@ -73,12 +71,9 @@ pub fn part_two(input: &str, limit: usize) -> usize {
       times.insert(coords.clone(), picos);
       all_steps.push(coords.clone());
     }
-    if grid[coords.1][coords.0] == 'E' {
-      break;
-    }
-    vec![Vec2::X(), Vec2::Y()].into_iter()
-      .flat_map(|offset| vec![coords + offset, coords - offset].into_iter())
-      .filter(|target| grid[target.1][target.0] != '#')
+    Vec2::NEIGHBORS_CARDINAL.into_iter()
+      .map(|offset| coords + offset)
+      .filter(|target| grid[target.y as usize][target.x as usize] != '#')
       .for_each(|coord| queue.push((picos + 1, coord)));
   }
 
@@ -86,7 +81,7 @@ pub fn part_two(input: &str, limit: usize) -> usize {
   for coord in all_steps.clone() {
     let picos = times.get(&coord).unwrap();
     shortcuts += all_steps.iter().filter(|dest| {
-      let distance = coord.distance(**dest);
+      let distance = coord.manhatten_distance(**dest) as usize;
       if distance > 20 {
         false
       } else {

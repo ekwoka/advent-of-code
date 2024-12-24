@@ -2,7 +2,15 @@
 //! [dependencies]
 //! ```
 #![feature(test)]
+
+#[path = "../../utils/main.rs"]
+mod utils;
+
+use utils::*;
 use wasm_bindgen::prelude::*;
+// use std::collections::HashMap
+// use std::collections::HashSet
+// use std::collections::VecDeque
 
 #[wasm_bindgen(start)]
 pub fn main() {
@@ -26,11 +34,11 @@ mod tests {
     #[bench]
     fn part_one_bench(b: &mut Bencher) {
         let input = include_str!("../../utils/.cache/{}-{}.txt").trim();
-        b.iter(move || part_one(input));
+        b.iter(move || assert_eq!(part_one(input), 0));
     }
     #[bench]
     fn part_two_bench(b: &mut Bencher) {
         let input = include_str!("../../utils/.cache/{}-{}.txt").trim();
-        b.iter(move || part_two(input));
+        b.iter(move || assert_eq!(part_two(input), 0));
     }
 }
