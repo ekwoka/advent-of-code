@@ -47,9 +47,9 @@ pub fn part_one(input: &str, max: usize, bytes: usize) -> usize {
 }
 
 #[wasm_bindgen]
-pub fn part_two(input: &str, max: usize) -> String {
+pub fn part_two(input: &str, max: usize, start: usize) -> String {
   let bytes = input.lines().collect::<Vec<_>>();
-  let blocking_byte = (0..bytes.len()).filter(|idx|
+  let blocking_byte = (start+1..bytes.len()).filter(|idx|
     part_one(input, max, idx+1) == 0
   ).nth(0).unwrap();
   bytes[blocking_byte].to_string()
@@ -68,6 +68,6 @@ mod tests {
     #[bench]
     fn part_two_bench(b: &mut Bencher) {
         let input = include_str!("../../utils/.cache/2024-18.txt").trim();
-        b.iter(move || assert_eq!(part_two(input, 70), "38,63"));
+        b.iter(move || assert_eq!(part_two(input, 70, 1024), "38,63"));
     }
 }

@@ -1,6 +1,6 @@
 //! ```cargo
 //! [dependencies]
-//! fancy-regex = "0.13.0"
+//! fancy-regex = "0.14.0"
 //! ```
 
 use wasm_bindgen::prelude::*;
