@@ -2,7 +2,10 @@
 //! [dependencies]
 //! ```
 #![feature(test)]
+#[path = "vec.rs"]
+mod vec;
 use wasm_bindgen::prelude::*;
+use vec::*;
 
 #[wasm_bindgen(start)]
 pub fn main() {
@@ -46,41 +49,6 @@ pub fn part_one(input: &str, limit: usize) -> usize {
       .count();
   }
   shortcuts
-}
-
-#[derive(Eq, PartialEq, Clone, Copy, Debug)]
-struct Vec2(usize, usize);
-
-impl Vec2 {
-  fn distance(&self, rhs: Self) -> usize {
-    self.0.abs_diff(rhs.0) + self.1.abs_diff(rhs.1)
-  }
-  fn X() -> Self {
-    Vec2(1,0)
-  }
-  fn Y() -> Self {
-    Vec2(0,1)
-  }
-}
-
-impl std::ops::Add for Vec2 {
-  type Output = Self;
-  fn add(self, rhs: Self) -> Self {
-    Vec2(self.0 + rhs.0, self.1 + rhs.1)
-  }
-}
-
-impl std::ops::Sub for Vec2 {
-  type Output = Self;
-  fn sub(self, rhs: Self) -> Self {
-    Vec2(self.0.saturating_sub(rhs.0), self.1.saturating_sub(rhs.1))
-  }
-}
-
-impl std::hash::Hash for Vec2 {
-  fn hash<H>(&self, hasher: &mut H) where H: std::hash::Hasher, {
-    format!("{},{}",self.0, self.1).hash(hasher)
-  }
 }
 
 #[wasm_bindgen]
