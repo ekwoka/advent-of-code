@@ -8,9 +8,9 @@ mod utils;
 
 use utils::*;
 use wasm_bindgen::prelude::*;
-// use std::collections::HashMap
-// use std::collections::HashSet
-// use std::collections::VecDeque
+// use std::collections::HashMap;
+// use std::collections::HashSet;
+// use std::collections::VecDeque;
 
 #[wasm_bindgen(start)]
 pub fn main() {

@@ -1,3 +1,5 @@
+use std::ops::*;
+
 #[derive(Eq, PartialEq, Clone, Copy, Debug)]
 pub struct Vec2 {
   pub x: i32,
@@ -60,6 +62,19 @@ impl Vec2 {
   pub fn manhatten_distance(&self, rhs: Self) -> u32 {
     self.x.abs_diff(rhs.x) + self.y.abs_diff(rhs.y)
   }
+
+  pub fn rotate_left(&self) -> Self {
+    Self {
+      x: -self.y,
+      y: self.x
+    }
+  }
+  pub fn rotate_right(&self) -> Self {
+    Self {
+      x: self.y,
+      y: -self.x
+    }
+  }
 }
 
 impl ToString for Vec2 {
@@ -75,18 +90,53 @@ impl Default for Vec2 {
   }
 }
 
-impl std::ops::Add for Vec2 {
+impl Add for Vec2 {
   type Output = Self;
   fn add(self, rhs: Self) -> Self {
     Vec2::new(self.x + rhs.x, self.y + rhs.y)
   }
 }
 
-impl std::ops::Sub for Vec2 {
+impl Sub for Vec2 {
   type Output = Self;
   fn sub(self, rhs: Self) -> Self {
     Vec2::new(self.x.saturating_sub(rhs.x), self.y.saturating_sub(rhs.y))
   }
+}
+
+impl Mul<Vec2> for Vec2 {
+    type Output = Self;
+    #[inline]
+    fn mul(self, rhs: Self) -> Self {
+        Self {
+            x: self.x * rhs.x,
+            y: self.y * rhs.y,
+        }
+    }
+}
+
+impl Mul<&Vec2> for Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn mul(self, rhs: &Vec2) -> Vec2 {
+        self.mul(*rhs)
+    }
+}
+
+impl Mul<&Vec2> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn mul(self, rhs: &Vec2) -> Vec2 {
+        (*self).mul(*rhs)
+    }
+}
+
+impl Mul<Vec2> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn mul(self, rhs: Vec2) -> Vec2 {
+        (*self).mul(rhs)
+    }
 }
 
 impl std::hash::Hash for Vec2 {
