@@ -90,14 +90,14 @@ impl Default for Vec2 {
   }
 }
 
-impl Add for Vec2 {
+impl Add<Vec2> for Vec2 {
   type Output = Self;
   fn add(self, rhs: Self) -> Self {
     Vec2::new(self.x + rhs.x, self.y + rhs.y)
   }
 }
 
-impl Sub for Vec2 {
+impl Sub<Vec2> for Vec2 {
   type Output = Self;
   fn sub(self, rhs: Self) -> Self {
     Vec2::new(self.x.saturating_sub(rhs.x), self.y.saturating_sub(rhs.y))
@@ -135,6 +135,25 @@ impl Mul<Vec2> for &Vec2 {
     type Output = Vec2;
     #[inline]
     fn mul(self, rhs: Vec2) -> Vec2 {
+        (*self).mul(rhs)
+    }
+}
+
+impl Mul<i32> for Vec2 {
+    type Output = Self;
+    #[inline]
+    fn mul(self, rhs: i32) -> Self {
+        Self {
+            x: self.x * rhs,
+            y: self.y * rhs,
+        }
+    }
+}
+
+impl Mul<i32> for &Vec2 {
+    type Output = Vec2;
+    #[inline]
+    fn mul(self, rhs: i32) -> Vec2 {
         (*self).mul(rhs)
     }
 }
