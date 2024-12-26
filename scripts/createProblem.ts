@@ -122,7 +122,7 @@ if (options.rust) {
   }
   if (!existsSync(resolve(dayPath, 'main.rs'))) {
     const rsContent = (
-      await readFile(resolve(templatePath, 'main.rs'))
+      await readFile(resolve(templatePath, 'bun-rs-test.ts'))
     ).toString();
     await writeFile(
       resolve(dayPath, 'main.rs'),
