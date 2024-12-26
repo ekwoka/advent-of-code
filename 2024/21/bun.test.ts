@@ -13,6 +13,7 @@ describe('2024 Day 21 Rust', async () => {
     expect(part_one(sample)).toBe(126_384);
   }, 15_000);
   it('Passes Part 1', () => {
+    expect(part_one(input)).toBeLessThan(145_648);
     expect(part_one(input)).toBe(0);
   }, 15_000);
   it.skip('Passes Part 2 Test', () => {
