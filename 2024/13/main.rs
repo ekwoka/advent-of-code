@@ -1,6 +1,5 @@
 //! ```cargo
 //! [dependencies]
-//! regex = "1.11.1"
 //! ```
 //! --- Day 13: Claw Contraption ---
 //! Not completed live, was flying for 24 hours.

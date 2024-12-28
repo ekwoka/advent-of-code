@@ -1,6 +1,5 @@
 //! ```cargo
 //! [dependencies]
-//! regex = "1.11.1"
 //! ```
 //! --- Day 14: Restroom Redoubt ---
 //! Not done live. Recovering from flying

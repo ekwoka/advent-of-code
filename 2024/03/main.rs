@@ -1,6 +1,5 @@
 //! ```cargo
 //! [dependencies]
-//! regex = "1.11.1"
 //! ```
 //! --- Day 3: Mull It Over ---
 //! Part    Time       Rank

@@ -1,13 +1,15 @@
 //! ```cargo
 //! [dependencies]
 //! ```
-#![feature(test, let_chains)]
+#![feature(test, let_chains, iter_map_windows)]
 
 #[path = "../../utils/main.rs"]
 mod utils;
 
 use utils::*;
 use wasm_bindgen::prelude::*;
+use web_sys::console;
+use std::collections::HashMap;
 
 #[wasm_bindgen(start)]
 pub fn main() {
@@ -231,8 +233,37 @@ pub fn part_one(input: &str) -> usize {
 }
 
 #[wasm_bindgen]
-pub fn part_two(input: &str) -> usize {
-  0
+pub fn part_two(input: &str, depth: usize) -> u64 {
+  let mut cache = HashMap::<(char, char, usize), u64>::new();
+  let mut dpads = (0..depth).map(|_| DirectionalPad::new()).collect::<Vec<_>>();
+  input.lines()
+    .map(|code| {
+      let mut numpad = NumericPad::new();
+      code.chars()
+        .flat_map(|ch| numpad.goto(ch).into_iter())
+        .map(|to| calculate_directional_path_from_depth(&mut cache, &mut dpads, to, depth))
+        .sum::<u64>() * code[0..3].parse::<u64>().unwrap()
+    })
+    .sum()
+}
+
+fn calculate_directional_path_from_depth(cache: &mut HashMap<(char, char, usize), u64>, dpads: &mut Vec<DirectionalPad>, to: char, depth: usize) -> u64 {
+  if depth == 0 {
+    return 1;
+  }
+  let dpad = &mut dpads[depth-1];
+  let from = dpad.button;
+  if cache.contains_key(&(from, to, depth)) {
+/*     console::log_1(&format!("Cache found for {from} -> {to} at {depth}").into());
+    console::log_1(&format!("cached: {}", cache.get(&(from, to, depth)).unwrap().clone().iter().collect::<String>()).into()); */
+    dpad.goto(to);
+    return cache.get(&(from, to, depth)).unwrap().to_owned();
+  }
+  let path_len = dpad.goto(to).into_iter()
+    .map(|to| calculate_directional_path_from_depth(cache, dpads, to, depth - 1))
+    .sum::<u64>();
+  cache.insert((from, to, depth), path_len);
+  path_len
 }
 
 #[cfg(test)]
@@ -243,11 +274,11 @@ mod tests {
     #[bench]
     fn part_one_bench(b: &mut Bencher) {
         let input = include_str!("../../utils/.cache/2024-21.txt").trim();
-        b.iter(move || assert_eq!(part_one(input), 0));
+        b.iter(move || assert_eq!(part_one(input), 136_780));
     }
     #[bench]
     fn part_two_bench(b: &mut Bencher) {
         let input = include_str!("../../utils/.cache/2024-21.txt").trim();
-        b.iter(move || assert_eq!(part_two(input), 0));
+        b.iter(move || assert_eq!(part_two(input, 25), 0));
     }
 }
