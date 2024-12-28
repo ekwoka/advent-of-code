@@ -9,7 +9,7 @@
     "@types/node": "22.10.2",
     "bun-types": "1.1.42",
     "husky": "9.1.7",
-    "lint-staged": "15.2.11",
+    "lint-staged": "15.3.0",
     "prettier": "3.4.2",
     "prettier-plugin-rust": "0.1.9",
     "typescript": "5.7.2",

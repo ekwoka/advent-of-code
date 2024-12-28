@@ -1,6 +1,5 @@
 //! ```cargo
 //! [dependencies]
-//! regex = "1.11.1"
 //! ```
 #![feature(unsigned_is_multiple_of)]
 

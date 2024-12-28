@@ -1,6 +1,5 @@
 //! ```cargo
 //! [dependencies]
-//! regex = "1.11.1"
 //! ```
 /**
  * --- Day 2: Cube Conundrum ---

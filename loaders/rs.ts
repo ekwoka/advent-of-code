@@ -160,8 +160,10 @@ const makeCargoToml = (
   const commentLines = new AOCInput(contents).lines().filter(isDocComment);
   commentLines.takeWhile((line) => !line.includes('```cargo')).collect();
   let dependencies = `[dependencies]
-wasm-bindgen = "0.2.99"
 console_error_panic_hook = "0.1.7"
+regex = "1.11.1"
+wasm-bindgen = "0.2.99"
+web-sys = { version = "0.3.76", features = ["console"] }
 `;
   if (commentLines.next().value?.includes('[dependencies]'))
     dependencies += commentLines
