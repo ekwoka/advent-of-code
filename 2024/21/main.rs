@@ -1,13 +1,14 @@
 //! ```cargo
 //! [dependencies]
 //! ```
-#![feature(test, let_chains)]
+#![feature(test, let_chains, iter_map_windows)]
 
 #[path = "../../utils/main.rs"]
 mod utils;
 
 use utils::*;
 use wasm_bindgen::prelude::*;
+use std::collections::HashMap;
 
 #[wasm_bindgen(start)]
 pub fn main() {
@@ -231,8 +232,35 @@ pub fn part_one(input: &str) -> usize {
 }
 
 #[wasm_bindgen]
-pub fn part_two(input: &str) -> usize {
-  0
+pub fn part_two(input: &str, depth: usize) -> String {
+  let mut cache = HashMap::<(char, char, usize), Vec<char>>::new();
+  input.lines()
+    .map(|code| {
+      let mut numpad = NumericPad::new();
+      code.chars()
+        .flat_map(|ch| vec!['A'].into_iter().chain(numpad.goto(ch).into_iter()))
+        .map_windows(|[from, to]| calculate_directional_path_from_depth(&mut cache, *from, *to, depth))
+        .flat_map(|steps| steps.into_iter())
+        .collect::<String>()/*  * code[0..3].parse::<usize>().unwrap() */
+    })
+    .nth(0).unwrap()
+}
+
+fn calculate_directional_path_from_depth(cache: &mut HashMap<(char, char, usize), Vec<char>>, from: char, to: char, depth: usize) -> Vec<char> {
+  if cache.contains_key(&(from, to, depth)) {
+    return cache.get(&(from, to, depth)).unwrap().clone();
+  }
+  let mut dpad = DirectionalPad::new();
+  dpad.goto(from);
+  if depth == 0 {
+    return vec![to];
+  }
+  let path = dpad.goto(to).into_iter()
+    .map_windows(|[from, to]| calculate_directional_path_from_depth(cache, *from, *to, depth - 1))
+    .flat_map(|steps| steps.into_iter())
+    .collect::<Vec<_>>();
+  cache.insert((from, to, depth), path.clone());
+  path
 }
 
 #[cfg(test)]
