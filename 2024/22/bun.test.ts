@@ -6,6 +6,10 @@ const sample = `1
 10
 100
 2024`;
+const sample_2 = `1
+2
+3
+2024`;
 describe('2024 Day 22 Rust', async () => {
   const { part_one, part_two } = await import('./main.rs');
   it('Passes Part 1 Test', () => {
@@ -14,10 +18,10 @@ describe('2024 Day 22 Rust', async () => {
   it('Passes Part 1', () => {
     expect(part_one(input)).toBe(13_429_191_512n);
   }, 15_000);
-  it.skip('Passes Part 2 Test', () => {
-    expect(part_two(sample)).toBe(0);
+  it('Passes Part 2 Test', () => {
+    expect(part_two(sample_2)).toBe(23);
   }, 15_000);
-  it.skip('Passes Part 2', () => {
-    expect(part_two(input)).toBe(0);
+  it('Passes Part 2', () => {
+    expect(part_two(input)).toBe(1_582);
   }, 15_000);
 });
