@@ -126,7 +126,7 @@ if (options.rust) {
     ).toString();
     await writeFile(
       resolve(dayPath, 'main.rs'),
-      rsContent.replace('/{}-{}.', `/${year}-${day}.`),
+      rsContent.replaceAll('/{}-{}.', `/${year}-${day}.`),
     );
   }
 }
