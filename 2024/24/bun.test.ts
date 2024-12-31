@@ -49,6 +49,26 @@ y03 OR x01 -> nrd
 hwm AND bqk -> z03
 tgd XOR rvg -> z12
 tnw OR pbm -> gnj`;
+
+const sample2 = `x00: 0
+x01: 1
+x02: 0
+x03: 1
+x04: 0
+x05: 1
+y00: 0
+y01: 0
+y02: 1
+y03: 1
+y04: 0
+y05: 1
+
+x00 AND y00 -> z05
+x01 AND y01 -> z02
+x02 AND y02 -> z01
+x03 AND y03 -> z03
+x04 AND y04 -> z04
+x05 AND y05 -> z00`;
 describe('2024 Day 24 Rust', async () => {
   const { part_one, part_two } = await import('./main.rs');
   it('Passes Part 1 Test', () => {
@@ -57,10 +77,10 @@ describe('2024 Day 24 Rust', async () => {
   it('Passes Part 1', () => {
     expect(part_one(input)).toBe(50_411_513_338_638n);
   }, 15_000);
-  it.skip('Passes Part 2 Test', () => {
-    expect(part_two(sample)).toBe(0);
+  it('Passes Part 2 Test', () => {
+    expect(part_two(sample2)).toBe('z00,z01,z02,z05');
   }, 15_000);
-  it.skip('Passes Part 2', () => {
-    expect(part_two(input)).toBe(0);
+  it('Passes Part 2', () => {
+    expect(part_two(input)).toBe('');
   }, 15_000);
 });

@@ -87,8 +87,61 @@ pub fn part_one(input: &str) -> u64 {
 }
 
 #[wasm_bindgen]
-pub fn part_two(input: &str) -> usize {
-  0
+pub fn part_two(input: &str) -> String {
+  let mut wire_map = HashMap::<String, GateWire>::new();
+
+  let (wires, gates) = input.split_once("\n\n").unwrap();
+  wires.lines()
+    .filter_map(|line| line.split_once(": "))
+    .for_each(|(name, signal)| {
+      wire_map.insert(
+        name.to_string(),
+        GateWire::Wire(signal.parse::<u8>().unwrap())
+      );
+    });
+  gates.lines()
+    .map(|line|
+      line.split_whitespace().collect::<Vec<_>>()
+    ).for_each(|parts| {
+      let a = parts[0].to_string();
+      let b = parts[2].to_string();
+      let out = parts[4].to_string();
+      let gate = match parts[1] {
+        "AND" => GateWire::And(a, b),
+        "XOR" => GateWire::Xor(a, b),
+        "OR" => GateWire::Or(a, b),
+        _ => unreachable!()
+      };
+      wire_map.insert(out, gate);
+    });
+  let mut output = 0u64;
+  for i in 0..100 {
+    let key = format!("z{i:0>2}");
+    if let Some(wire) = wire_map.get(&key) {
+      output |= (wire.get_output(&wire_map) as u64) << i;
+    } else {
+      break;
+    }
+  }
+  let mut x = 0u64;
+  for i in 0..100 {
+    let key = format!("x{i:0>2}");
+    if let Some(wire) = wire_map.get(&key) {
+      x |= (wire.get_output(&wire_map) as u64) << i;
+    } else {
+      break;
+    }
+  }
+  let mut y = 0u64;
+  for i in 0..100 {
+    let key = format!("y{i:0>2}");
+    if let Some(wire) = wire_map.get(&key) {
+      y |= (wire.get_output(&wire_map) as u64) << i;
+    } else {
+      break;
+    }
+  }
+  format!("{x} + {y} = {output}\n  should be {}\n  diff: {:0>44b}", x + y, x ^ y)
 }
 
 #[cfg(test)]
