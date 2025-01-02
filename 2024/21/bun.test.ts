@@ -20,8 +20,7 @@ describe('2024 Day 21 Rust', async () => {
     expect(part_two(input, 2)).toBe(BigInt(part_one(input)));
   }, 15_000);
   it('Passes Part 2', () => {
-    expect(part_two(input, 25)).toBeLessThan(167_709_506_993_236n);
-    expect(part_two(input, 25)).toBe(0n);
+    expect(part_two(input, 25)).toBe(167_538_833_832_712n);
   }, 15_000);
 });
 
