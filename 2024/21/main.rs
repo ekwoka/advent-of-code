@@ -1,32 +1,14 @@
 //! ```cargo
 //! [dependencies]
 //! ```
-#![feature(test, let_chains, iter_map_windows)]
+#![feature(test)]
 
-#[path = "../../utils/main.rs"]
-mod utils;
-
-use utils::*;
 use wasm_bindgen::prelude::*;
-use web_sys::console;
 use std::collections::HashMap;
 
 #[wasm_bindgen(start)]
 pub fn main() {
   console_error_panic_hook::set_once();
-}
-
-#[derive(PartialEq)]
-enum Action {
-  Activate,
-  Up,
-  Down,
-  Left,
-  Right
-}
-
-impl Action {
-  const ALL: [Action; 5] = [Action::Up, Action::Down, Action::Left, Action::Right, Action::Activate];
 }
 
 struct NumericPad {
@@ -59,21 +41,21 @@ impl NumericPad {
       ('0', '3') => ">^A",
       ('0', '4') => "^^<A",
       ('0', '5') => "^^A",
-      ('0', '6') => ">^^A",
+      ('0', '6') => "^^>A",
       ('0', '7') => "^^^<A",
       ('0', '8') => "^^^A",
-      ('0', '9') => ">^^^A",
+      ('0', '9') => "^^^>A",
       ('1', 'A') => ">>vA",
       ('1', '0') => ">vA",
       ('1', '1') => "A",
       ('1', '2') => ">A",
       ('1', '3') => ">>A",
       ('1', '4') => "^A",
-      ('1', '5') => ">^A",
-      ('1', '6') => ">>^A",
+      ('1', '5') => "^>A",
+      ('1', '6') => "^>>A",
       ('1', '7') => "^^A",
-      ('1', '8') => ">^^A",
-      ('1', '9') => ">>^^A",
+      ('1', '8') => "^^>A",
+      ('1', '9') => "^^>>A",
       ('2', 'A') => "v>A",
       ('2', '0') => "vA",
       ('2', '1') => "<A",
@@ -81,10 +63,10 @@ impl NumericPad {
       ('2', '3') => ">A",
       ('2', '4') => "<^A",
       ('2', '5') => "^A",
-      ('2', '6') => ">^A",
+      ('2', '6') => "^>A",
       ('2', '7') => "<^^A",
       ('2', '8') => "^^A",
-      ('2', '9') => ">^^A",
+      ('2', '9') => "^^>A",
       ('3', 'A') => "vA",
       ('3', '0') => "<vA",
       ('3', '1') => "<<A",
@@ -105,8 +87,8 @@ impl NumericPad {
       ('4', '5') => ">A",
       ('4', '6') => ">>A",
       ('4', '7') => "^A",
-      ('4', '8') => ">^A",
-      ('4', '9') => ">>^A",
+      ('4', '8') => "^>A",
+      ('4', '9') => "^>>A",
       ('5', 'A') => "vv>A",
       ('5', '0') => "vvA",
       ('5', '1') => "<vA",
@@ -117,7 +99,7 @@ impl NumericPad {
       ('5', '6') => ">A",
       ('5', '7') => "<^A",
       ('5', '8') => "^A",
-      ('5', '9') => ">^A",
+      ('5', '9') => "^>A",
       ('6', 'A') => "vvA",
       ('6', '0') => "<vvA",
       ('6', '1') => "<<vA",
@@ -186,21 +168,25 @@ impl DirectionalPad {
       ('A', '<') => "v<<A",
       ('A', 'v') => "<vA",
       ('A', '>') => "vA",
+
       ('^', 'A') => ">A",
       ('^', '^') => "A",
       ('^', '<') => "v<A",
       ('^', 'v') => "vA",
       ('^', '>') => "v>A",
+
       ('<', 'A') => ">>^A",
       ('<', '^') => ">^A",
       ('<', '<') => "A",
       ('<', 'v') => ">A",
       ('<', '>') => ">>A",
+
       ('v', 'A') => "^>A",
       ('v', '^') => "^A",
       ('v', '<') => "<A",
       ('v', 'v') => "A",
       ('v', '>') => ">A",
+
       ('>', 'A') => "^A",
       ('>', '^') => "<^A",
       ('>', '<') => "<<A",
@@ -224,46 +210,35 @@ pub fn part_one(input: &str) -> usize {
         .flat_map(|ch| numpad.goto(ch).into_iter())
         .flat_map(|ch| dpad_1.goto(ch).into_iter())
         .flat_map(|ch| dpad_2.goto(ch).into_iter())
-        /* .collect::<String>() */
         .count() * code[0..3].parse::<usize>().unwrap()
     })
-   /*  .last().unwrap() */
-    /* .collect() */
     .sum()
 }
 
 #[wasm_bindgen]
 pub fn part_two(input: &str, depth: usize) -> u64 {
-  let mut cache = HashMap::<(char, char, usize), u64>::new();
-  let mut dpads = (0..depth).map(|_| DirectionalPad::new()).collect::<Vec<_>>();
   input.lines()
     .map(|code| {
       let mut numpad = NumericPad::new();
-      code.chars()
-        .flat_map(|ch| numpad.goto(ch).into_iter())
-        .map(|to| calculate_directional_path_from_depth(&mut cache, &mut dpads, to, depth))
-        .sum::<u64>() * code[0..3].parse::<u64>().unwrap()
+      let mut sequences = code.chars()
+        .map(|ch| numpad.goto(ch).into_iter().collect::<String>())
+        .fold(HashMap::<String, u64>::new(), |mut map, seq| {
+          *map.entry(seq).or_default() += 1;
+          map
+        });
+      for _ in 0..depth {
+        let mut dpad = DirectionalPad::new();
+        sequences = sequences.into_iter().flat_map(|(k, v)|
+          k.chars().map(|ch| (dpad.goto(ch).into_iter().collect::<String>(), v)).collect::<Vec<_>>().into_iter()
+        ).fold(HashMap::<String, u64>::new(), |mut map, (seq, v)| {
+          *map.entry(seq).or_default() += v;
+          map
+        })
+      }
+      let complexity: u64 = sequences.into_iter().map(|(seq, v)| seq.len() as u64 * v).sum();
+      complexity * code[0..3].parse::<u64>().unwrap()
     })
     .sum()
-}
-
-fn calculate_directional_path_from_depth(cache: &mut HashMap<(char, char, usize), u64>, dpads: &mut Vec<DirectionalPad>, to: char, depth: usize) -> u64 {
-  if depth == 0 {
-    return 1;
-  }
-  let dpad = &mut dpads[depth-1];
-  let from = dpad.button;
-  if cache.contains_key(&(from, to, depth)) {
-/*     console::log_1(&format!("Cache found for {from} -> {to} at {depth}").into());
-    console::log_1(&format!("cached: {}", cache.get(&(from, to, depth)).unwrap().clone().iter().collect::<String>()).into()); */
-    dpad.goto(to);
-    return cache.get(&(from, to, depth)).unwrap().to_owned();
-  }
-  let path_len = dpad.goto(to).into_iter()
-    .map(|to| calculate_directional_path_from_depth(cache, dpads, to, depth - 1))
-    .sum::<u64>();
-  cache.insert((from, to, depth), path_len);
-  path_len
 }
 
 #[cfg(test)]
@@ -279,6 +254,6 @@ mod tests {
     #[bench]
     fn part_two_bench(b: &mut Bencher) {
         let input = include_str!("../../utils/.cache/2024-21.txt").trim();
-        b.iter(move || assert_eq!(part_two(input, 25), 0));
+        b.iter(move || assert_eq!(part_two(input, 25), 167_538_833_832_712));
     }
 }
