@@ -191,12 +191,12 @@ mod tests {
   use test::Bencher;
     #[bench]
     fn part_one_bench(b: &mut Bencher) {
-        let input = include_str!("../../utils/.cache/2024-24.txt").trim();
+        let input = include_str!("../../node_modules/.aoc-cache/2024-24.txt").trim();
         b.iter(move || assert_eq!(part_one(input), 50_411_513_338_638));
     }
     #[bench]
     fn part_two_bench(b: &mut Bencher) {
-        let input = include_str!("../../utils/.cache/2024-24.txt").trim();
+        let input = include_str!("../../node_modules/.aoc-cache/2024-24.txt").trim();
         b.iter(move || assert_eq!(part_two(input), "gfv,hcm,kfs,tqm,vwr,z06,z11,z16".to_string()));
     }
 }

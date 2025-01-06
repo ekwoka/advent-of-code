@@ -248,12 +248,12 @@ mod tests {
   use test::Bencher;
     #[bench]
     fn part_one_bench(b: &mut Bencher) {
-        let input = include_str!("../../utils/.cache/2024-21.txt").trim();
+        let input = include_str!("../../node_modules/.aoc-cache/2024-21.txt").trim();
         b.iter(move || assert_eq!(part_one(input), 136_780));
     }
     #[bench]
     fn part_two_bench(b: &mut Bencher) {
-        let input = include_str!("../../utils/.cache/2024-21.txt").trim();
+        let input = include_str!("../../node_modules/.aoc-cache/2024-21.txt").trim();
         b.iter(move || assert_eq!(part_two(input, 25), 167_538_833_832_712));
     }
 }

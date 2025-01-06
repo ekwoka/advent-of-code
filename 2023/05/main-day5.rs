@@ -11,7 +11,7 @@
 use regex::Regex;
 use std::cmp::{max, min};
 
-const INPUT: &str = include_str!("../../utils/.cache/2023-5.txt");
+const INPUT: &str = include_str!("../../node_modules/.aoc-cache/2023-5.txt");
 
 fn part_one(input: &str) -> u32 {
     let number_regex = Regex::new(r"\d+").unwrap();

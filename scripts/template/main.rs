@@ -35,12 +35,12 @@ mod tests {
   use test::Bencher;
     #[bench]
     fn part_one_bench(b: &mut Bencher) {
-        let input = include_str!("../../utils/.cache/{}-{}.txt").trim();
+        let input = include_str!("../../node_modules/.aoc-cache/{}-{}.txt").trim();
         b.iter(move || assert_eq!(part_one(input), 0));
     }
     #[bench]
     fn part_two_bench(b: &mut Bencher) {
-        let input = include_str!("../../utils/.cache/{}-{}.txt").trim();
+        let input = include_str!("../../node_modules/.aoc-cache/{}-{}.txt").trim();
         b.iter(move || assert_eq!(part_two(input), 0));
     }
 }

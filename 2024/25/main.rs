@@ -38,7 +38,7 @@ mod tests {
   use test::Bencher;
     #[bench]
     fn part_one_bench(b: &mut Bencher) {
-        let input = include_str!("../../utils/.cache/2024-25.txt").trim();
+        let input = include_str!("../../node_modules/.aoc-cache/2024-25.txt").trim();
         b.iter(move || assert_eq!(part_one(input), 3_242));
     }
 }
