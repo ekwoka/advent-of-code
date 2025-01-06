@@ -146,42 +146,6 @@ fn collect_steps(path_map: &mut HashMap<((usize, usize), u8), (usize, HashSet<((
   steps
 }
 
-fn get_directions(location: &(usize,usize), direction: u8) -> Vec<((usize,usize), u8)>{
-  let forward = match direction {
-    0 => (location.0, location.1 - 1),
-    1 => (location.0 + 1, location.1),
-    2 => (location.0, location.1 + 1),
-    _ => (location.0 - 1, location.1)
-  };
-  let right = match direction {
-    0 => (location.0 + 1, location.1),
-    1 => (location.0, location.1 + 1),
-    2 => (location.0 - 1, location.1),
-    _ => (location.0, location.1 - 1)
-  };
-  let left = match direction {
-    0 => (location.0 - 1, location.1),
-    1 => (location.0, location.1 - 1),
-    2 => (location.0 + 1, location.1),
-    _ => (location.0, location.1 + 1),
-  };
-  vec![
-    (forward, direction.clone()),
-    (left, match direction {
-        0 => 3,
-        1 => 0,
-        2 => 1,
-        _ => 2
-    }),
-    (right, match direction {
-      0 => 1,
-      1 => 2,
-      2 => 3,
-      _ => 0
-    })
-  ]
-}
-
 #[cfg(test)]
 mod tests {
   extern crate test;
@@ -192,9 +156,9 @@ mod tests {
         let input = include_str!("../../utils/.cache/2024-16.txt").trim();
         b.iter(move || part_one(input));
     }
-    #[bench]
+    /* #[bench]
     fn part_two_bench(b: &mut Bencher) {
         let input = include_str!("../../utils/.cache/2024-16.txt").trim();
         b.iter(move || part_two(input));
-    }
+    } */
 }
