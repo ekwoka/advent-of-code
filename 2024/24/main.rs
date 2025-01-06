@@ -1,18 +1,12 @@
 //! ```cargo
 //! [dependencies]
 //! ```
-#![feature(test)]
+#![feature(test, let_chains)]
 
-#[path = "../../utils/main.rs"]
-mod utils;
-
-use utils::*;
 use wasm_bindgen::prelude::*;
-// use regex::regex;
-use web_sys::console;
-use std::collections::HashMap;
-// use std::collections::HashSet;
-// use std::collections::VecDeque;
+use std::collections::{HashMap, HashSet};
+
+#[derive(Debug)]
 enum GateWire {
   Wire(u8),
   And(String, String),
@@ -38,6 +32,75 @@ impl GateWire {
         let a = wires.get(a.as_str()).unwrap();
         let b = wires.get(b.as_str()).unwrap();
         a.get_output(wires) | b.get_output(wires)
+      }
+    }
+  }
+  fn has_broken(&self, name: &str, wires: &HashMap<String, GateWire>) -> Option<String> {
+    if name.starts_with("z") {
+      return match self {
+        GateWire::Xor(a, b) => {
+          if name == "z00" {
+            if a != "x00" || b != "y00" {
+              Some("z00".to_string())
+            } else {
+              None
+            }
+          } else {
+            if a.starts_with("x") || a.starts_with("y")
+              || b.starts_with("x") || b.starts_with("y") {
+              Some(name.to_string())
+            } else {
+              None
+            }
+          }
+        },
+        GateWire::Or(_, _) => {
+          if name != "z45" {
+            Some(name.to_string())
+          } else {
+            None
+          }
+        },
+        _ =>  {
+          Some(name.to_string())}
+      }
+    }
+    return match self {
+      GateWire::Wire(_) => None,
+      GateWire::Xor(a, b) => {
+        if let Some(GateWire::Xor(_,_)) = wires.get(a) && let Some(GateWire::Or(_,_)) = wires.get(b) {
+            Some(name.to_string())
+        } else if let Some(GateWire::Or(_,_)) = wires.get(a) && let Some(GateWire::Xor(_,_)) = wires.get(b) {
+            Some(name.to_string())
+        } else {
+         None
+        }
+      },
+      GateWire::And(a, b) => {
+        if let Some(GateWire::And(x, _)) = wires.get(a) {
+          if x != "x00" {
+            Some(a.to_string())
+          } else {
+            None
+          }
+        } else if let Some(GateWire::And(x, _)) = wires.get(b) {
+          if x != "x00" {
+            Some(b.to_string())
+          } else {
+            None
+          }
+        } else {
+         None
+        }
+      },
+      GateWire::Or(a, b) => {
+        match wires.get(a) {
+          Some(GateWire::And(_, _)) => match wires.get(b) {
+            Some(GateWire::And(_, _)) => None,
+            _ => Some(b.to_string())
+          },
+          _ => Some(a.to_string())
+        }
       }
     }
   }
@@ -114,34 +177,11 @@ pub fn part_two(input: &str) -> String {
       };
       wire_map.insert(out, gate);
     });
-  let mut output = 0u64;
-  for i in 0..100 {
-    let key = format!("z{i:0>2}");
-    if let Some(wire) = wire_map.get(&key) {
-      output |= (wire.get_output(&wire_map) as u64) << i;
-    } else {
-      break;
-    }
-  }
-  let mut x = 0u64;
-  for i in 0..100 {
-    let key = format!("x{i:0>2}");
-    if let Some(wire) = wire_map.get(&key) {
-      x |= (wire.get_output(&wire_map) as u64) << i;
-    } else {
-      break;
-    }
-  }
-  let mut y = 0u64;
-  for i in 0..100 {
-    let key = format!("y{i:0>2}");
-    if let Some(wire) = wire_map.get(&key) {
-      y |= (wire.get_output(&wire_map) as u64) << i;
-    } else {
-      break;
-    }
-  }
-  format!("{x} + {y} = {output}\n  should be {}\n  diff: {:0>44b}", x + y, x ^ y)
+    let mut broken = wire_map.iter()
+    .filter_map(|(name, gate)| gate.has_broken(name, &wire_map))
+    .collect::<HashSet<_>>().into_iter().collect::<Vec<_>>();
+  broken.sort();
+  broken.join(",")
 }
 
 #[cfg(test)]
@@ -157,6 +197,6 @@ mod tests {
     #[bench]
     fn part_two_bench(b: &mut Bencher) {
         let input = include_str!("../../utils/.cache/2024-24.txt").trim();
-        b.iter(move || assert_eq!(part_two(input), "".to_string()));
+        b.iter(move || assert_eq!(part_two(input), "gfv,hcm,kfs,tqm,vwr,z06,z11,z16".to_string()));
     }
 }

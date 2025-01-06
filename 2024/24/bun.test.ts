@@ -77,10 +77,7 @@ describe('2024 Day 24 Rust', async () => {
   it('Passes Part 1', () => {
     expect(part_one(input)).toBe(50_411_513_338_638n);
   }, 15_000);
-  it('Passes Part 2 Test', () => {
-    expect(part_two(sample2)).toBe('z00,z01,z02,z05');
-  }, 15_000);
   it('Passes Part 2', () => {
-    expect(part_two(input)).toBe('');
+    expect(part_two(input)).toBe('gfv,hcm,kfs,tqm,vwr,z06,z11,z16');
   }, 15_000);
 });
