@@ -8,3 +8,4 @@ lastModified
 *.wasm
 *.rs.d.ts
 .DS_Store
+.pnpm-store
