@@ -27,7 +27,7 @@ struct GameData {
  * For Part 2 we turn each games minimum cube count into a power level by multiplying them together
  */
 impl GameData {
-    fn to_power(self) -> i32 {
+    fn to_power(&self) -> i32 {
         self.red * self.green * self.blue
     }
 }
@@ -119,11 +119,11 @@ const GAME_LIMITS: GameData = GameData {
     green: 13,
     blue: 14,
 };
-#[no_mangle]
-pub extern "C" fn part_one(cstring: *const c_char) -> i32 {
-  let input: &str = unsafe {
-        std::ffi::CStr::from_ptr(cstring).to_str().unwrap()
-    };
+
+/// # Safety
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn part_one(cstring: *const c_char) -> i32 {
+    let input: &str = unsafe { std::ffi::CStr::from_ptr(cstring).to_str().unwrap() };
     input
         .lines()
         .map(GameData::from)
@@ -139,14 +139,13 @@ pub extern "C" fn part_one(cstring: *const c_char) -> i32 {
  * Overall, Part Two was very simple to go from how I implemented Part One.
  * No gotchas or catches with a naive approach.
  */
-#[no_mangle]
-pub extern "C" fn part_two(cstring: *const c_char) -> i32 {
-  let input: &str = unsafe {
-        std::ffi::CStr::from_ptr(cstring).to_str().unwrap()
-    };
+/// # Safety
+#[unsafe(no_mangle)]
+pub unsafe extern "C" fn part_two(cstring: *const c_char) -> i32 {
+    let input: &str = unsafe { std::ffi::CStr::from_ptr(cstring).to_str().unwrap() };
     input
         .lines()
         .map(GameData::from)
-        .map(GameData::to_power)
+        .map(|data| data.to_power())
         .sum()
 }

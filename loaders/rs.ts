@@ -117,6 +117,11 @@ opt-level = 3
 codegen-units = 1
 strip = "debuginfo"
 
+[workspace.package]
+rust-version = "1.87"
+edition = "2024"
+version = "0.1.0"
+
 [workspace]
 resolver = "2"
 members = [
@@ -162,8 +167,8 @@ const makeCargoToml = (
   let dependencies = `[dependencies]
 console_error_panic_hook = "0.1.7"
 regex = "1.11.1"
-wasm-bindgen = "0.2.99"
-web-sys = { version = "0.3.76", features = ["console"] }
+wasm-bindgen = "0.2.100"
+web-sys = { version = "0.3.77", features = ["console"] }
 `;
   if (commentLines.next().value?.includes('[dependencies]'))
     dependencies += commentLines
@@ -174,8 +179,9 @@ web-sys = { version = "0.3.76", features = ["console"] }
   return `
 [package]
 name = "wasm-${name}"
-version = "0.1.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
 
 ${dependencies}
 

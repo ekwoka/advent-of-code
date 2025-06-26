@@ -23,7 +23,7 @@ fn isolate_number(line: String) -> i32 {
         .expect("Should be able to parse to number")
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn part_one(cstring: *const c_char) -> i32 {
   let contents: &str = unsafe {
         std::ffi::CStr::from_ptr(cstring).to_str().unwrap()
@@ -65,7 +65,7 @@ fn swap_number_strings(str: &str) -> String {
         })
 }
 
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub extern "C" fn part_two(cstring: *const c_char) -> i32 {
 
   let contents: &str = unsafe {

@@ -1,7 +1,6 @@
 #!/usr/bin/env rust-script
 //! ```cargo
 //! [dependencies]
-//! regex = "1.10.2"
 //! ```
 /**
  * --- Day 5:  ---
