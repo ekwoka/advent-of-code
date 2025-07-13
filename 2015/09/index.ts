@@ -13,14 +13,10 @@ export const partOne = (input: AOCInput): number => {
       map.get(end)!.set(start, Number(distance));
       return map;
     }, new Map<string, Map<string, number>>());
-  const queue: (readonly [
-    currentNode: string,
-    visited: Set<string>,
-    distance: number,
-  ])[] = tree
+  const queue = tree
     .keys()
     .iter()
-    .map((start) => [start, new Set<string>(), 0] as const)
+    .map((start) => [start, new Set<string>(), 0 as number] as const)
     .collect();
   const addToQueue = (
     next: [currentNode: string, visited: Set<string>, distance: number],

@@ -26,7 +26,7 @@ export const partOne = (input: AOCInput) => {
       {} as Record<string, Record<string, number>>,
     );
   const wholeTable = Object.keys(relations);
-  let iter: RustIterator<string[]> = wholeTable.iter().map((name) => [name]);
+  let iter = wholeTable.iter().map((name) => [name]);
   range(1, wholeTable.length - 1).forEach(() => {
     iter = iter.flatMap((names) =>
       wholeTable
@@ -74,7 +74,7 @@ export const partTwo = (input: AOCInput) => {
     Object.keys(relations).map((name) => [name, 0]),
   );
   const wholeTable = Object.keys(relations);
-  let iter: RustIterator<string[]> = wholeTable.iter().map((name) => [name]);
+  let iter = wholeTable.iter().map((name) => [name]);
   range(1, wholeTable.length - 1).forEach(() => {
     iter = iter.flatMap((names) =>
       wholeTable

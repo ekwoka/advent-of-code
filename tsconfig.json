@@ -1,9 +1,16 @@
 {
-  "exclude": ["**/node_modules"],
+  "exclude": [
+    "**/node_modules"
+  ],
   "compilerOptions": {
-    "types": ["vitest/globals", "bun-types", "@ekwoka/rust-ts/prelude"],
-    "declaration": true,
-    "declarationMap": true,
+    "types": [
+      "vitest/globals",
+      "bun-types",
+      "@ekwoka/rust-ts/prelude"
+    ],
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false,
     "esModuleInterop": true,
     "module": "es2022",
     "outDir": "dist",

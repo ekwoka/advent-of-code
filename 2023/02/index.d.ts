@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+
 /**
  * Going to try to tackle this day in just the Type System
  * No "runtime" javascript, just Types
@@ -75,14 +75,14 @@ type MapLinesToGame<T extends string[]> = T extends [
 type CreateGame<T extends string> = T extends `Game ${infer A extends
   number}: ${infer B extends `${number} ${Color}${string}`}`
   ? AssignMaxColors<
-      {
-        id: A;
-        red: 0;
-        green: 0;
-        blue: 0;
-      },
-      DrawsToColorEntries<Split<B, ',' | ';'>>
-    >
+    {
+      id: A;
+      red: 0;
+      green: 0;
+      blue: 0;
+    },
+    DrawsToColorEntries<Split<B, ',' | ';'>>
+  >
   : never;
 
 /**
@@ -94,8 +94,8 @@ type FilterOverLimitAndMapToID<A extends Game[]> = A extends [
   ...infer Rest extends Game[],
 ]
   ? GreaterThan<G[Color], Limit[Color]> extends false
-    ? [G['id'], ...FilterOverLimitAndMapToID<Rest>]
-    : FilterOverLimitAndMapToID<Rest>
+  ? [G['id'], ...FilterOverLimitAndMapToID<Rest>]
+  : FilterOverLimitAndMapToID<Rest>
   : [];
 
 /**
@@ -141,6 +141,6 @@ type ToRemove = ' ' | ',' | ';' | '0';
 
 type TrimLeft<S extends string> = S extends `${infer P}${infer T}`
   ? P extends ToRemove
-    ? TrimLeft<T>
-    : S
+  ? TrimLeft<T>
+  : S
   : S;

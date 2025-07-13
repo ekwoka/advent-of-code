@@ -52,7 +52,7 @@ export const partTwo = (input: AOCInput): number => {
   let skipped = false;
   for (let i = 0; i < CYCLES; i++) {
     if (!skipped && stateMapping.has(currentState)) {
-      const cached = stateMapping.get(currentState);
+      const cached = stateMapping.get(currentState)!;
       currentState = cached[0];
       const nearEnd = CYCLES - ((CYCLES - i) % (i - cached[1]));
       i = nearEnd;
