@@ -118,7 +118,7 @@ codegen-units = 1
 strip = "debuginfo"
 
 [workspace.package]
-rust-version = "1.87"
+rust-version = "1.89"
 edition = "2024"
 version = "0.1.0"
 

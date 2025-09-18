@@ -42,57 +42,35 @@ pub fn part_one(input: &str) -> usize {
                 queue.push_back((score + 1, forward, direction));
             }
         }
+        let right = match direction {
+            0 => ((location.0 + 1, location.1), 1),
+            1 => ((location.0, location.1 + 1), 2),
+            2 => ((location.0 - 1, location.1), 3),
+            _ => ((location.0, location.1 - 1), 0),
+        };
+        let left = match direction {
+            0 => ((location.0 - 1, location.1), 3),
+            1 => ((location.0, location.1 - 1), 0),
+            2 => ((location.0 + 1, location.1), 1),
+            _ => ((location.0, location.1 + 1), 2),
+        };
         if let Some(idx) = queue
             .iter()
-            .position(|(oscore, _, _)| *oscore > score + 1000)
+            .position(|(oscore, _, _)| *oscore > score + 1001)
         {
-            queue.insert(
-                idx,
-                (
-                    score + 1000,
-                    location,
-                    match direction {
-                        0 => 1,
-                        1 => 2,
-                        2 => 3,
-                        _ => 0,
-                    },
-                ),
-            );
-            queue.insert(
-                idx,
-                (
-                    score + 1000,
-                    location,
-                    match direction {
-                        0 => 3,
-                        1 => 0,
-                        2 => 1,
-                        _ => 2,
-                    },
-                ),
-            );
+            if map[right.0 .1][right.0 .0] != '#' {
+                queue.insert(idx, (score + 1001, right.0, right.1));
+            }
+            if map[left.0 .1][left.0 .0] != '#' {
+                queue.insert(idx, (score + 1001, left.0, left.1));
+            }
         } else {
-            queue.push_back((
-                score + 1000,
-                location,
-                match direction {
-                    0 => 1,
-                    1 => 2,
-                    2 => 3,
-                    _ => 0,
-                },
-            ));
-            queue.push_back((
-                score + 1000,
-                location,
-                match direction {
-                    0 => 3,
-                    1 => 0,
-                    2 => 1,
-                    _ => 2,
-                },
-            ));
+            if map[right.0 .1][right.0 .0] != '#' {
+                queue.push_back((score + 1001, right.0, right.1));
+            }
+            if map[left.0 .1][left.0 .0] != '#' {
+                queue.push_back((score + 1001, left.0, left.1));
+            }
         }
     }
     0
@@ -140,61 +118,35 @@ pub fn part_two(input: &str) -> usize {
                 queue.push_back((score + 1, forward, direction, path.clone()));
             }
         }
+        let right = match direction {
+            0 => ((location.0 + 1, location.1), 1),
+            1 => ((location.0, location.1 + 1), 2),
+            2 => ((location.0 - 1, location.1), 3),
+            _ => ((location.0, location.1 - 1), 0),
+        };
+        let left = match direction {
+            0 => ((location.0 - 1, location.1), 3),
+            1 => ((location.0, location.1 - 1), 0),
+            2 => ((location.0 + 1, location.1), 1),
+            _ => ((location.0, location.1 + 1), 2),
+        };
         if let Some(idx) = queue
             .iter()
-            .position(|(oscore, _, _, _)| *oscore > score + 1000)
+            .position(|(oscore, _, _, _)| *oscore > score + 1001)
         {
-            queue.insert(
-                idx,
-                (
-                    score + 1000,
-                    location,
-                    match direction {
-                        0 => 1,
-                        1 => 2,
-                        2 => 3,
-                        _ => 0,
-                    },
-                    path.clone(),
-                ),
-            );
-            queue.insert(
-                idx,
-                (
-                    score + 1000,
-                    location,
-                    match direction {
-                        0 => 3,
-                        1 => 0,
-                        2 => 1,
-                        _ => 2,
-                    },
-                    path.clone(),
-                ),
-            );
+            if map[right.0 .1][right.0 .0] != '#' {
+                queue.insert(idx, (score + 1001, right.0, right.1, path.clone()));
+            }
+            if map[left.0 .1][left.0 .0] != '#' {
+                queue.insert(idx, (score + 1001, left.0, left.1, path.clone()));
+            }
         } else {
-            queue.push_back((
-                score + 1000,
-                location,
-                match direction {
-                    0 => 1,
-                    1 => 2,
-                    2 => 3,
-                    _ => 0,
-                },
-                path.clone(),
-            ));
-            queue.push_back((
-                score + 1000,
-                location,
-                match direction {
-                    0 => 3,
-                    1 => 0,
-                    2 => 1,
-                    _ => 2,
-                },
-                path.clone(),
-            ));
+            if map[right.0 .1][right.0 .0] != '#' {
+                queue.push_back((score + 1001, right.0, right.1, path.clone()));
+            }
+            if map[left.0 .1][left.0 .0] != '#' {
+                queue.push_back((score + 1001, left.0, left.1, path.clone()));
+            }
         }
     }
     0
@@ -238,9 +190,9 @@ mod tests {
         let input = include_str!("../../node_modules/.aoc-cache/2024-16.txt").trim();
         b.iter(move || part_one(input));
     }
-    /* #[bench]
+    #[bench]
     fn part_two_bench(b: &mut Bencher) {
         let input = include_str!("../../node_modules/.aoc-cache/2024-16.txt").trim();
         b.iter(move || part_two(input));
-    } */
+    }
 }
