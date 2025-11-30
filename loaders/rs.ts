@@ -118,7 +118,7 @@ codegen-units = 1
 strip = "debuginfo"
 
 [workspace.package]
-rust-version = "1.89"
+rust-version = "1.91"
 edition = "2024"
 version = "0.1.0"
 
@@ -166,9 +166,9 @@ const makeCargoToml = (
   commentLines.takeWhile((line) => !line.includes('```cargo')).collect();
   let dependencies = `[dependencies]
 console_error_panic_hook = "0.1.7"
-regex = "1.11.1"
-wasm-bindgen = "0.2.100"
-web-sys = { version = "0.3.77", features = ["console"] }
+regex = "1.12.2"
+wasm-bindgen = "0.2.106"
+web-sys = { version = "0.3.83", features = ["console"] }
 `;
   if (commentLines.next().value?.includes('[dependencies]'))
     dependencies += commentLines
