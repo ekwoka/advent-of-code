@@ -33,24 +33,35 @@ pub fn part_one(input: &str) -> usize {
 }
 
 #[wasm_bindgen]
-pub fn part_two(input: &str) -> usize {
+pub fn part_two(input: &str) -> i32 {
     input
         .lines()
-        .flat_map(|line| {
-            let direction = match line.chars().next().unwrap() {
-                'R' => 1i32,
-                'L' => -1i32,
-                _ => unreachable!(),
-            };
+        .map(|line| {
             let distance = line[1..].parse::<i32>().unwrap();
-            (0..distance).map(move |_| direction)
+            match line.chars().next().unwrap() {
+                'R' => distance,
+                'L' => -distance,
+                _ => unreachable!(),
+            }
         })
-        .scan(50i32, |state, direction| {
-            *state = (*state + direction + 100) % 100;
-            Some(*state)
+        .scan(50i32, |state, movement| {
+            let mut cycles = (movement / 100).abs();
+            let remaining = movement % 100;
+            if *state != 0 {
+                if remaining < 0 {
+                    if remaining.abs() >= *state {
+                        cycles += 1;
+                    }
+                } else {
+                    if remaining >= (100 - *state) {
+                        cycles += 1;
+                    }
+                }
+            }
+            *state = (*state + remaining + 100) % 100;
+            Some(cycles)
         })
-        .filter(|state| *state == 0)
-        .count()
+        .sum()
 }
 
 #[cfg(test)]
