@@ -105,7 +105,7 @@ class RustLoader {
   static name = 'Rust WASM Loader';
   static extension: 'rs';
   static async setup(build: PluginBuilder) {
-    if (!(await exists(resolve(cacheDir, 'cargo.toml')))) {
+    if (!(await exists(resolve(cacheDir, 'Cargo.toml')))) {
       await mkdir(cacheDir, { recursive: true });
       await Bun.write(
         resolve(cacheDir, 'Cargo.toml'),

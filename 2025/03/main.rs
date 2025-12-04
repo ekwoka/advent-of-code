@@ -79,6 +79,6 @@ mod tests {
     #[bench]
     fn part_two_bench(b: &mut Bencher) {
         let input = include_str!("../../node_modules/.aoc-cache/2025-03.txt").trim();
-        b.iter(move || assert_eq!(part_two(input), 0));
+        b.iter(move || assert_eq!(part_two(input), 169_935_154_100_102));
     }
 }
