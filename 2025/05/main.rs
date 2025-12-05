@@ -41,21 +41,20 @@ pub fn part_two(input: &str) -> u64 {
         .collect::<Vec<_>>();
     ranges.sort_by_key(|(start, _)| *start);
 
-    let mut previous_end = 0;
     ranges
         .into_iter()
-        .map(|(start, end)| {
-            if start <= previous_end {
-                let start = previous_end + 1;
-                if end > previous_end {
-                    previous_end = end;
-                    end - start + 1
+        .scan(0, |previous_end, (start, end)| {
+            if start <= *previous_end {
+                let start = *previous_end + 1;
+                if end > *previous_end {
+                    *previous_end = end;
+                    Some(end - start + 1)
                 } else {
-                    0
+                    Some(0)
                 }
             } else {
-                previous_end = end;
-                end - start + 1
+                *previous_end = end;
+                Some(end - start + 1)
             }
         })
         .sum()
