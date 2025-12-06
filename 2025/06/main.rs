@@ -3,7 +3,6 @@
 //! ```
 #![feature(test)]
 
-use std::collections::VecDeque;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -16,11 +15,10 @@ pub fn part_one(input: &str) -> u64 {
         .trim()
         .lines()
         .map(|line| line.trim())
-        .collect::<Vec<_>>()
-        .into_iter()
-        .rev();
-    let operations = lines.next().unwrap().split_whitespace().collect::<Vec<_>>();
+        .collect::<Vec<_>>();
+    let operations = lines.pop().unwrap().split_whitespace().collect::<Vec<_>>();
     let numbers = lines
+        .into_iter()
         .map(|line| {
             line.split_whitespace()
                 .map(|s| s.parse::<u64>().unwrap())
@@ -40,35 +38,33 @@ pub fn part_one(input: &str) -> u64 {
 
 #[wasm_bindgen]
 pub fn part_two(input: &str) -> u64 {
-    let mut lines = input.trim().lines().collect::<Vec<_>>().into_iter().rev();
-    let mut operations = lines.next().unwrap().chars().collect::<VecDeque<_>>();
+    let mut lines = input.lines().collect::<Vec<_>>();
+    let line_length = input.lines().map(|line| line.len()).max().unwrap();
+    let operations = lines.pop().unwrap();
     let mut numbers = lines
-        .rev()
-        .map(|line| line.chars().collect::<VecDeque<_>>())
+        .into_iter()
+        .map(|line| line.chars())
         .collect::<Vec<_>>();
 
-    let mut result: u64 = 0;
-    while let Some(op) = operations.pop_front() {
-        if op == ' ' {
-            continue;
-        }
-        let numbers = (0..)
-            .map(|_| {
-                numbers
-                    .iter_mut()
-                    .map(|v| v.pop_front().unwrap_or(' '))
-                    .collect::<String>()
-            })
-            .take_while(|s| !s.trim().is_empty())
-            .map(|s: String| s.trim().parse::<u64>().unwrap_or_default())
-            .collect::<Vec<u64>>();
-        match op {
-            '*' => result += numbers.into_iter().product::<u64>(),
-            '+' => result += numbers.into_iter().sum::<u64>(),
-            _ => {}
-        }
-    }
-    result
+    let mut numbers = (0..=line_length)
+        .map(|_| {
+            numbers
+                .iter_mut()
+                .map(|v| v.next().unwrap_or(' '))
+                .collect::<String>()
+        })
+        .map(|s: String| s.trim().parse::<u64>().unwrap_or_default())
+        .split(0u64);
+
+    operations
+        .chars()
+        .filter(|c| *c != ' ')
+        .map(move |op| match op {
+            '*' => numbers.next().unwrap().into_iter().product::<u64>(),
+            '+' => numbers.next().unwrap().into_iter().sum::<u64>(),
+            _ => 0,
+        })
+        .sum::<u64>()
 }
 
 #[cfg(test)]
@@ -85,5 +81,51 @@ mod tests {
     fn part_two_bench(b: &mut Bencher) {
         let input = include_str!("../../node_modules/.aoc-cache/2025-06.txt").trim();
         b.iter(move || assert_eq!(part_two(input), 9_170_286_552_289));
+    }
+}
+
+trait Split<I: PartialEq, T> {
+    fn split(self, split: I) -> SplitIterator<T, I>;
+}
+
+impl<I, T> Split<I, T> for T
+where
+    T: Iterator<Item = I>,
+    I: PartialEq,
+{
+    fn split(self, split: I) -> SplitIterator<T, I> {
+      SplitIterator::<T, I>::new(self, split)
+    }
+}
+
+struct SplitIterator<I, T> {
+    iter: I,
+    split: T,
+    _marker: std::marker::PhantomData<T>,
+}
+
+impl<I, T> SplitIterator<I, T> {
+    fn new(iter: I, split: T) -> Self {
+        SplitIterator::<I, T> {
+            iter,
+            split,
+            _marker: std::marker::PhantomData,
+        }
+    }
+}
+
+impl<I, T> Iterator for SplitIterator<I, T>
+where
+    I: Iterator<Item = T>,
+    T: PartialEq,
+{
+    type Item = Vec<T>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let mut buffer = Vec::new();
+        while let Some(item) = self.iter.next() && item != self.split {
+            buffer.push(item);
+        }
+        Some(buffer)
     }
 }
