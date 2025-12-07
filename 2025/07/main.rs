@@ -28,9 +28,8 @@ pub fn part_one(input: &str) -> usize {
         })
         .collect();
     let length = input.lines().count();
-    let mut visited: HashSet<Vec2> = HashSet::new();
-    let mut stack = Vec::new();
-    stack.push(
+    let mut tachyons: HashSet<i32> = HashSet::new();
+    tachyons.insert(
         input
             .lines()
             .next()
@@ -38,31 +37,25 @@ pub fn part_one(input: &str) -> usize {
             .chars()
             .enumerate()
             .find_map(|(x, c)| match c {
-                'S' => Some(Vec2::new(x as i32, 0)),
+                'S' => Some(x as i32),
                 _ => None,
             })
             .unwrap(),
     );
 
     let mut splits = 0;
-    while let Some(tachyon) = stack.pop() {
-        if tachyon.y >= length as i32 {
-            continue;
+    for y in 1..length {
+        let mut new_tachyons = HashSet::new();
+        for tachyon in tachyons {
+            if splitters.contains(&Vec2::new(tachyon, y as i32)) {
+                splits += 1;
+                new_tachyons.insert(tachyon + 1);
+                new_tachyons.insert(tachyon - 1);
+            } else {
+                new_tachyons.insert(tachyon);
+            }
         }
-        if visited.contains(&tachyon) {
-            continue;
-        }
-        visited.insert(tachyon.clone());
-        let next = tachyon + Vec2::Y;
-        if splitters.contains(&next) {
-            splits += 1;
-            vec![Vec2::NEG_X, Vec2::X]
-                .into_iter()
-                .map(|dir| dir + next)
-                .for_each(|dir| stack.push(dir));
-        } else {
-            stack.push(next);
-        }
+        tachyons = new_tachyons;
     }
     splits
 }
@@ -80,7 +73,7 @@ pub fn part_two(input: &str) -> u64 {
         })
         .collect();
     let length = input.lines().count();
-    let mut active_tachyons: HashMap<Vec2, u64> = HashMap::new();
+    let mut active_tachyons: HashMap<i32, u64> = HashMap::new();
     active_tachyons.insert(
         input
             .lines()
@@ -89,29 +82,28 @@ pub fn part_two(input: &str) -> u64 {
             .chars()
             .enumerate()
             .find_map(|(x, c)| match c {
-                'S' => Some(Vec2::new(x as i32, 0)),
+                'S' => Some(x as i32),
                 _ => None,
             })
             .unwrap(),
         1,
     );
 
-    for _ in 0..length {
+    for y in 1..length {
         let mut new_tachyons = HashMap::new();
         for (pos, count) in active_tachyons.into_iter() {
-            let next = pos + Vec2::Y;
-            if splitters.contains(&next) {
+            if splitters.contains(&Vec2::new(pos, y as i32)) {
                 new_tachyons
-                    .entry(next + Vec2::NEG_X)
+                    .entry(pos - 1)
                     .and_modify(|v| *v += count)
                     .or_insert(count);
                 new_tachyons
-                    .entry(next + Vec2::X)
+                    .entry(pos + 1)
                     .and_modify(|v| *v += count)
                     .or_insert(count);
             } else {
                 new_tachyons
-                    .entry(next)
+                    .entry(pos)
                     .and_modify(|v| *v += count)
                     .or_insert(count);
             }
