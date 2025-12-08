@@ -3,12 +3,6 @@
 //! ```
 #![feature(test)]
 
-#[path = "../../utils/main.rs"]
-mod utils;
-
-use std::collections::HashMap;
-use std::collections::HashSet;
-use utils::*;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -17,101 +11,57 @@ pub fn main() {
 }
 #[wasm_bindgen]
 pub fn part_one(input: &str) -> usize {
-    let splitters: HashSet<Vec2> = input
-        .lines()
-        .enumerate()
-        .flat_map(|(y, line)| {
-            line.chars().enumerate().filter_map(move |(x, c)| match c {
-                '^' => Some(Vec2::new(x as i32, y as i32)),
-                _ => None,
-            })
-        })
-        .collect();
-    let length = input.lines().count();
-    let mut tachyons: HashSet<i32> = HashSet::new();
-    tachyons.insert(
-        input
-            .lines()
-            .next()
-            .unwrap()
-            .chars()
-            .enumerate()
-            .find_map(|(x, c)| match c {
-                'S' => Some(x as i32),
-                _ => None,
-            })
-            .unwrap(),
-    );
+    let mut lines = input.lines();
 
+    let mut tachyons = lines
+        .next()
+        .unwrap()
+        .chars()
+        .map(|c| match c {
+            'S' => 1,
+            _ => 0,
+        })
+        .collect::<Vec<usize>>();
     let mut splits = 0;
-    for y in 1..length {
-        let mut new_tachyons = HashSet::new();
-        for tachyon in tachyons {
-            if splitters.contains(&Vec2::new(tachyon, y as i32)) {
+    for line in lines.map(|line| line.chars().collect::<Vec<char>>()) {
+        for i in 0usize..tachyons.len() {
+            if tachyons[i] == 1 && line[i] == '^' {
                 splits += 1;
-                new_tachyons.insert(tachyon + 1);
-                new_tachyons.insert(tachyon - 1);
-            } else {
-                new_tachyons.insert(tachyon);
+                tachyons[i - 1] = 1;
+                tachyons[i + 1] = 1;
+                tachyons[i] = 0;
             }
         }
-        tachyons = new_tachyons;
     }
+
     splits
 }
 
 #[wasm_bindgen]
 pub fn part_two(input: &str) -> u64 {
-    let splitters: HashSet<Vec2> = input
-        .lines()
-        .enumerate()
-        .flat_map(|(y, line)| {
-            line.chars().enumerate().filter_map(move |(x, c)| match c {
-                '^' => Some(Vec2::new(x as i32, y as i32)),
-                _ => None,
-            })
-        })
-        .collect();
-    let length = input.lines().count();
-    let mut active_tachyons: HashMap<i32, u64> = HashMap::new();
-    active_tachyons.insert(
-        input
-            .lines()
-            .next()
-            .unwrap()
-            .chars()
-            .enumerate()
-            .find_map(|(x, c)| match c {
-                'S' => Some(x as i32),
-                _ => None,
-            })
-            .unwrap(),
-        1,
-    );
+    let mut lines = input.lines();
 
-    for y in 1..length {
-        let mut new_tachyons = HashMap::new();
-        for (pos, count) in active_tachyons.into_iter() {
-            if splitters.contains(&Vec2::new(pos, y as i32)) {
-                new_tachyons
-                    .entry(pos - 1)
-                    .and_modify(|v| *v += count)
-                    .or_insert(count);
-                new_tachyons
-                    .entry(pos + 1)
-                    .and_modify(|v| *v += count)
-                    .or_insert(count);
-            } else {
-                new_tachyons
-                    .entry(pos)
-                    .and_modify(|v| *v += count)
-                    .or_insert(count);
+    let mut tachyons = lines
+        .next()
+        .unwrap()
+        .chars()
+        .map(|c| match c {
+            'S' => 1,
+            _ => 0,
+        })
+        .collect::<Vec<u64>>();
+
+    for line in lines.map(|line| line.chars().collect::<Vec<char>>()) {
+        for i in 0usize..tachyons.len() {
+            if line[i] == '^' {
+                tachyons[i - 1] += tachyons[i];
+                tachyons[i + 1] += tachyons[i];
+                tachyons[i] = 0;
             }
         }
-        active_tachyons = new_tachyons;
     }
 
-    active_tachyons.values().sum()
+    tachyons.into_iter().sum::<u64>()
 }
 
 #[cfg(test)]
