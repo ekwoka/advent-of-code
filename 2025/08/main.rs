@@ -18,27 +18,26 @@ pub fn main() {
 pub fn part_one(input: &str, links: i32) -> usize {
     let generators = input
         .lines()
-        .map(|line| {
+        .enumerate()
+        .map(|(id, line)| {
             let mut parts = line.split(',');
             let x = parts.next().unwrap().parse().unwrap();
             let y = parts.next().unwrap().parse().unwrap();
             let z = parts.next().unwrap().parse().unwrap();
-            Vec3::new(x, y, z)
+            (id, Vec3::new(x, y, z))
         })
         .collect::<Vec<_>>();
     let mut pairs = generators
         .iter()
-        .enumerate()
-        .flat_map(|(i, a)| {
+        .flat_map(|(ida, a)| {
             generators
                 .iter()
-                .skip(i + 1)
-                .map(|b| (a.clone(), b.clone()))
+                .skip(ida + 1)
+                .map(|(idb, b)| (ida.clone(), idb.clone(), a.distance_squared(b)))
         })
-        .map(|(a, b)| (a, b, a.distance_squared(&b)))
         .collect::<Vec<_>>();
-    pairs.sort_by(|(_, _, a), (_, _, b)| a.partial_cmp(b).unwrap());
-    let mut chains: Vec<HashSet<Vec3>> = Vec::new();
+    pairs.sort_by_key(|(_, _, a)| *a);
+    let mut chains: Vec<HashSet<usize>> = Vec::new();
 
     for (a, b, _) in pairs.into_iter().take(links as usize) {
         let mut contained_chains = chains
@@ -49,8 +48,7 @@ pub fn part_one(input: &str, links: i32) -> usize {
         let chain_b = contained_chains.next();
         if let Some(chain_a) = chain_a {
             if let Some(chain_b) = chain_b {
-                *chain_a = chain_a.union(chain_b).cloned().collect();
-                chain_b.clear();
+                chain_a.extend(chain_b.drain());
             } else {
                 if chain_a.contains(&a) && chain_a.contains(&b) {
                     continue;
@@ -65,9 +63,10 @@ pub fn part_one(input: &str, links: i32) -> usize {
         }
     }
 
-    chains.sort_by(|a, b| b.len().cmp(&a.len()));
+    chains.sort_by_key(|a| a.len());
     chains
         .into_iter()
+        .rev()
         .map(|chain| chain.len())
         .take(3)
         .product()
@@ -77,27 +76,26 @@ pub fn part_one(input: &str, links: i32) -> usize {
 pub fn part_two(input: &str) -> u64 {
     let generators = input
         .lines()
-        .map(|line| {
+        .enumerate()
+        .map(|(id, line)| {
             let mut parts = line.split(',');
             let x = parts.next().unwrap().parse().unwrap();
             let y = parts.next().unwrap().parse().unwrap();
             let z = parts.next().unwrap().parse().unwrap();
-            Vec3::new(x, y, z)
+            (id, Vec3::new(x, y, z))
         })
         .collect::<Vec<_>>();
     let mut pairs = generators
         .iter()
-        .enumerate()
-        .flat_map(|(i, a)| {
+        .flat_map(|(ida, a)| {
             generators
                 .iter()
-                .skip(i + 1)
-                .map(|b| (a.clone(), b.clone()))
+                .skip(ida + 1)
+                .map(|(idb, b)| (ida.clone(), idb.clone(), a.distance_squared(b)))
         })
-        .map(|(a, b)| (a, b, a.distance_squared(&b)))
         .collect::<Vec<_>>();
-    pairs.sort_by(|(_, _, a), (_, _, b)| a.partial_cmp(b).unwrap());
-    let mut chains: Vec<HashSet<Vec3>> = Vec::new();
+    pairs.sort_by_key(|(_, _, a)| *a);
+    let mut chains: Vec<HashSet<usize>> = Vec::new();
 
     for (a, b, _) in pairs.into_iter() {
         let mut contained_chains = chains
@@ -108,8 +106,7 @@ pub fn part_two(input: &str) -> u64 {
         let chain_b = contained_chains.next();
         if let Some(chain_a) = chain_a {
             if let Some(chain_b) = chain_b {
-                *chain_a = chain_a.union(chain_b).cloned().collect();
-                chain_b.clear();
+                chain_a.extend(chain_b.drain());
             } else {
                 if chain_a.contains(&a) && chain_a.contains(&b) {
                     continue;
@@ -120,7 +117,7 @@ pub fn part_two(input: &str) -> u64 {
                 }
             }
             if chain_a.len() == generators.len() {
-                return (a.x as u64 * b.x as u64) as u64;
+                return generators[a].1.x as u64 * generators[b].1.x as u64;
             }
         } else {
             chains.push(HashSet::from([a, b]));
