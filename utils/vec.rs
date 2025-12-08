@@ -239,6 +239,18 @@ impl Vec3 {
     pub fn length(&self) -> f64 {
         (((self.x as i64).pow(2) + (self.y as i64).pow(2) + (self.z as i64).pow(2)) as f64).sqrt()
     }
+
+    pub fn length_squared(&self) -> i64 {
+        (self.x as i64).pow(2) + (self.y as i64).pow(2) + (self.z as i64).pow(2)
+    }
+
+    pub fn distance(&self, rhs: &Self) -> f64 {
+        (*self - *rhs).length()
+    }
+
+    pub fn distance_squared(&self, rhs: &Self) -> i64 {
+        (*self - *rhs).length_squared()
+    }
 }
 
 impl std::fmt::Display for Vec3 {

@@ -35,7 +35,7 @@ pub fn part_one(input: &str, links: i32) -> usize {
                 .skip(i + 1)
                 .map(|b| (a.clone(), b.clone()))
         })
-        .map(|(a, b)| (a, b, (a - b).length()))
+        .map(|(a, b)| (a, b, a.distance_squared(&b)))
         .collect::<Vec<_>>();
     pairs.sort_by(|(_, _, a), (_, _, b)| a.partial_cmp(b).unwrap());
     let mut chains: Vec<HashSet<Vec3>> = Vec::new();
@@ -94,7 +94,7 @@ pub fn part_two(input: &str) -> u64 {
                 .skip(i + 1)
                 .map(|b| (a.clone(), b.clone()))
         })
-        .map(|(a, b)| (a, b, (a - b).length()))
+        .map(|(a, b)| (a, b, a.distance_squared(&b)))
         .collect::<Vec<_>>();
     pairs.sort_by(|(_, _, a), (_, _, b)| a.partial_cmp(b).unwrap());
     let mut chains: Vec<HashSet<Vec3>> = Vec::new();
