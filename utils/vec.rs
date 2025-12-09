@@ -70,6 +70,10 @@ impl Vec2 {
         self.x.abs_diff(rhs.x) + self.y.abs_diff(rhs.y)
     }
 
+    pub fn length(&self) -> f32 {
+        (self.x.pow(2) + self.y.pow(2)) as f32
+    }
+
     pub fn rotate_left(&self) -> Self {
         Self {
             x: -self.y,
@@ -81,6 +85,35 @@ impl Vec2 {
             x: self.y,
             y: -self.x,
         }
+    }
+
+    pub fn max(&self, rhs: Self) -> Self {
+        Self {
+            x: self.x.max(rhs.x),
+            y: self.y.max(rhs.y),
+        }
+    }
+
+    pub fn min(&self, rhs: Self) -> Self {
+        Self {
+            x: self.x.min(rhs.x),
+            y: self.y.min(rhs.y),
+        }
+    }
+
+    pub fn abs(&self) -> Self {
+        Self {
+            x: self.x.abs(),
+            y: self.y.abs(),
+        }
+    }
+
+    pub fn area(&self) -> i32 {
+        self.x * self.y
+    }
+
+    pub fn max_own(&self) -> i32 {
+        self.x.max(self.y)
     }
 }
 
