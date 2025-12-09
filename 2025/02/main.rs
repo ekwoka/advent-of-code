@@ -3,12 +3,8 @@
 //! ```
 #![feature(test)]
 
+use std::collections::HashSet;
 use wasm_bindgen::prelude::*;
-// use regex::regex;
-// use web_sys::console;
-// use std::collections::HashMap;
-// use std::collections::HashSet;
-// use std::collections::VecDeque;
 
 #[wasm_bindgen(start)]
 pub fn main() {
@@ -22,17 +18,17 @@ pub fn part_one(input: &str) -> u64 {
         .flat_map(|(start, end)| {
             let start = start.parse::<u64>().unwrap();
             let end = end.parse::<u64>().unwrap();
-            start..=end
+            let pow_10_start = (start as f64).log10().floor() as u32;
+            let pow_10_end = (end as f64).log10().floor() as u32;
+            (pow_10_start..=pow_10_end)
+                .filter(|&pow_10| pow_10 % 2 == 1)
+                .flat_map(move |pow_10| {
+                    let multiplier = 10u64.pow((pow_10 + 1) / 2) + 1;
+                    (start.div_ceil(multiplier)..=end.min(10u64.pow(pow_10 + 1) - 1) / multiplier)
+                        .map(move |id| id * multiplier.clone())
+                })
         })
-        .filter(|id| {
-            let string_id = id.to_string();
-            if string_id.len() % 2 == 0 {
-                let (first, second) = string_id.split_at(string_id.len() / 2);
-                first == second
-            } else {
-                false
-            }
-        })
+        .filter(|id| id.to_string().len() % 2 == 0)
         .sum()
 }
 
@@ -44,18 +40,25 @@ pub fn part_two(input: &str) -> u64 {
         .flat_map(|(start, end)| {
             let start = start.parse::<u64>().unwrap();
             let end = end.parse::<u64>().unwrap();
-            start..=end
-        })
-        .filter(|id| {
-            let string_id = id.to_string();
-            (1..(string_id.len())).any(|i| {
-                if (string_id.len() % i) == 0 {
-                    string_id[0..i].repeat(string_id.len() / i) == string_id
-                } else {
-                    false
-                }
+
+            let pow_10_start = (start as f64).log10().floor() as u32;
+            let pow_10_end = (end as f64).log10().floor() as u32;
+            (pow_10_start..=pow_10_end).flat_map(move |pow_10| {
+                (1..=(pow_10 + 1) / 2)
+                    .filter(move |adjustment| (pow_10 + 1) % adjustment == 0)
+                    .flat_map(move |adjustment| {
+                        let multiplier = format!("{}1", "0".repeat(adjustment as usize - 1))
+                            .repeat(((pow_10 + 1) / adjustment) as usize)
+                            .parse::<u64>()
+                            .unwrap();
+                        (start.max(10u64.pow(pow_10)).div_ceil(multiplier)
+                            ..=end.min(10u64.pow(pow_10 + 1) - 1) / multiplier)
+                            .map(move |id| id * multiplier.clone())
+                    })
             })
         })
+        .collect::<HashSet<_>>()
+        .into_iter()
         .sum()
 }
 
