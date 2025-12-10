@@ -14,9 +14,9 @@ describe('2025 Day 10 Rust', async () => {
     expect(part_one(input)).toBe(432);
   }, 15_000);
   it('Passes Part 2 Test', () => {
-    expect(part_two(sample)).toBe(33n);
+    expect(part_two(sample)).toBe(33);
   }, 15_000);
   it('Passes Part 2', () => {
-    expect(part_two(input)).toBe(0);
+    expect(part_two(input)).toBe(18_011);
   }, 15_000);
 });

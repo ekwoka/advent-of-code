@@ -1,18 +1,13 @@
 //! ```cargo
 //! [dependencies]
+//! microlp = "0.2.11"
 //! ```
 #![feature(test)]
 
-#[path = "../../utils/main.rs"]
-mod utils;
-
+use microlp::{ComparisonOp, OptimizationDirection, Problem};
 use regex::Regex;
-use utils::*;
+use std::collections::{HashSet, VecDeque};
 use wasm_bindgen::prelude::*;
-use web_sys::console;
-// use std::collections::HashMap;
-// use std::collections::HashSet;
-use std::collections::VecDeque;
 
 #[wasm_bindgen(start)]
 pub fn main() {
@@ -46,6 +41,8 @@ pub fn part_one(input: &str) -> usize {
                         .collect::<Vec<usize>>()
                 })
                 .collect::<Vec<Vec<usize>>>();
+            let mut visited =
+                HashSet::<Vec<u8>>::from([lights.iter().map(|_| 0).collect::<Vec<u8>>()]);
             let mut queue = VecDeque::from([(
                 lights.iter().map(|_| 0).collect::<Vec<u8>>(),
                 usize::MAX,
@@ -63,6 +60,10 @@ pub fn part_one(input: &str) -> usize {
                     for &pos in button {
                         new_state[pos] ^= 1;
                     }
+                    if visited.contains(&new_state) {
+                        continue;
+                    }
+                    visited.insert(new_state.clone());
                     queue.push_back((new_state, i, count + 1));
                 }
             }
@@ -72,7 +73,7 @@ pub fn part_one(input: &str) -> usize {
 }
 
 #[wasm_bindgen]
-pub fn part_two(input: &str) -> u64 {
+pub fn part_two(input: &str) -> usize {
     let joltage_regex = Regex::new(r#"\{(.*?)\}"#).unwrap();
     let button_regex = Regex::new(r#"\((.*?)\)"#).unwrap();
     input
@@ -87,7 +88,7 @@ pub fn part_two(input: &str) -> u64 {
                 .split(',')
                 .map(|d| d.parse::<usize>().unwrap())
                 .collect::<Vec<usize>>();
-            let mut buttons = button_regex
+            let buttons = button_regex
                 .captures_iter(line)
                 .map(|c| {
                     let nums = c.get(1).unwrap().as_str();
@@ -96,36 +97,27 @@ pub fn part_two(input: &str) -> u64 {
                         .collect::<Vec<usize>>()
                 })
                 .collect::<Vec<Vec<usize>>>();
-            buttons.sort_by_key(|button| button.iter().sum::<usize>());
-            let mut queue = VecDeque::from([(
-                joltages.iter().map(|_| 0).collect::<Vec<usize>>(),
-                usize::MAX,
-                0u64,
-            )]);
-            while let Some((state, prev, count)) = queue.pop_back() {
-                if state == joltages {
-                    return count;
-                }
-                if state.iter().zip(joltages.iter()).any(|(a, b)| a > b) {
-                    continue;
-                }
-                for (i, button) in buttons.iter().enumerate() {
-                    if i == prev {
-                        continue;
-                    }
-                    let mut new_state = state.clone();
-                    for &pos in button {
-                        new_state[pos] += 1;
-                    }
-                    if new_state.iter().zip(joltages.iter()).any(|(a, b)| a > b) {
-                        continue;
-                    }
-                    queue.push_back((new_state, i, count + 1));
-                }
+
+            let mut problem = Problem::new(OptimizationDirection::Minimize);
+
+            let press_vars = (0..buttons.len())
+                .map(|_| problem.add_integer_var(1.0, (0, i32::MAX)))
+                .collect::<Vec<_>>();
+
+            for (i, j) in joltages.iter().enumerate() {
+                let expr = press_vars
+                    .iter()
+                    .clone()
+                    .zip(buttons.clone())
+                    .filter(|(_, b)| b.contains(&i))
+                    .map(|(v, _)| (*v, 1.0f64));
+                problem.add_constraint(expr, ComparisonOp::Eq, *j as f64);
             }
-            return 0u64;
+            problem
+                .solve()
+                .map(move |sol| sol.objective().round() as usize)
+                .unwrap_or_default()
         })
-        .inspect(|presses| console::log_1(&format!("Presses: {}", presses).into()))
         .sum()
 }
 
@@ -142,6 +134,6 @@ mod tests {
     #[bench]
     fn part_two_bench(b: &mut Bencher) {
         let input = include_str!("../../node_modules/.aoc-cache/2025-10.txt").trim();
-        b.iter(move || assert_eq!(part_two(input), 0));
+        b.iter(move || assert_eq!(part_two(input), 18_011));
     }
 }
