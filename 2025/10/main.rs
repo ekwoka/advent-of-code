@@ -27,27 +27,24 @@ pub fn part_one(input: &str) -> usize {
                 .unwrap()
                 .as_str()
                 .chars()
-                .map(|c| match c {
-                    '#' => 1u8,
-                    _ => 0u8,
+                .enumerate()
+                .map(|(i, c)| match c {
+                    '#' => 1 << i,
+                    _ => 0,
                 })
-                .collect::<Vec<u8>>();
+                .fold(0, |acc, x| acc | x);
             let buttons = button_regex
                 .captures_iter(line)
                 .map(|c| {
                     let nums = c.get(1).unwrap().as_str();
                     nums.split(',')
                         .map(|d| d.parse::<usize>().unwrap())
-                        .collect::<Vec<usize>>()
+                        .map(|i| 1 << i)
+                        .fold(0, |acc, x| acc | x)
                 })
-                .collect::<Vec<Vec<usize>>>();
-            let mut visited =
-                HashSet::<Vec<u8>>::from([lights.iter().map(|_| 0).collect::<Vec<u8>>()]);
-            let mut queue = VecDeque::from([(
-                lights.iter().map(|_| 0).collect::<Vec<u8>>(),
-                usize::MAX,
-                0usize,
-            )]);
+                .collect::<Vec<usize>>();
+            let mut visited = HashSet::<usize>::from([0]);
+            let mut queue = VecDeque::from([(0, usize::MAX, 0usize)]);
             while let Some((state, prev, count)) = queue.pop_front() {
                 if state == lights {
                     return count;
@@ -56,10 +53,7 @@ pub fn part_one(input: &str) -> usize {
                     if i == prev {
                         continue;
                     }
-                    let mut new_state = state.clone();
-                    for &pos in button {
-                        new_state[pos] ^= 1;
-                    }
+                    let new_state = state.clone() ^ button;
                     if visited.contains(&new_state) {
                         continue;
                     }
