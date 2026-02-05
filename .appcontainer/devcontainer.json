@@ -1,0 +1,16 @@
+{
+  "name": "advent-of-code",
+  "image": "docker.io/library/node:24",
+  "remoteUser": "root",
+  "workspaceFolder": "/root/workspace",
+  "forwardPorts": [
+    8080,
+    "2222:22"
+  ],
+  "postCreateCommand": "apt-get update; apt-get upgrade -y; apt-get install openssh-server pkg-config -y; (curl -fsSL https://sh.rustup.rs | bash -s -- -y); (curl -fsSL https://bun.sh/install | bash); (curl -fsSL https://get.pnpm.io/install.sh | bash); mkdir -p /run/sshd; /usr/bin/bash -ci \"rustup toolchain install nightly\"; /usr/bin/bash -ci \"cargo install wasm-pack\";",
+  "postStartCommand": "/usr/sbin/sshd; /usr/bin/bash -ci \"pnpm i\";",
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "8gb"
+  }
+}
